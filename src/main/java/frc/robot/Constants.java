@@ -70,4 +70,8 @@ public final class Constants {
     public static final Translation2d BL_LOCATION = new Translation2d(-APOTHEM, APOTHEM);
   }
 
+  public static final class DriverFeedBack {
+    public static final int LEDS_LENGTH = 0;
+  }
+
 }

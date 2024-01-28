@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FieldDrive;
+import frc.robot.subsystems.FeedbackSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
@@ -17,6 +19,8 @@ public class RobotContainer {
   private CommandXboxController m_controller = new CommandXboxController(1);
 
   private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+  private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  private FeedbackSubsystem m_feedbackSubsystem = new FeedbackSubsystem(m_intakeSubsystem::hasNote);
 
   private DefaultDrive m_defaultDrive = new DefaultDrive(
       m_swerveSubsystem,
@@ -41,6 +45,8 @@ public class RobotContainer {
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::zeroPose));
     m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
+
+    
   }
 
   public Command getAutonomousCommand() {

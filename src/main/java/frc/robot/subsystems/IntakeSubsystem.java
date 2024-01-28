@@ -27,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
   final DigitalInput m_limitSwitch = new DigitalInput(0);
  
   /** Creates a new Intake. */
-  private IntakeSubsystem() {
+  public IntakeSubsystem() {
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(null);
 
@@ -45,5 +45,9 @@ public class IntakeSubsystem extends SubsystemBase {
     if (m_limitSwitch.get() == true) {
       
     }
+  }
+
+  public boolean hasNote() {
+    return m_limitSwitch.get();    
   }
 }
