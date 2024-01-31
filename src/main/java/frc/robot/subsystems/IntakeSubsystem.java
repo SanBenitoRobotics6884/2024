@@ -22,12 +22,13 @@ public class IntakeSubsystem extends SubsystemBase {
     double kI = 0;
     double kD = 0;
   
-  final AnalogEncoder encoder = new AnalogEncoder(0);
+  final AnalogEncoder m_pivotEncoder = new AnalogEncoder(0);
+  final AnalogEncoder m_motorEncoder = new AnalogEncoder(0);
   final ProfiledPIDController m_pivotPID = new ProfiledPIDController(kP, kI, kD, null);
   final DigitalInput m_limitSwitch = new DigitalInput(0);
  
   /** Creates a new Intake. */
-  private IntakeSubsystem() {
+  public IntakeSubsystem() {
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(null);
 
@@ -37,13 +38,24 @@ public class IntakeSubsystem extends SubsystemBase {
     /**
       Saw this in cranberry code, it sets like current limit in AMPs though, I don't know what it is so LUCAS help.
     */
+    m_intakeMotor.set(0);
+    m_pivotMotor.set(0);
+
+    
   }
 
  @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
+
+    
     if (m_limitSwitch.get() == true) {
       
+    }
+
+    if (m_pivotEncoder.get() == 0) {
+      //m_pivotMotor
     }
   }
 }

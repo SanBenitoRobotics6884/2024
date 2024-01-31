@@ -3,14 +3,17 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
+import frc.robot.subsystems.IntakeSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
+
+
 
 public class ReelCommand extends Command {
   /** Creates a new ReelCommand. */
   public ReelCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-
+  
   }
 
   // Called when the command is initially scheduled.
