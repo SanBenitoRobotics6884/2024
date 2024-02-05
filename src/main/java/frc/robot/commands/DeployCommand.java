@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class DeployCommand extends Command {
+  IntakeSubsystem m_intakesubsystem;
   /** Creates a new DeployCommand. */
-  public DeployCommand() {
+  public DeployCommand(IntakeSubsystem subsystem) {
+    m_intakesubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(null);
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -23,7 +25,7 @@ public class DeployCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    
   }
 
   // Called once the command ends or is interrupted.

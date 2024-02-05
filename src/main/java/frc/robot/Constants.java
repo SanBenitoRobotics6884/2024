@@ -70,4 +70,16 @@ public final class Constants {
     public static final Translation2d BL_LOCATION = new Translation2d(-APOTHEM, APOTHEM);
   }
 
+  public final static class Intake {
+    // ~ WIP ~ //
+    public static final double PIVOT_kP = 0;
+    public static final double PIVOT_kI = 0;
+    public static final double PIVOT_kD = 0;
+
+    public static final int INTAKE_MOTOR_ID = 0;
+    public static final int PIVOT_MOTOR_ID = 0;
+
+    public static final double INTAKE_MOTOR_SPEED = 0;
+    public static final double PIVOT_MOTOR_SPEED = 0;
+  }
 }

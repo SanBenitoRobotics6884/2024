@@ -11,11 +11,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class ReelCommand extends Command {
   private IntakeSubsystem m_intakeSubsystem;
-  private 
   
   /** Creates a new ReelCommand. */
-  public ReelCommand(IntakeSubsystem subsystem, ) {
-
+  public ReelCommand(IntakeSubsystem subsystem) {
+    m_intakeSubsystem = subsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -30,22 +29,21 @@ public class ReelCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double taken = IntakeSubsystem.m_intakeMotor.get();
-    if (taken == 0) {
-      IntakeSubsystem.m_intakeMotor.set(-5);
-      //No idea what speed the motor is supposed to be set too
-    }
+    // !!! ~ REMINDER: MAKE THE MOTOR INTAKE ~ !!! //
+    m_intakeSubsystem.reelBegin();
+    System.out.println("Intaking/Reeling has begun");
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    m_intakeSubsystem.reelStop();
+    System.out.println("Intaking/Reeling his hit a stop");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
+   return m_intakeSubsystem.noteHeld();
   }
 }
