@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbSubsystem extends SubsystemBase{
-  private static final double PlaceholderForType = 0;
   /** Creates a new ClimbSubsystem. */
     private CANSparkMax m_rightClimbMotor = new CANSparkMax(0,MotorType.kBrushless);
     private CANSparkMax m_leftClimbMotor = new CANSparkMax(0,MotorType.kBrushless);
@@ -48,14 +47,14 @@ public class ClimbSubsystem extends SubsystemBase{
     double m_rightMotorOutput = m_rightPIDController.calculate(m_rightCurrentHeight);
     double m_leftMotorOutput = m_leftPIDController.calculate(m_leftCurrentHeight);
 
-    m_rightMotorOutput = Math.min(PlaceholderForType, Math.max(PlaceholderForType, PlaceholderForType));
-    m_leftMotorOutput = Math.min(PlaceholderForType, Math.max(PlaceholderForType, PlaceholderForType));
+    m_rightMotorOutput = Math.min(0, Math.max(0, 0));
+    m_leftMotorOutput = Math.min(0, Math.max(0, 0));
     
   }
   public void extend(){
 
-    double m_rightMotorOutput;
-    double m_leftMotorOutput;
+    double m_rightMotorOutput = m_rightPIDController.calculate(0);
+    double m_leftMotorOutput= m_leftPIDController.calculate(0);
 
     m_rightClimbMotor.set(m_rightMotorOutput);
     m_leftClimbMotor.set(m_leftMotorOutput);
@@ -63,15 +62,15 @@ public class ClimbSubsystem extends SubsystemBase{
   }
 
   public void retract() {   
-    double m_rightMotorOutput;
-    double m_leftMotorOutput;
+    double m_rightMotorOutput = m_rightPIDController.calculate(0);
+    double m_leftMotorOutput = m_leftPIDController.calculate(0);
    
    
     m_rightClimbMotor.set(m_rightMotorOutput);
     m_leftClimbMotor.set(m_leftMotorOutput);
   }
    
-  
+}
    
   
 
