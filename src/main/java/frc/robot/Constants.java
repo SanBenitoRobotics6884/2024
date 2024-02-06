@@ -81,5 +81,8 @@ public final class Constants {
 
     public static final double INTAKE_MOTOR_SPEED = 0;
     public static final double PIVOT_MOTOR_SPEED = 0;
+
+    public static final double MAX_VELOCITY = 0;
+    public static final double MAX_ACCELERATION = 0;
   }
 }
