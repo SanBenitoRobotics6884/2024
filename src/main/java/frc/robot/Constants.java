@@ -84,5 +84,11 @@ public final class Constants {
 
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
+
+    // Pivot set point angles, thought I still don't know what the angles would be.
+    public static final double k_PIVOT_ANGLE_GROUND = 0;
+    public static final double k_PIVOT_ANGLE_SOURCE = 0;
+
+
   }
 }
