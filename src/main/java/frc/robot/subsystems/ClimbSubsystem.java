@@ -4,13 +4,9 @@
 
 package frc.robot.subsystems;
 
-import com.fasterxml.jackson.databind.type.PlaceholderForType;
-import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,7 +23,10 @@ public class ClimbSubsystem extends SubsystemBase{
     private RelativeEncoder m_leftClimbEncoder;
 
     private double m_rightSetPoint;
-    private double m_leftSetPoint; 
+    private double m_leftSetPoint;
+
+    private boolean isExtended = false;
+     
 
     public ClimbSubsystem () {
     m_rightClimbEncoder = m_rightClimbMotor.getEncoder();
@@ -51,6 +50,14 @@ public class ClimbSubsystem extends SubsystemBase{
     m_leftMotorOutput = Math.min(0, Math.max(0, 0));
     
   }
+
+public void toggleClimb() {
+  if(isExtended) 
+    extend();
+  else 
+    retract();
+  }
+
   public void extend(){
 
     double m_rightMotorOutput = m_rightPIDController.calculate(0);
@@ -58,7 +65,7 @@ public class ClimbSubsystem extends SubsystemBase{
 
     m_rightClimbMotor.set(m_rightMotorOutput);
     m_leftClimbMotor.set(m_leftMotorOutput);
-
+    isExtended = true;
   }
 
   public void retract() {   
@@ -68,8 +75,12 @@ public class ClimbSubsystem extends SubsystemBase{
    
     m_rightClimbMotor.set(m_rightMotorOutput);
     m_leftClimbMotor.set(m_leftMotorOutput);
+    isExtended = false;
   }
-   
+  public void stopClimb(){
+    m_rightClimbMotor.set(0);
+    m_leftClimbMotor.set(0);
+   }
 }
    
   
