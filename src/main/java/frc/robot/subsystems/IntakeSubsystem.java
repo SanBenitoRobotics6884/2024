@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,7 +25,8 @@ public class IntakeSubsystem extends SubsystemBase {
     //double kI = 0;    SET THE VARIABLES TO THE CONSTANTS. :fire: :skull:
     //double kD = 0;
 
-  private ProfiledPIDController m_pivotPID = new ProfiledPIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD, null);
+  private ProfiledPIDController m_pivotPID =
+     new ProfiledPIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
   private  DigitalInput m_limitSwitch = new DigitalInput(0);
  
   /** Creates a new Intake. */
@@ -36,7 +38,6 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     //m_intakeMotor.setSmartCurrentLimit(0); UNNEEDED ATM
     m_intakeEncoder = m_intakeMotor.getEncoder();
-    
 
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -46,10 +47,11 @@ public class IntakeSubsystem extends SubsystemBase {
     /**
       Saw this in cranberry code, it sets like current limit in AMPs though, I don't know what it is so LUCAS help.
     */
-    m_intakeMotor.set(INTAKE_MOTOR_SPEED);
-    m_pivotMotor.set(PIVOT_MOTOR_SPEED);
 
+    //dunno if this is useful atm but we'll see
+    m_pivotMotor.set(PIVOT_MOTOR_SPEED);
     m_pivotMotor.getPIDController();
+    
   }
 
  @Override
@@ -59,12 +61,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 //This method will hopefully be used within the deploy command, still WIP atm.
 //It 
-  public void pid() {
-
-  }
   
-  public void reelBegin() {
-    m_intakeMotor.set(1);
+  public void reel() {
+    m_intakeMotor.set(INTAKE_MOTOR_SPEED);
   }
 
   public boolean noteHeld() {
@@ -72,10 +71,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void reelStop() {
-    if (noteHeld() == true) {
       m_intakeMotor.stopMotor();
-    }
   }
 
+  
   
 }
