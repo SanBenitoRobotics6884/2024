@@ -30,7 +30,7 @@ public class ReelCommand extends Command {
   @Override
   public void execute() {
     // !!! ~ REMINDER: MAKE THE MOTOR INTAKE ~ !!! //
-    m_intakeSubsystem.reelBegin();
+    m_intakeSubsystem.reel();
     System.out.println("Intaking/Reeling has begun");
   }
 

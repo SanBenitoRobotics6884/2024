@@ -28,6 +28,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private ProfiledPIDController m_pivotPID =
      new ProfiledPIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
   private  DigitalInput m_limitSwitch = new DigitalInput(0);
+
+
  
   /** Creates a new Intake. */
   public IntakeSubsystem() {
@@ -59,9 +61,16 @@ public class IntakeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   
   }
-//This method will hopefully be used within the deploy command, still WIP atm.
-//It 
-  
+
+  public void deployGoal() {
+    m_pivotPID.setGoal(0);
+    //will continue this later -zach
+  }
+
+  public boolean deployHitGoal() {
+    return m_pivotPID.atGoal();
+    }
+
   public void reel() {
     m_intakeMotor.set(INTAKE_MOTOR_SPEED);
   }
