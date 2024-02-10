@@ -11,12 +11,15 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Intake.*;
 
 
 public class IntakeSubsystem extends SubsystemBase {
+
+  
 
   private final CANSparkMax m_intakeMotor = new CANSparkMax(INTAKE_MOTOR_ID, MotorType.kBrushless);
   private final CANSparkMax m_pivotMotor = new CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless);
@@ -52,6 +55,8 @@ public class IntakeSubsystem extends SubsystemBase {
     */
 
     //dunno if this is useful atm but we'll see
+
+    m_pivotPID.reset(m_pivotEncoder.getPosition(), m_pivotEncoder.getVelocity());
   }
 
  @Override
@@ -107,7 +112,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void stow() {
     m_pivotPID.setGoal(STOW_SETPOINT);
+    
   }
+
+
 
   
   
