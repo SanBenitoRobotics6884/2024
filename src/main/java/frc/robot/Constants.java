@@ -74,6 +74,12 @@ public final class Constants {
     public static final double MAX_DOWN_VOLTAGE= -0.4; 
     public static final double EXTEND_MOTOR_SETPIONT = 0.9; 
     public static final double RETRACT_MOTOR_SETPOINT = 0.9;
+    public static final int RCLIMB_MOTOR_ID = 14;
+    public static final int LCLIMB_MOTOR_ID = 15;
+    public static final double CLIMB_kP = .1;
+    public static final double CLIMB_kI = .1;
+    public static final double CLIMB_kD = .1;
+
     
   }
   

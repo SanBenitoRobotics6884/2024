@@ -21,11 +21,11 @@ public class ClimbSubsystem extends SubsystemBase{
   
   
   /** Creates a new ClimbSubsystem. */
-    private CANSparkMax m_rightClimbMotor = new CANSparkMax(0,MotorType.kBrushless);
-    private CANSparkMax m_leftClimbMotor = new CANSparkMax(0,MotorType.kBrushless);
+    private CANSparkMax m_rightClimbMotor = new CANSparkMax(RCLIMB_MOTOR_ID,MotorType.kBrushless);
+    private CANSparkMax m_leftClimbMotor = new CANSparkMax(LCLIMB_MOTOR_ID,MotorType.kBrushless);
     
-    private PIDController m_rightPIDController = new PIDController(0, 0, 0);
-    private PIDController m_leftPIDController = new PIDController(0, 0, 0);
+    private PIDController m_rightPIDController = new PIDController(CLIMB_kP, CLIMB_kI, CLIMB_kD);
+    private PIDController m_leftPIDController = new PIDController(CLIMB_kP, CLIMB_kI, CLIMB_kD);
         
     private RelativeEncoder m_rightClimbEncoder;
     private RelativeEncoder m_leftClimbEncoder;
@@ -53,11 +53,8 @@ public class ClimbSubsystem extends SubsystemBase{
     m_leftClimbEncoder.setPosition(m_leftMotorOutput); 
     m_rightClimbEncoder.setPosition(m_rightMotorOutput); 
 
-
 }
   
-
-
   public void extend(){
     m_rightPIDController.setSetpoint(EXTEND_MOTOR_SETPIONT);
     m_leftPIDController.setSetpoint(EXTEND_MOTOR_SETPIONT);
@@ -67,16 +64,7 @@ public class ClimbSubsystem extends SubsystemBase{
     m_rightPIDController.setSetpoint(RETRACT_MOTOR_SETPOINT);
     m_leftPIDController.setSetpoint(RETRACT_MOTOR_SETPOINT);
   }
-  public void stopClimb(){
-    m_rightClimbMotor.set(0);
-    m_leftClimbMotor.set(0);
-   
-
-
-
-  
-  
-  }
+ 
 public Command getExtend(){
   return runOnce(this::extend);
 }
