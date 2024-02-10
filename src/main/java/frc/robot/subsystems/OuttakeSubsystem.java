@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -32,6 +33,7 @@ public class OuttakeSubsystem extends SubsystemBase {
   public OuttakeSubsystem(XboxController controller) {
     m_controller = controller;
     m_shooterMotorI.follow(m_shooterMotorII);
+    m_shooterMotorII.setInverted(true);
     m_shooterMotorII.setInverted(true);
   }
 
