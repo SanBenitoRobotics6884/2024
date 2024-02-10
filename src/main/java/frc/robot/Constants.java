@@ -69,5 +69,10 @@ public final class Constants {
     public static final Translation2d BR_LOCATION = new Translation2d(-APOTHEM, -APOTHEM);
     public static final Translation2d BL_LOCATION = new Translation2d(-APOTHEM, APOTHEM);
   }
-
+  public static final class Climb{
+    public static final double MAX_UP_VOLTAGE = 0.4; 
+    public static final double MAX_DOWN_VOLTAGE= -0.4; 
+  
+  
+  }
 }

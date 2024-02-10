@@ -11,7 +11,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbSubsystem extends SubsystemBase{
@@ -39,24 +38,33 @@ public class ClimbSubsystem extends SubsystemBase{
     m_rightClimbMotor.setIdleMode(IdleMode.kBrake);
     m_leftClimbMotor.setIdleMode(IdleMode.kBrake);
   }
-  @Override
+   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_rightPIDController.setSetpoint(0);
-    m_leftPIDController.setSetpoint(0);
-
+    m_rightPIDController.setSetpoint(10);
+    m_leftPIDController.setSetpoint(10);
+     
     double m_rightCurrentHeight = m_rightClimbEncoder.getPosition();
     double m_leftCurrentHeight = m_leftClimbEncoder.getPosition();
-
+    
     double m_rightMotorOutput = m_rightPIDController.calculate(m_rightCurrentHeight);
     double m_leftMotorOutput = m_leftPIDController.calculate(m_leftCurrentHeight);
    
-    m_rightMotorOutput = Math.min(0, Math.max(0, 0));
-    m_leftMotorOutput = Math.min(0, Math.max(0, 0));
-    m_rightClimbMotor.set(MathUtil.clamp(2, 1, 1.5)); 
-    
-  }
+    m_rightClimbMotor.set(MathUtil.clamp(m_rightMotorOutput,1 , 8)); 
+    m_leftClimbMotor.set(MathUtil.clamp(m_leftMotorOutput, 1, 7)); 
+  m_leftClimbEncoder.setPosition(m_leftMotorOutput); 
+  m_rightClimbEncoder.setPosition(m_rightMotorOutput); 
 
+
+}
+  
+  public void getPosition(){
+ m_rightClimbEncoder.getPosition(); 
+m_leftClimbEncoder.getPosition(); 
+}
+public void setSetpoint(){
+    
+}
 public void toggleClimb() {
   if(isExtended) 
     extend();

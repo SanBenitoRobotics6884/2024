@@ -16,6 +16,12 @@ public class ClimbCommands extends Command {
         this.m_climbButton = m_climbButton;
         addRequirements(climbSubsystem);
     }
+    public void ClimbCommand(){
+
+    }
+    
+    
+    
     @Override
     public void execute() {
         if (m_climbJoystick.getRawButton( m_climbButton))
