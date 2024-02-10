@@ -80,6 +80,10 @@ public final class Constants {
     public static final int PIVOT_MOTOR_ID = 0;
 
     public static final double INTAKE_MOTOR_SPEED = 0;
+    public static final double PIVOT_MOTOR_SPEED = 0;
+    public static final double INTAKE_MOTOR_SPIT_SPEED = 0;
+
+    public static final double ENCODER_POSITION = 0;
 
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
@@ -89,5 +93,8 @@ public final class Constants {
     public static final double k_PIVOT_ANGLE_SOURCE = 0;
 
     public static final double TOLERANCE = 0;
+    public static final double GOAL = 0;
+
   }
+
 }

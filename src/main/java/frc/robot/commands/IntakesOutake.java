@@ -5,20 +5,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
+import frc.robot.subsystems.IntakeSubsystem;
 public class IntakesOutake extends Command {
+  IntakeSubsystem m_intakeSubsystem;
   /** Creates a new IntakesOutake. */
-  public IntakesOutake() {
+  public IntakesOutake(IntakeSubsystem subsystem) {
+    m_intakeSubsystem = subsystem;
+    addRequirements(subsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+        m_intakeSubsystem.spit();
+
+  }
 
   // Called once the command ends or is interrupted.
   @Override

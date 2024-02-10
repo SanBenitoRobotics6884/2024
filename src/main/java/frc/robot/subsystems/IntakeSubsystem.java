@@ -44,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     //m_pivotMotor.setSmartCurrentLimit(0); UNNEEDED ATM
     m_pivotEncoder = m_pivotMotor.getEncoder();
-    m_pivotEncoder.setPosition(0);
+    m_pivotEncoder.setPosition(ENCODER_POSITION);
     
     m_pivotPID.setTolerance(TOLERANCE);
         /**
@@ -61,29 +61,39 @@ public class IntakeSubsystem extends SubsystemBase {
     if (m_pivotPID.atGoal()) {
       m_pivotMotor.setVoltage(0);
     } else {
-      m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition(), 0));
+      m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition(), GOAL));
     }
   }
 
+  //We set the goal/setpoint to the PID
   public void deployGoal() {
-    m_pivotPID.setGoal(0);
-    //will continue this later
+    m_pivotPID.setGoal(GOAL);
+    
   }
 
+  //Returns boolean of whather PID is at goal/setpoint.
   public boolean deployHitGoal() {
     return m_pivotPID.atGoal();
     }
 
+  
+  // Set's speed to intake motor to reel
   public void reel() {
     m_intakeMotor.set(INTAKE_MOTOR_SPEED);
   }
 
+  // Returns whether limitswitch is triggered or not
   public boolean noteHeld() {
     return m_limitSwitch.get();
   }
 
+  //Stops intake motor from spinning 
   public void reelStop() {
       m_intakeMotor.stopMotor();
+  }
+
+  public void spit() {
+    m_intakeMotor.set(INTAKE_MOTOR_SPIT_SPEED);
   }
 
   

@@ -11,13 +11,15 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class DeployIntakeCommand extends Command {
   IntakeSubsystem m_intakesubsystem;
   /** Creates a new DeployCommand. */
-  
+
   public DeployIntakeCommand(IntakeSubsystem subsystem) {
     m_intakesubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
-  
+
+
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {

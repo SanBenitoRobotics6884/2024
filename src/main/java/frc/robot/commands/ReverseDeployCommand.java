@@ -3,18 +3,24 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ReverseDeployCommand extends Command {
   /** Creates a new ReverseDeployCommand. */
-  public ReverseDeployCommand() {
+  IntakeSubsystem m_intakeSubsystem;
+  public ReverseDeployCommand(IntakeSubsystem subsystem) {
+    m_intakeSubsystem = subsystem;
+    addRequirements(subsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_intakeSubsystem.deployGoal();
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -27,6 +33,6 @@ public class ReverseDeployCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_intakeSubsystem.deployHitGoal();
   }
 }

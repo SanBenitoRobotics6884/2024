@@ -14,7 +14,7 @@ public class ReelCommand extends Command {
   
   /** Creates a new ReelCommand. */
   public ReelCommand(IntakeSubsystem subsystem) {
-    m_intakeSubsystem = subsystem;
+
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -37,13 +37,13 @@ public class ReelCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intakeSubsystem.reelStop();
+  m_intakeSubsystem.reelStop();
     System.out.println("Intaking/Reeling his hit a stop");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-   return m_intakeSubsystem.noteHeld();
+return m_intakeSubsystem.noteHeld();
   }
 }
