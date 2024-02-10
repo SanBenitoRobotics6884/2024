@@ -44,21 +44,25 @@ public class IntakeSubsystem extends SubsystemBase {
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     //m_pivotMotor.setSmartCurrentLimit(0); UNNEEDED ATM
     m_pivotEncoder = m_pivotMotor.getEncoder();
-
-    /**
+    m_pivotEncoder.setPosition(0);
+    
+    m_pivotPID.setTolerance(TOLERANCE);
+        /**
       Saw this in cranberry code, it sets like current limit in AMPs though, I don't know what it is so LUCAS help.
     */
 
     //dunno if this is useful atm but we'll see
-    m_pivotMotor.set(PIVOT_MOTOR_SPEED);
-    m_pivotMotor.getPIDController();
-    
   }
 
  @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition(), 0));
+    
+    if (m_pivotPID.atGoal()) {
+      m_pivotMotor.setVoltage(0);
+    } else {
+      m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition(), 0));
+    }
   }
 
   public void deployGoal() {
