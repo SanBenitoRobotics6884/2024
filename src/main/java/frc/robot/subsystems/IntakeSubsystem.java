@@ -29,12 +29,11 @@ public class IntakeSubsystem extends SubsystemBase {
      new ProfiledPIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
   private  DigitalInput m_limitSwitch = new DigitalInput(0);
 
-
+  RelativeEncoder m_intakeEncoder;
+  RelativeEncoder m_pivotEncoder;
  
   /** Creates a new Intake. */
   public IntakeSubsystem() {
-    RelativeEncoder m_intakeEncoder;
-    RelativeEncoder m_pivotEncoder;
 
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -59,12 +58,12 @@ public class IntakeSubsystem extends SubsystemBase {
  @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  
+    m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition(), 0));
   }
 
   public void deployGoal() {
     m_pivotPID.setGoal(0);
-    //will continue this later -zach
+    //will continue this later
   }
 
   public boolean deployHitGoal() {
