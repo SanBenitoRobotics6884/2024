@@ -27,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private ProfiledPIDController m_pivotPID =
      new ProfiledPIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
-  private  DigitalInput m_limitSwitch = new DigitalInput(0);
+  private  DigitalInput m_limitSwitch = new DigitalInput(DIO_CHANNEL_LIMITSWITCH);
 
   RelativeEncoder m_intakeEncoder;
   RelativeEncoder m_pivotEncoder;
@@ -59,7 +59,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     
     if (m_pivotPID.atGoal()) {
-      m_pivotMotor.setVoltage(0);
+      m_pivotMotor.setVoltage(NO_VOLTS);
     } else {
       m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition(), GOAL));
     }
@@ -94,6 +94,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void spit() {
     m_intakeMotor.set(INTAKE_MOTOR_SPIT_SPEED);
+  }
+
+  public boolean noteGone() {
+    if (m_limitSwitch.get() == true) {
+      return false;
+    } else if(m_limitSwitch.get() == false) {
+      return true;
+    }
+    return false;
   }
 
   

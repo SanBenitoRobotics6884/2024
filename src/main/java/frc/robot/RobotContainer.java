@@ -4,19 +4,22 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FieldDrive;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 
 public class RobotContainer {
   private CommandXboxController m_controller = new CommandXboxController(1);
-
+  private IntakeSubsystem m_intakesubsystem = new  IntakeSubsystem();
   private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+  private Joystick m_joystick = new Joystick(2);
 
   private DefaultDrive m_defaultDrive = new DefaultDrive(
       m_swerveSubsystem,
@@ -32,10 +35,11 @@ public class RobotContainer {
 
   public RobotContainer() {
     m_swerveSubsystem.setDefaultCommand(m_defaultDrive);
-
     configureBindings();
-  }
 
+    
+  }
+  
   private void configureBindings() {
     m_controller.a().toggleOnTrue(m_fieldDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
