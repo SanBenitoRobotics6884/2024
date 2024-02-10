@@ -61,18 +61,18 @@ public class IntakeSubsystem extends SubsystemBase {
     if (m_pivotPID.atGoal()) {
       m_pivotMotor.setVoltage(NO_VOLTS);
     } else {
-      m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition(), GOAL));
+      m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition()));
     }
   }
 
   //We set the goal/setpoint to the PID
-  public void deployGoal() {
-    m_pivotPID.setGoal(GOAL);
+  public void deploy() {
+    m_pivotPID.setGoal(DEPLOY_SETPOINT);
     
   }
 
   //Returns boolean of whather PID is at goal/setpoint.
-  public boolean deployHitGoal() {
+  public boolean atSetpoint() {
     return m_pivotPID.atGoal();
     }
 
@@ -103,6 +103,10 @@ public class IntakeSubsystem extends SubsystemBase {
       return true;
     }
     return false;
+  }
+
+  public void stow() {
+    m_pivotPID.setGoal(STOW_SETPOINT);
   }
 
   

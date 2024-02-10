@@ -23,7 +23,7 @@ public class DeployIntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakesubsystem.deployGoal();
+    m_intakesubsystem.deploy();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,6 +41,6 @@ public class DeployIntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakesubsystem.deployHitGoal();
+    return m_intakesubsystem.atSetpoint();
   }
 }

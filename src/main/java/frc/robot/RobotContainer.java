@@ -14,7 +14,7 @@ import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.FieldDrive;
 import frc.robot.commands.IntakeToOuttake;
 import frc.robot.commands.ReelCommand;
-import frc.robot.commands.ReverseDeployCommand;
+import frc.robot.commands.StowIntakeCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -41,7 +41,7 @@ public class RobotContainer {
   private ReelCommand m_reelcommand = new ReelCommand(m_intakesubsystem);
   private DeployIntakeCommand m_deployintakecommand = new DeployIntakeCommand(m_intakesubsystem);
   private IntakeToOuttake m_intaketoouttakecommand = new IntakeToOuttake(m_intakesubsystem);
-  private ReverseDeployCommand m_reversedeploycommand = new ReverseDeployCommand(m_intakesubsystem);
+  private StowIntakeCommand m_stowcommand = new StowIntakeCommand(m_intakesubsystem);
 
   public RobotContainer() {
     m_swerveSubsystem.setDefaultCommand(m_defaultDrive);
@@ -54,7 +54,7 @@ public class RobotContainer {
     m_joystick.button(0).onTrue(m_reelcommand);
     m_joystick.button(1).onTrue(m_deployintakecommand);
     m_joystick.button(2).onTrue(m_intaketoouttakecommand);
-    m_joystick.button(3).onTrue(m_reversedeploycommand);
+    m_joystick.button(3).onTrue(m_stowcommand);
  
     m_controller.a().toggleOnTrue(m_fieldDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));

@@ -94,7 +94,8 @@ public final class Constants {
     public static final double k_PIVOT_ANGLE_SOURCE = 0;
 
     public static final double TOLERANCE = 0;
-    public static final double GOAL = 0;
+    public static final double DEPLOY_SETPOINT = 0;
+    public static final double STOW_SETPOINT = 0;
     public static final double NO_VOLTS = 0;
 
   }
