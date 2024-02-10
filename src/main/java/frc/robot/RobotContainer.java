@@ -6,14 +6,20 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FieldDrive;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 
 public class RobotContainer {
+  private CommandJoystick m_Joystick = new CommandJoystick(0);
+
+  private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
+
   private CommandXboxController m_controller = new CommandXboxController(1);
   
   private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
@@ -37,6 +43,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    m_Joystick.button(10).onTrue(m_climbSubsystem.getExtend());
+    m_Joystick.button(9).onTrue(m_climbSubsystem.getRetract());
     m_controller.a().toggleOnTrue(m_fieldDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::zeroPose));

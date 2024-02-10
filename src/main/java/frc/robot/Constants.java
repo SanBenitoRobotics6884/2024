@@ -72,7 +72,9 @@ public final class Constants {
   public static final class Climb{
     public static final double MAX_UP_VOLTAGE = 0.4; 
     public static final double MAX_DOWN_VOLTAGE= -0.4; 
-  
-  
+    public static final double EXTEND_MOTOR_SETPIONT = 0.9; 
+    public static final double RETRACT_MOTOR_SETPOINT = 0.9;
+    
   }
+  
 }

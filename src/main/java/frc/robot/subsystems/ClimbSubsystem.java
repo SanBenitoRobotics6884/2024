@@ -11,10 +11,15 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import static frc.robot.Constants.Climb.*;
 
 public class ClimbSubsystem extends SubsystemBase{
  
+  
+  
   /** Creates a new ClimbSubsystem. */
     private CANSparkMax m_rightClimbMotor = new CANSparkMax(0,MotorType.kBrushless);
     private CANSparkMax m_leftClimbMotor = new CANSparkMax(0,MotorType.kBrushless);
@@ -24,11 +29,6 @@ public class ClimbSubsystem extends SubsystemBase{
         
     private RelativeEncoder m_rightClimbEncoder;
     private RelativeEncoder m_leftClimbEncoder;
-
-    
-
-    private boolean isExtended = false;
-    
 
     public ClimbSubsystem () {
     m_rightClimbEncoder = m_rightClimbMotor.getEncoder();
@@ -41,59 +41,31 @@ public class ClimbSubsystem extends SubsystemBase{
    @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_rightPIDController.setSetpoint(10);
-    m_leftPIDController.setSetpoint(10);
-     
     double m_rightCurrentHeight = m_rightClimbEncoder.getPosition();
     double m_leftCurrentHeight = m_leftClimbEncoder.getPosition();
     
     double m_rightMotorOutput = m_rightPIDController.calculate(m_rightCurrentHeight);
     double m_leftMotorOutput = m_leftPIDController.calculate(m_leftCurrentHeight);
    
-    m_rightClimbMotor.set(MathUtil.clamp(m_rightMotorOutput,1 , 8)); 
-    m_leftClimbMotor.set(MathUtil.clamp(m_leftMotorOutput, 1, 7)); 
-  m_leftClimbEncoder.setPosition(m_leftMotorOutput); 
-  m_rightClimbEncoder.setPosition(m_rightMotorOutput); 
+    
+    m_rightClimbMotor.set(MathUtil.clamp(m_rightMotorOutput, MAX_DOWN_VOLTAGE,MAX_UP_VOLTAGE )); 
+    m_leftClimbMotor.set(MathUtil.clamp(m_leftMotorOutput, MAX_DOWN_VOLTAGE, MAX_UP_VOLTAGE)); 
+    m_leftClimbEncoder.setPosition(m_leftMotorOutput); 
+    m_rightClimbEncoder.setPosition(m_rightMotorOutput); 
 
 
 }
   
-  public void getPosition(){
- m_rightClimbEncoder.getPosition(); 
-m_leftClimbEncoder.getPosition(); 
-}
-public void setSetpoint(){
-    
-}
-public void toggleClimb() {
-  if(isExtended) 
-    extend();
-  else 
-    retract();
-  }
+
 
   public void extend(){
-
-    double m_rightMotorOutput = m_rightPIDController.calculate(0);
-    double m_leftMotorOutput= m_leftPIDController.calculate(0);
-      m_rightPIDController.setSetpoint(0);
-    m_leftPIDController.setSetpoint(0);
-
-    m_rightClimbMotor.set(m_rightMotorOutput);
-    m_leftClimbMotor.set(m_leftMotorOutput);
-    isExtended = true;
+    m_rightPIDController.setSetpoint(EXTEND_MOTOR_SETPIONT);
+    m_leftPIDController.setSetpoint(EXTEND_MOTOR_SETPIONT);
   }
 
   public void retract() {   
-    double m_rightMotorOutput = m_rightPIDController.calculate(0);
-    double m_leftMotorOutput = m_leftPIDController.calculate(0);
-     m_rightPIDController.setSetpoint(0);
-    m_leftPIDController.setSetpoint(0);
-
-   
-    m_rightClimbMotor.set(m_rightMotorOutput);
-    m_leftClimbMotor.set(m_leftMotorOutput);
-    isExtended = false;
+    m_rightPIDController.setSetpoint(RETRACT_MOTOR_SETPOINT);
+    m_leftPIDController.setSetpoint(RETRACT_MOTOR_SETPOINT);
   }
   public void stopClimb(){
     m_rightClimbMotor.set(0);
@@ -102,7 +74,16 @@ public void toggleClimb() {
 
 
 
+  
+  
   }
+public Command getExtend(){
+  return runOnce(this::extend);
+}
+public Command getRetract(){
+return runOnce(this::retract); 
+}
+
 }
   
 
