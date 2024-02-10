@@ -25,7 +25,7 @@ public class IntakeSubsystem extends SubsystemBase {
     //double kI = 0;    SET THE VARIABLES TO THE CONSTANTS. :fire: :skull:
     //double kD = 0;
 
-  private ProfiledPIDController m_pivotPID =
+  public ProfiledPIDController m_pivotPID =
      new ProfiledPIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
   private  DigitalInput m_limitSwitch = new DigitalInput(DIO_CHANNEL_LIMITSWITCH);
 

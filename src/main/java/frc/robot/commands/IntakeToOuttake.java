@@ -6,10 +6,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
-public class IntakesOutake extends Command {
+public class IntakeToOuttake extends Command {
   IntakeSubsystem m_intakeSubsystem;
   /** Creates a new IntakesOutake. */
-  public IntakesOutake(IntakeSubsystem subsystem) {
+  public IntakeToOuttake(IntakeSubsystem subsystem) {
     m_intakeSubsystem = subsystem;
     addRequirements(subsystem);
     // Use addRequirements() here to declare subsystem dependencies.

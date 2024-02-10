@@ -7,9 +7,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.FieldDrive;
+import frc.robot.commands.IntakeToOuttake;
+import frc.robot.commands.ReelCommand;
+import frc.robot.commands.ReverseDeployCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -17,9 +22,9 @@ import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 
 public class RobotContainer {
   private CommandXboxController m_controller = new CommandXboxController(1);
-  private IntakeSubsystem m_intakesubsystem = new  IntakeSubsystem();
+  private IntakeSubsystem m_intakesubsystem = new IntakeSubsystem();
   private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
-  private Joystick m_joystick = new Joystick(2);
+  private CommandJoystick m_joystick = new CommandJoystick(0);
 
   private DefaultDrive m_defaultDrive = new DefaultDrive(
       m_swerveSubsystem,
@@ -33,6 +38,11 @@ public class RobotContainer {
       () -> input(getLeftX(), SQUARED_INPUTS),
       () -> input(m_controller.getRightX(), SQUARED_INPUTS)); 
 
+  private ReelCommand m_reelcommand = new ReelCommand(m_intakesubsystem);
+  private DeployIntakeCommand m_deployintakecommand = new DeployIntakeCommand(m_intakesubsystem);
+  private IntakeToOuttake m_intaketoouttakecommand = new IntakeToOuttake(m_intakesubsystem);
+  private ReverseDeployCommand m_reversedeploycommand = new ReverseDeployCommand(m_intakesubsystem);
+
   public RobotContainer() {
     m_swerveSubsystem.setDefaultCommand(m_defaultDrive);
     configureBindings();
@@ -41,6 +51,11 @@ public class RobotContainer {
   }
   
   private void configureBindings() {
+    m_joystick.button(0).onTrue(m_reelcommand);
+    m_joystick.button(1).onTrue(m_deployintakecommand);
+    m_joystick.button(2).onTrue(m_intaketoouttakecommand);
+    m_joystick.button(3).onTrue(m_reversedeploycommand);
+ 
     m_controller.a().toggleOnTrue(m_fieldDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::zeroPose));
