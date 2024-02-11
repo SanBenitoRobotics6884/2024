@@ -7,12 +7,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.OuttakeSubsystem;
 
-public class ShootToSpeakerCommand extends Command {
+public class RotateOuttakeToSpeaker extends Command {
   OuttakeSubsystem m_subsystem;
 
-  /** Creates a new OuttakeCommand. */
-  public ShootToSpeakerCommand(OuttakeSubsystem subsystem) {
+  /** Creates a new RotateOuttakeToSpeaker. */
+  public RotateOuttakeToSpeaker(OuttakeSubsystem subsystem) {
     m_subsystem = subsystem;
+    
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -20,7 +21,7 @@ public class ShootToSpeakerCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    m_subsystem.toSpeakerPosition();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,6 +35,6 @@ public class ShootToSpeakerCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_subsystem.atSetpoint();
   }
 }

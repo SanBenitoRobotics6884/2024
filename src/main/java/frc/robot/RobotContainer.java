@@ -6,17 +6,24 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FieldDrive;
+import frc.robot.commands.RotateOuttakeToAmp;
+import frc.robot.commands.RotateOuttakeToSpeaker;
+import frc.robot.subsystems.OuttakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 
 public class RobotContainer {
   private CommandXboxController m_controller = new CommandXboxController(1);
+  private CommandJoystick m_joystick = new CommandJoystick(0); 
 
   private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+
+  private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
 
   private DefaultDrive m_defaultDrive = new DefaultDrive(
       m_swerveSubsystem,
@@ -30,6 +37,9 @@ public class RobotContainer {
       () -> input(getLeftX(), SQUARED_INPUTS),
       () -> input(m_controller.getRightX(), SQUARED_INPUTS)); 
 
+  private RotateOuttakeToAmp m_ampPosition = new RotateOuttakeToAmp(m_outtakeSubsystem);
+  private RotateOuttakeToSpeaker m_speakerPosition = new RotateOuttakeToSpeaker(m_outtakeSubsystem);
+
   public RobotContainer() {
     m_swerveSubsystem.setDefaultCommand(m_defaultDrive);
 
@@ -41,6 +51,13 @@ public class RobotContainer {
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::zeroPose));
     m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
+
+    m_joystick.button(1).whileTrue(m_outtakeSubsystem.shootToSpeakerCommand());
+    m_joystick.button(2).whileTrue(m_outtakeSubsystem.shootToAmpCommand());
+    m_joystick.button(3).whileTrue(m_outtakeSubsystem.YoinkNoteCommand());
+
+    m_joystick.button(4).onTrue(m_ampPosition);
+    m_joystick.button(5).onTrue(m_speakerPosition);
   }
 
   public Command getAutonomousCommand() {

@@ -9,15 +9,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Outtake.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
-  XboxController m_controller = new XboxController(0);
-
   CANSparkMax m_takeNoteMotor = new CANSparkMax(TAKE_NOTE_MOTOR_ID, MotorType.kBrushless);
   CANSparkMax m_shooterMotorI = new CANSparkMax(SHOOTER_MOTOR_I_ID, MotorType.kBrushless);
   CANSparkMax m_shooterMotorII = new CANSparkMax(SHOOTER_MOTOR_II_ID, MotorType.kBrushless);
@@ -30,31 +27,57 @@ public class OuttakeSubsystem extends SubsystemBase {
   double m_pivotSetPoint = 0;
 
   /** Creates a new OuttakeSubsystem. */
-  public OuttakeSubsystem(XboxController controller) {
-    m_controller = controller;
+  public OuttakeSubsystem() {
     m_shooterMotorI.follow(m_shooterMotorII);
-    m_shooterMotorII.setInverted(true);
-    m_shooterMotorII.setInverted(true);
+    m_shooterMotorI.setInverted(SHOOTER_MOTOR_I_INVERTED);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     m_pivotMotor.set(m_PID.calculate(m_pivotEncoder.getPosition(), m_pivotSetPoint));
+
+    if (atSetpoint() && m_pivotSetPoint == SPEAKER_POSITION) {
+      m_pivotMotor.setVoltage(0);
+    }
   }
 
-  public void ShootToSpeaker() {
-    m_takeNoteMotor.setVoltage(TAKE_NOTE_MOTOR_VOLTAGE);
+  public void shootToSpeaker() {
+    m_takeNoteMotor.setVoltage(TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE);
+    m_shooterMotorII.setVoltage(SHOOTER_SPEAKER_MOTOR_VOLTAGE);
+  }
 
-
+  public void shootToAmp() {
+    m_takeNoteMotor.setVoltage(TAKE_NOTE_AMP_MOTOR_VOLTAGE);
+    m_shooterMotorII.setVoltage(SHOOTER_AMP_MOTOR_VOLTAGE);
   }
 
   public void toSpeakerPosition() {
     m_pivotSetPoint = SPEAKER_POSITION;
-    
   }
 
   public void toAmpPosition() {
     m_pivotSetPoint = AMP_POSITION;
+  }
+
+  public boolean atSetpoint() {
+    return Math.abs(m_pivotEncoder.getPosition() - m_pivotSetPoint) < TOLERANCE;
+  }
+
+  public void rollOuttake(double takeNoteSpeed, double shootersSpeed) {
+    m_takeNoteMotor.set(takeNoteSpeed);
+    m_shooterMotorII.set(shootersSpeed);
+  }
+
+  public Command shootToAmpCommand() {
+    return run(() -> rollOuttake(TAKE_NOTE_AMP_MOTOR_VOLTAGE, SHOOTER_AMP_MOTOR_VOLTAGE));
+  }
+
+  public Command shootToSpeakerCommand() {
+    return run(() -> rollOuttake(TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE, SHOOTER_SPEAKER_MOTOR_VOLTAGE));
+  }
+
+  public Command YoinkNoteCommand() {
+    return run(() -> rollOuttake(YOINK_TAKE_NOTE_SPEED, YOINK_SHOOTERS_SPEED));
   }
 }
