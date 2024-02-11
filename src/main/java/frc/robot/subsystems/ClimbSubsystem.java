@@ -47,7 +47,7 @@ public class ClimbSubsystem extends SubsystemBase{
     double m_rightMotorOutput = m_rightPIDController.calculate(m_rightCurrentHeight);
     double m_leftMotorOutput = m_leftPIDController.calculate(m_leftCurrentHeight);
    
-    
+  
     m_rightClimbMotor.set(MathUtil.clamp(m_rightMotorOutput, MAX_DOWN_VOLTAGE,MAX_UP_VOLTAGE )); 
     m_leftClimbMotor.set(MathUtil.clamp(m_leftMotorOutput, MAX_DOWN_VOLTAGE, MAX_UP_VOLTAGE)); 
     m_leftClimbEncoder.setPosition(m_leftMotorOutput); 
