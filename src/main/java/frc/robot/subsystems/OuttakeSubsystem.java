@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Outtake.*;
@@ -79,5 +80,23 @@ public class OuttakeSubsystem extends SubsystemBase {
 
   public Command YoinkNoteCommand() {
     return run(() -> rollOuttake(YOINK_TAKE_NOTE_SPEED, YOINK_SHOOTERS_SPEED));
+  }
+
+  public Command rotateToAmpPositionCommand() {
+    return new FunctionalCommand(
+        this::toAmpPosition, 
+        () -> {}, 
+        b -> {},
+        this::atSetpoint, 
+        this);
+  }
+
+  public Command rotateToSpeakerCommand() {
+    return new FunctionalCommand(
+        this::toSpeakerPosition,
+        () -> {},
+        a -> {},
+        this::atSetpoint,
+        this);
   }
 }
