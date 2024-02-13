@@ -93,8 +93,5 @@ public final class Constants {
     public static final double YOINK_SHOOTERS_SPEED = 0;
 
     public static final double TOLERANCE = 0.2;
-
-    
-
   }
 }

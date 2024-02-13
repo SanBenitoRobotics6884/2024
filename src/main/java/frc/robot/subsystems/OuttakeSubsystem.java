@@ -25,7 +25,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
   RelativeEncoder m_pivotEncoder = m_pivotMotor.getEncoder();
 
-  double m_pivotSetPoint = 0;
+  double m_pivotSetpoint = 0;
 
   /** Creates a new OuttakeSubsystem. */
   public OuttakeSubsystem() {
@@ -36,33 +36,23 @@ public class OuttakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_pivotMotor.set(m_PID.calculate(m_pivotEncoder.getPosition(), m_pivotSetPoint));
+    m_pivotMotor.set(m_PID.calculate(m_pivotEncoder.getPosition(), m_pivotSetpoint));
 
-    if (atSetpoint() && m_pivotSetPoint == SPEAKER_POSITION) {
+    if (atSetpoint() && m_pivotSetpoint == SPEAKER_POSITION) {
       m_pivotMotor.setVoltage(0);
     }
   }
 
-  public void shootToSpeaker() {
-    m_takeNoteMotor.setVoltage(TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE);
-    m_shooterMotorII.setVoltage(SHOOTER_SPEAKER_MOTOR_VOLTAGE);
-  }
-
-  public void shootToAmp() {
-    m_takeNoteMotor.setVoltage(TAKE_NOTE_AMP_MOTOR_VOLTAGE);
-    m_shooterMotorII.setVoltage(SHOOTER_AMP_MOTOR_VOLTAGE);
-  }
-
   public void toSpeakerPosition() {
-    m_pivotSetPoint = SPEAKER_POSITION;
+    m_pivotSetpoint = SPEAKER_POSITION;
   }
 
   public void toAmpPosition() {
-    m_pivotSetPoint = AMP_POSITION;
+    m_pivotSetpoint = AMP_POSITION;
   }
 
   public boolean atSetpoint() {
-    return Math.abs(m_pivotEncoder.getPosition() - m_pivotSetPoint) < TOLERANCE;
+    return Math.abs(m_pivotEncoder.getPosition() - m_pivotSetpoint) < TOLERANCE;
   }
 
   public void rollOuttake(double takeNoteSpeed, double shootersSpeed) {
