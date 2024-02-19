@@ -78,7 +78,7 @@ public final class Constants {
 
     public static final int INTAKE_MOTOR_ID = 0;
     public static final int PIVOT_MOTOR_ID = 0;
-    public static final int DIO_CHANNEL_LIMITSWITCH = 0;
+    public static final int LIMIT_SWITCH = 0;
 
     public static final double INTAKE_MOTOR_SPEED = 0;
     public static final double PIVOT_MOTOR_SPEED = 0;
@@ -96,7 +96,7 @@ public final class Constants {
     public static final double TOLERANCE = 0;
     public static final double DEPLOY_SETPOINT = 0;
     public static final double STOW_SETPOINT = 0;
-    public static final double NO_VOLTS = 0;
+    public static final double VOLTS = 0;
 
   }
 

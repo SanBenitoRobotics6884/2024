@@ -29,11 +29,11 @@ public class IntakeSubsystem extends SubsystemBase {
     //double kD = 0;
 
   public ProfiledPIDController m_pivotPID =
-     new ProfiledPIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
-  private  DigitalInput m_limitSwitch = new DigitalInput(DIO_CHANNEL_LIMITSWITCH);
+          new ProfiledPIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
+  private  DigitalInput m_limitSwitch = new DigitalInput(LIMIT_SWITCH);
 
-  RelativeEncoder m_intakeEncoder;
-  RelativeEncoder m_pivotEncoder;
+  private RelativeEncoder m_intakeEncoder;
+  private RelativeEncoder m_pivotEncoder;
  
   /** Creates a new Intake. */
   public IntakeSubsystem() {
@@ -64,7 +64,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     
     if (m_pivotPID.atGoal()) {
-      m_pivotMotor.setVoltage(NO_VOLTS);
+      m_pivotMotor.setVoltage(VOLTS);
     } else {
       m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition()));
     }
@@ -93,7 +93,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   //Stops intake motor from spinning 
-  public void reelStop() {
+  public void rollerStop() {
       m_intakeMotor.stopMotor();
   }
 
@@ -112,7 +112,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void stow() {
     m_pivotPID.setGoal(STOW_SETPOINT);
-    
   }
 
 

@@ -37,7 +37,7 @@ public class ReelCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-  m_intakeSubsystem.reelStop();
+  m_intakeSubsystem.rollerStop();
     System.out.println("Intaking/Reeling his hit a stop");
   }
 
