@@ -70,4 +70,28 @@ public final class Constants {
     public static final Translation2d BL_LOCATION = new Translation2d(-APOTHEM, APOTHEM);
   }
 
+  public static final class Outtake {
+    public static final int TAKE_NOTE_MOTOR_ID = 1;
+    public static final int SHOOTER_MOTOR_I_ID = 2;
+    public static final int SHOOTER_MOTOR_II_ID = 3;
+    public static final int PIVOT_MOTOR_ID = 4;
+
+    public static final boolean SHOOTER_MOTOR_I_INVERTED = true;
+
+    public static final double PIVOT_kP = 0;
+    public static final double PIVOT_kI = 0;
+    public static final double PIVOT_kD = 0;
+
+    public static final double SPEAKER_POSITION = 0;
+    public static final double AMP_POSITION = 1; 
+
+    public static final double SHOOTER_SPEAKER_MOTOR_VOLTAGE = 1;
+    public static final double TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE = 1;
+    public static final double SHOOTER_AMP_MOTOR_VOLTAGE = 0;
+    public static final double TAKE_NOTE_AMP_MOTOR_VOLTAGE = 0;
+    public static final double YOINK_TAKE_NOTE_SPEED = 0;
+    public static final double YOINK_SHOOTERS_SPEED = 0;
+
+    public static final double TOLERANCE = 0.2;
+  }
 }
