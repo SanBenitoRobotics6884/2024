@@ -17,20 +17,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.Climb.*;
 
 public class ClimbSubsystem extends SubsystemBase{
- 
-  
-  
   /** Creates a new ClimbSubsystem. */
-    private CANSparkMax m_rightClimbMotor = new CANSparkMax(RCLIMB_MOTOR_ID,MotorType.kBrushless);
-    private CANSparkMax m_leftClimbMotor = new CANSparkMax(LCLIMB_MOTOR_ID,MotorType.kBrushless);
-    
-    private PIDController m_rightPIDController = new PIDController(CLIMB_kP, CLIMB_kI, CLIMB_kD);
-    private PIDController m_leftPIDController = new PIDController(CLIMB_kP, CLIMB_kI, CLIMB_kD);
-        
-    private RelativeEncoder m_rightClimbEncoder;
-    private RelativeEncoder m_leftClimbEncoder;
+  private CANSparkMax m_rightClimbMotor = new CANSparkMax(RCLIMB_MOTOR_ID,MotorType.kBrushless);
+  private CANSparkMax m_leftClimbMotor = new CANSparkMax(LCLIMB_MOTOR_ID,MotorType.kBrushless);
+  
+  private PIDController m_rightPIDController = new PIDController(CLIMB_kP, CLIMB_kI, CLIMB_kD);
+  private PIDController m_leftPIDController = new PIDController(CLIMB_kP, CLIMB_kI, CLIMB_kD);
+      
+  private RelativeEncoder m_rightClimbEncoder;
+  private RelativeEncoder m_leftClimbEncoder;
 
-    public ClimbSubsystem () {
+  public ClimbSubsystem() {
     m_rightClimbEncoder = m_rightClimbMotor.getEncoder();
     m_leftClimbEncoder = m_leftClimbMotor.getEncoder();
     m_rightClimbEncoder.setPosition(0);
