@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FieldDrive;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.commands.RotateOuttakeToAmp;
 import frc.robot.commands.RotateOuttakeToSpeaker;
 import frc.robot.subsystems.OuttakeSubsystem;
@@ -18,9 +19,11 @@ import frc.robot.subsystems.SwerveSubsystem;
 import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 
 public class RobotContainer {
-  private CommandXboxController m_controller = new CommandXboxController(1);
-  private CommandJoystick m_joystick = new CommandJoystick(0); 
+  private CommandJoystick m_joystick = new CommandJoystick(0);
 
+  private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
+  private CommandXboxController m_controller = new CommandXboxController(1);
+  
   private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
 
   private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
@@ -47,11 +50,17 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // Swerve bindings
     m_controller.a().toggleOnTrue(m_fieldDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::zeroPose));
     m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
-
+    
+    // Climb bindings
+    m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCommand());
+    m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
+    
+    // Outtake bindings
     m_joystick.button(1).whileTrue(m_outtakeSubsystem.shootToSpeakerCommand());
     m_joystick.button(2).whileTrue(m_outtakeSubsystem.shootToAmpCommand());
     m_joystick.button(3).whileTrue(m_outtakeSubsystem.YoinkNoteCommand());
