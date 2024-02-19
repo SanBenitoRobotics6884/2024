@@ -64,12 +64,17 @@ public class ClimbSubsystem extends SubsystemBase{
     m_rightPIDController.setSetpoint(RETRACT_MOTOR_SETPOINT);
     m_leftPIDController.setSetpoint(RETRACT_MOTOR_SETPOINT);
   }
- 
+ /*
+  * Makes a command that extends the climb
+  */
 public Command getExtend(){
   return runOnce(this::extend);
 }
+ /*
+  * Makes a comand that retracts the climb
+  */
 public Command getRetract(){
-return runOnce(this::retract); 
+  return runOnce(this::retract); 
 }
 
 }
