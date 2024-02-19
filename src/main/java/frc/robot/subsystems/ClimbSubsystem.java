@@ -60,7 +60,7 @@ public class ClimbSubsystem extends SubsystemBase{
     m_leftPIDController.setSetpoint(RETRACT_MOTOR_SETPOINT);
   }
  
-public Command getExtendCamCommand(){
+public Command getExtendCommand(){
   return runOnce(this::extend);
 }
 public Command getRetractCommand(){

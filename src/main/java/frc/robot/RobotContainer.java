@@ -43,7 +43,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCamCommand());
+    m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCommand());
     m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
     m_controller.a().toggleOnTrue(m_fieldDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
