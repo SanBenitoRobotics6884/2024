@@ -60,6 +60,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     m_shooterMotorII.set(shootersSpeed);
   }
 
+  // The following code it is not used, but we love it, so we're leaving it here. :fire: :skull:
+
   public Command shootToAmpCommand() {
     return run(() -> rollOuttake(TAKE_NOTE_AMP_MOTOR_VOLTAGE, SHOOTER_AMP_MOTOR_VOLTAGE));
   }
@@ -71,6 +73,8 @@ public class OuttakeSubsystem extends SubsystemBase {
   public Command YoinkNoteCommand() {
     return run(() -> rollOuttake(YOINK_TAKE_NOTE_SPEED, YOINK_SHOOTERS_SPEED));
   }
+
+  // The two following commands make the robot outtake to rotate either amp or speaker possition. :fire: :sob:
 
   public Command rotateToAmpPositionCommand() {
     return new FunctionalCommand(
