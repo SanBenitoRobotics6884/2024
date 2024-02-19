@@ -16,7 +16,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 
 public class RobotContainer {
-  private CommandJoystick m_Joystick = new CommandJoystick(0);
+  private CommandJoystick m_joystick = new CommandJoystick(0);
 
   private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
 
@@ -43,8 +43,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    m_Joystick.button(10).onTrue(m_climbSubsystem.getExtend());
-    m_Joystick.button(9).onTrue(m_climbSubsystem.getRetract());
+    m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCamCommand());
+    m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
     m_controller.a().toggleOnTrue(m_fieldDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::zeroPose));

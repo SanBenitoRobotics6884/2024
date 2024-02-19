@@ -76,9 +76,9 @@ public final class Constants {
     public static final double RETRACT_MOTOR_SETPOINT = 0.9;
     public static final int RCLIMB_MOTOR_ID = 14;
     public static final int LCLIMB_MOTOR_ID = 15;
-    public static final double CLIMB_kP = .1;
-    public static final double CLIMB_kI = .1;
-    public static final double CLIMB_kD = .1;
+    public static final double CLIMB_kP = 0;
+    public static final double CLIMB_kI = 0;
+    public static final double CLIMB_kD = 0;
 
     
   }

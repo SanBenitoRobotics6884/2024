@@ -50,9 +50,7 @@ public class ClimbSubsystem extends SubsystemBase{
   
     m_rightClimbMotor.set(MathUtil.clamp(m_rightMotorOutput, MAX_DOWN_VOLTAGE,MAX_UP_VOLTAGE )); 
     m_leftClimbMotor.set(MathUtil.clamp(m_leftMotorOutput, MAX_DOWN_VOLTAGE, MAX_UP_VOLTAGE)); 
-    m_leftClimbEncoder.setPosition(m_leftMotorOutput); 
-    m_rightClimbEncoder.setPosition(m_rightMotorOutput); 
-
+    
 }
   
   public void extend(){
@@ -65,10 +63,10 @@ public class ClimbSubsystem extends SubsystemBase{
     m_leftPIDController.setSetpoint(RETRACT_MOTOR_SETPOINT);
   }
  
-public Command getExtend(){
+public Command getExtendCamCommand(){
   return runOnce(this::extend);
 }
-public Command getRetract(){
+public Command getRetractCommand(){
 return runOnce(this::retract); 
 }
 
