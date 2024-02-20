@@ -20,6 +20,7 @@ import frc.robot.SwerveModule;
 import static frc.robot.Constants.Swerve.*;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 public class SwerveSubsystem extends SubsystemBase {
   private SwerveModule[] m_modules = new SwerveModule[] {
@@ -45,6 +46,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private Pigeon2 m_gyro = new Pigeon2(PIGEON_ID);
   private Pose2d m_pose = new Pose2d();
   private SwerveModulePosition[] m_modulePositions = new SwerveModulePosition[4];
+  private SwerveModuleState[] m_moduleStates = new SwerveModuleState[4];
 
   private SwerveDriveOdometry m_odometry;
 
@@ -73,6 +75,8 @@ public class SwerveSubsystem extends SubsystemBase {
         getAngle(),
         m_modulePositions,
         m_pose);
+        
+    // AutoBuilder.configureHolonomic()
   }
 
   @Override
@@ -118,12 +122,21 @@ public class SwerveSubsystem extends SubsystemBase {
     driveRobotOriented(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getAngle()));
   }
 
+  public ChassisSpeeds getChassisSpeeds() {
+    //m_kinematics.toChassisSpeeds()
+    return null;
+  }
+
   public Rotation2d getAngle() {
     return Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble());
   }
 
   public Pose2d getPose() {
     return m_pose;
+  }
+
+  public void setPose(Pose2d pose) {
+    m_odometry.resetPosition(getAngle(), m_modulePositions, pose);
   }
 
   public void zeroYaw() {
@@ -143,5 +156,6 @@ public class SwerveSubsystem extends SubsystemBase {
       m_modulePositions, 
       m_pose);
   }
+ 
 
 }
