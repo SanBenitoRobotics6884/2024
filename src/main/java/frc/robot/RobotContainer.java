@@ -33,8 +33,6 @@ public class RobotContainer {
   private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
   private IntakeSubsystem m_intakesubsystem = new IntakeSubsystem();
 
-  private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
-
   private DefaultDrive m_defaultDrive = new DefaultDrive(
       m_swerveSubsystem,
       () -> input(getLeftY(), SQUARED_INPUTS),

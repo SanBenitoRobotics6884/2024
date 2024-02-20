@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,7 +26,10 @@ public class OuttakeSubsystem extends SubsystemBase {
 
   RelativeEncoder m_pivotEncoder = m_pivotMotor.getEncoder();
 
+  DigitalInput m_ampLimitSwitch = new DigitalInput(AMP_LIMIT_SWITCH_CHANNEL);
+
   double m_pivotSetpoint = 0;
+  boolean isZeroing = false; // Should initially be true
 
   /** Creates a new OuttakeSubsystem. */
   public OuttakeSubsystem() {
@@ -36,11 +40,19 @@ public class OuttakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_pivotMotor.set(m_PID.calculate(m_pivotEncoder.getPosition(), m_pivotSetpoint));
-
-    if (atSetpoint() && m_pivotSetpoint == SPEAKER_POSITION) {
-      m_pivotMotor.setVoltage(0);
+    if (isZeroing) {
+      m_pivotMotor.setVoltage(ZEROING_VOLTAGE);
+      if (m_ampLimitSwitch.get()) {
+        isZeroing = false;
+        m_pivotEncoder.setPosition(0);
+      }
+    } else {
+      m_pivotMotor.set(m_PID.calculate(m_pivotEncoder.getPosition(), m_pivotSetpoint));
     }
+  }
+
+  public boolean isAtAmpPosition() {
+    return m_ampLimitSwitch.get();
   }
 
   public void toSpeakerPosition() {
