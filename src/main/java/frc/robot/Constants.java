@@ -85,20 +85,6 @@ public final class Constants {
     public static final double CLIMB_kD = 0;    
   }
 
-  public static final class Climb{
-    public static final double MAX_UP_VOLTAGE = 0.4; 
-    public static final double MAX_DOWN_VOLTAGE= -0.4; 
-    public static final double EXTEND_MOTOR_SETPIONT = 0.9; 
-    public static final double RETRACT_MOTOR_SETPOINT = 0.9;
-    public static final int RCLIMB_MOTOR_ID = 14;
-    public static final int LCLIMB_MOTOR_ID = 15;
-    public static final double CLIMB_kP = 0;
-    public static final double CLIMB_kI = 0;
-    public static final double CLIMB_kD = 0;
-
-    
-  }
-
   public static final class Outtake {
     public static final int TAKE_NOTE_MOTOR_ID = 1;
     public static final int SHOOTER_MOTOR_I_ID = 2;
