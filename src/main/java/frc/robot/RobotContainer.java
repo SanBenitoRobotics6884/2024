@@ -24,7 +24,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 
-public class RobotContainer 
+public class RobotContainer {
   private CommandJoystick m_joystick = new CommandJoystick(0);
   private CommandXboxController m_controller = new CommandXboxController(1);
   

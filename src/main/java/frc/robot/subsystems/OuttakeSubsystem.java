@@ -82,7 +82,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     return run(() -> rollOuttake(TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE, SHOOTER_SPEAKER_MOTOR_VOLTAGE));
   }
 
-  public Command YoinkNoteCommand() {
+  public Command yoinkNoteCommand() {
     return run(() -> rollOuttake(YOINK_TAKE_NOTE_SPEED, YOINK_SHOOTERS_SPEED));
   }
 
