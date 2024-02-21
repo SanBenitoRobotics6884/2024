@@ -69,9 +69,78 @@ public final class Constants {
     public static final Translation2d BR_LOCATION = new Translation2d(-APOTHEM, -APOTHEM);
     public static final Translation2d BL_LOCATION = new Translation2d(-APOTHEM, APOTHEM);
   }
+  
+  public static final class Climb {
+    public static final double MAX_UP_VOLTAGE = 0.4; 
+    public static final double MAX_DOWN_VOLTAGE = -0.4; 
+    
+    public static final double EXTEND_MOTOR_SETPIONT = 0.9; 
+    public static final double RETRACT_MOTOR_SETPOINT = 0.9;
+    
+    public static final int RCLIMB_MOTOR_ID = 14;
+    public static final int LCLIMB_MOTOR_ID = 15;
+    
+    public static final double CLIMB_kP = 0;
+    public static final double CLIMB_kI = 0;
+    public static final double CLIMB_kD = 0;    
+  }
 
   public static final class DriverFeedBack {
     public static final int LEDS_LENGTH = 0;
   }
 
+  public static final class Outtake {
+    public static final int TAKE_NOTE_MOTOR_ID = 1;
+    public static final int SHOOTER_MOTOR_I_ID = 2;
+    public static final int SHOOTER_MOTOR_II_ID = 3;
+    public static final int PIVOT_MOTOR_ID = 4;
+
+    public static final boolean SHOOTER_MOTOR_I_INVERTED = true;
+
+    public static final double PIVOT_kP = 0;
+    public static final double PIVOT_kI = 0;
+    public static final double PIVOT_kD = 0;
+
+    public static final double SPEAKER_POSITION = 0;
+    public static final double AMP_POSITION = 1; 
+
+    public static final double SHOOTER_SPEAKER_MOTOR_VOLTAGE = 1;
+    public static final double TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE = 1;
+    public static final double SHOOTER_AMP_MOTOR_VOLTAGE = 0;
+    public static final double TAKE_NOTE_AMP_MOTOR_VOLTAGE = 0;
+    public static final double YOINK_TAKE_NOTE_SPEED = 0;
+    public static final double YOINK_SHOOTERS_SPEED = 0;
+
+    public static final double TOLERANCE = 0.2;
+  }
+  
+  public final static class Intake {
+    // ~ WIP ~ //
+    public static final double PIVOT_kP = 0;
+    public static final double PIVOT_kI = 0;
+    public static final double PIVOT_kD = 0;
+
+    public static final int INTAKE_MOTOR_ID = 0;
+    public static final int PIVOT_MOTOR_ID = 0;
+    public static final int LIMIT_SWITCH = 0;
+
+    public static final double INTAKE_MOTOR_SPEED = 0;
+    public static final double PIVOT_MOTOR_SPEED = 0;
+    public static final double INTAKE_MOTOR_SPIT_SPEED = 0;
+
+    public static final double ENCODER_POSITION = 0;
+
+    public static final double MAX_VELOCITY = 0;
+    public static final double MAX_ACCELERATION = 0;
+
+    // Pivot set point angles, thought I still don't know what the angles would be.
+    public static final double k_PIVOT_ANGLE_GROUND = 0;
+    public static final double k_PIVOT_ANGLE_SOURCE = 0;
+
+    public static final double TOLERANCE = 0;
+    public static final double DEPLOY_SETPOINT = 0;
+    public static final double STOW_SETPOINT = 0;
+    public static final double VOLTS = 0;
+  }
+  
 }

@@ -3,49 +3,44 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.subsystems.IntakeSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
+public class DeployIntakeCommand extends Command {
+  IntakeSubsystem m_intakesubsystem;
+  /** Creates a new DeployCommand. */
 
-
-public class ReelCommand extends Command {
-  private IntakeSubsystem m_intakeSubsystem;
-  
-  /** Creates a new ReelCommand. */
-  public ReelCommand(IntakeSubsystem subsystem) {
-
-
+  public DeployIntakeCommand(IntakeSubsystem subsystem) {
+    m_intakesubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
 
+
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    m_intakesubsystem.deploy();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // !!! ~ REMINDER: MAKE THE MOTOR INTAKE ~ !!! //
-    m_intakeSubsystem.reel();
-    System.out.println("Intaking/Reeling has begun");
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intakeSubsystem.rollerStop();
-    System.out.println("Intaking/Reeling his hit a stop");
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakeSubsystem.noteHeld();
+    return m_intakesubsystem.atSetpoint();
   }
-
-   
 }

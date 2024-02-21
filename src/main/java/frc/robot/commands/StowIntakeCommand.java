@@ -4,48 +4,35 @@
 
 package frc.robot.commands;
 import frc.robot.subsystems.IntakeSubsystem;
-
 import edu.wpi.first.wpilibj2.command.Command;
 
-
-
-public class ReelCommand extends Command {
-  private IntakeSubsystem m_intakeSubsystem;
-  
-  /** Creates a new ReelCommand. */
-  public ReelCommand(IntakeSubsystem subsystem) {
-
-
-    // Use addRequirements() here to declare subsystem dependencies.
+public class StowIntakeCommand extends Command {
+  /** Creates a new ReverseDeployCommand. */
+  IntakeSubsystem m_intakeSubsystem;
+  public StowIntakeCommand(IntakeSubsystem subsystem) {
+    m_intakeSubsystem = subsystem;
     addRequirements(subsystem);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    m_intakeSubsystem.stow();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    // !!! ~ REMINDER: MAKE THE MOTOR INTAKE ~ !!! //
-    m_intakeSubsystem.reel();
-    System.out.println("Intaking/Reeling has begun");
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_intakeSubsystem.rollerStop();
-    System.out.println("Intaking/Reeling his hit a stop");
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakeSubsystem.noteHeld();
+    return m_intakeSubsystem.atSetpoint();
   }
-
-   
 }
