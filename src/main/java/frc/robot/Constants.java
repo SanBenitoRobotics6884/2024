@@ -1,5 +1,9 @@
 package frc.robot;
 
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -68,21 +72,29 @@ public final class Constants {
     public static final Translation2d FL_LOCATION = new Translation2d(APOTHEM, APOTHEM);
     public static final Translation2d BR_LOCATION = new Translation2d(-APOTHEM, -APOTHEM);
     public static final Translation2d BL_LOCATION = new Translation2d(-APOTHEM, APOTHEM);
+
+    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
+    new PIDConstants(5,0,0),
+    new PIDConstants(5, 0, 0),
+    4.5,
+    0.4,
+    new ReplanningConfig()
+    );
+
   }
   
-  public static final class Climb {
+  public static final class Climb{
     public static final double MAX_UP_VOLTAGE = 0.4; 
-    public static final double MAX_DOWN_VOLTAGE = -0.4; 
-    
+    public static final double MAX_DOWN_VOLTAGE= -0.4; 
     public static final double EXTEND_MOTOR_SETPIONT = 0.9; 
     public static final double RETRACT_MOTOR_SETPOINT = 0.9;
-    
     public static final int RCLIMB_MOTOR_ID = 14;
     public static final int LCLIMB_MOTOR_ID = 15;
-    
     public static final double CLIMB_kP = 0;
     public static final double CLIMB_kI = 0;
-    public static final double CLIMB_kD = 0;    
+    public static final double CLIMB_kD = 0;
+
+    
   }
 
   public static final class Outtake {
@@ -109,7 +121,7 @@ public final class Constants {
 
     public static final double TOLERANCE = 0.2;
   }
-  
+
   public final static class Intake {
     // ~ WIP ~ //
     public static final double PIVOT_kP = 0;
@@ -138,5 +150,4 @@ public final class Constants {
     public static final double STOW_SETPOINT = 0;
     public static final double VOLTS = 0;
   }
-  
 }
