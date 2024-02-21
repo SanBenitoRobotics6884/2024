@@ -4,12 +4,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.FieldDrive;
+import frc.robot.commands.IntakeToOuttake;
+import frc.robot.commands.ReelCommand;
+import frc.robot.commands.StowIntakeCommand;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.commands.RotateOuttakeToAmp;
 import frc.robot.commands.RotateOuttakeToSpeaker;
@@ -20,13 +27,12 @@ import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 
 public class RobotContainer {
   private CommandJoystick m_joystick = new CommandJoystick(0);
-
-  private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
   private CommandXboxController m_controller = new CommandXboxController(1);
   
   private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
-
+  private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
   private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
+  private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
   private DefaultDrive m_defaultDrive = new DefaultDrive(
       m_swerveSubsystem,
@@ -40,22 +46,29 @@ public class RobotContainer {
       () -> input(getLeftX(), SQUARED_INPUTS),
       () -> input(m_controller.getRightX(), SQUARED_INPUTS)); 
 
+  private ReelCommand m_reelCommand = new ReelCommand(m_intakeSubsystem, () -> m_joystick.getHID().getRawButton(12));
+  private DeployIntakeCommand m_deployIntakeCommand = new DeployIntakeCommand(m_intakeSubsystem);
+  private IntakeToOuttake m_intakeToOuttakeCommand = new IntakeToOuttake(m_intakeSubsystem);
+  private StowIntakeCommand m_stowCommand = new StowIntakeCommand(m_intakeSubsystem);
+
   private RotateOuttakeToAmp m_ampPosition = new RotateOuttakeToAmp(m_outtakeSubsystem);
   private RotateOuttakeToSpeaker m_speakerPosition = new RotateOuttakeToSpeaker(m_outtakeSubsystem);
 
   public RobotContainer() {
     m_swerveSubsystem.setDefaultCommand(m_defaultDrive);
-
+    
     configureBindings();
   }
-
+  
   private void configureBindings() {
+    // Swerve bindings
     // Swerve bindings
     m_controller.a().toggleOnTrue(m_fieldDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::zeroPose));
     m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
     
+    /**
     // Climb bindings
     m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCommand());
     m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
@@ -67,6 +80,13 @@ public class RobotContainer {
 
     m_joystick.button(4).onTrue(m_ampPosition);
     m_joystick.button(5).onTrue(m_speakerPosition);
+    
+    // Intake bindings
+    m_joystick.button(0).onTrue(m_reelcommand);
+    m_joystick.button(1).onTrue(m_deployintakecommand);
+    m_joystick.button(2).onTrue(m_intaketoouttakecommand);
+    m_joystick.button(3).onTrue(m_stowcommand);
+    */
   }
 
   public Command getAutonomousCommand() {
