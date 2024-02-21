@@ -31,7 +31,7 @@ public class RobotContainer {
   private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
   private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
   private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
-  private IntakeSubsystem m_intakesubsystem = new IntakeSubsystem();
+  private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
   private DefaultDrive m_defaultDrive = new DefaultDrive(
       m_swerveSubsystem,
@@ -45,10 +45,10 @@ public class RobotContainer {
       () -> input(getLeftX(), SQUARED_INPUTS),
       () -> input(m_controller.getRightX(), SQUARED_INPUTS)); 
 
-  private ReelCommand m_reelcommand = new ReelCommand(m_intakesubsystem);
-  private DeployIntakeCommand m_deployintakecommand = new DeployIntakeCommand(m_intakesubsystem);
-  private IntakeToOuttake m_intaketoouttakecommand = new IntakeToOuttake(m_intakesubsystem);
-  private StowIntakeCommand m_stowcommand = new StowIntakeCommand(m_intakesubsystem);
+  private ReelCommand m_reelCommand = new ReelCommand(m_intakeSubsystem, () -> m_joystick.getHID().getRawButton(12));
+  private DeployIntakeCommand m_deployIntakeCommand = new DeployIntakeCommand(m_intakeSubsystem);
+  private IntakeToOuttake m_intakeToOuttakeCommand = new IntakeToOuttake(m_intakeSubsystem);
+  private StowIntakeCommand m_stowCommand = new StowIntakeCommand(m_intakeSubsystem);
 
   private RotateOuttakeToAmp m_ampPosition = new RotateOuttakeToAmp(m_outtakeSubsystem);
   private RotateOuttakeToSpeaker m_speakerPosition = new RotateOuttakeToSpeaker(m_outtakeSubsystem);
