@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -37,6 +38,11 @@ public class IntakeSubsystem extends SubsystemBase {
  
   /** Creates a new Intake. */
   public IntakeSubsystem() {
+
+    m_pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+    m_pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    m_pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) DEPLOY_SETPOINT);
+    m_pivotMotor.setSoftLimit(SoftLimitDirection.kReverse,(float) STOW_SETPOINT);
 
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
