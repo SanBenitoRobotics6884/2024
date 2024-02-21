@@ -5,16 +5,20 @@
 package frc.robot.commands;
 import frc.robot.subsystems.IntakeSubsystem;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 
 
 public class ReelCommand extends Command {
+  private BooleanSupplier m_cancel;
   private IntakeSubsystem m_intakeSubsystem;
   
   /** Creates a new ReelCommand. */
-  public ReelCommand(IntakeSubsystem subsystem) {
-
+  public ReelCommand(IntakeSubsystem subsystem, BooleanSupplier cancel) {
+    m_intakeSubsystem = subsystem;
+    m_cancel = cancel;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -23,7 +27,7 @@ public class ReelCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    System.out.println("Intaking/Reeling has begun");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,7 +35,6 @@ public class ReelCommand extends Command {
   public void execute() {
     // !!! ~ REMINDER: MAKE THE MOTOR INTAKE ~ !!! //
     m_intakeSubsystem.reel();
-    System.out.println("Intaking/Reeling has begun");
   }
 
   // Called once the command ends or is interrupted.
@@ -44,7 +47,8 @@ public class ReelCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-return m_intakeSubsystem.noteHeld();
+    return m_intakeSubsystem.noteHeld() || m_cancel.getAsBoolean();
+     
   }
 
    
