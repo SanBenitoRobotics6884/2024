@@ -13,9 +13,18 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.DeployIntakeCommand;
+import frc.robot.commands.IntakeToOuttake;
+import frc.robot.commands.ReelCommand;
+import frc.robot.commands.StowIntakeCommand;
 
 import static frc.robot.Constants.Intake.*;
+
+import java.util.function.BooleanSupplier;
+
+import javax.swing.text.StyledEditorKit.BoldAction;
 
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -120,8 +129,20 @@ public class IntakeSubsystem extends SubsystemBase {
     m_pivotPID.setGoal(STOW_SETPOINT);
   }
 
+  public Command getReelCommand(BooleanSupplier cancel) {
+    return new ReelCommand(this, cancel);
+  }
 
+  public Command getDeployCommand() {
+    return new DeployIntakeCommand(this);
+  }
 
-  
+  public Command getStowCommand() {
+    return new StowIntakeCommand(this);
+  }
+
+  public Command getToOuttakeCommand() {
+    return new IntakeToOuttake(this);
+  }
   
 }
