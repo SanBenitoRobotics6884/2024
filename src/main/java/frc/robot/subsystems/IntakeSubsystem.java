@@ -9,10 +9,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.DeployIntakeCommand;
@@ -48,18 +50,22 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
   public IntakeSubsystem() {
 
+
+
+    // m_pivotPID.setGoal(DEPLOY_SETPOINT);
+
     m_pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     m_pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) DEPLOY_SETPOINT);
     m_pivotMotor.setSoftLimit(SoftLimitDirection.kReverse,(float) STOW_SETPOINT);
 
     m_intakeMotor.restoreFactoryDefaults();
-    m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     //m_intakeMotor.setSmartCurrentLimit(0); UNNEEDED ATM
     m_intakeEncoder = m_intakeMotor.getEncoder();
 
     m_pivotMotor.restoreFactoryDefaults();
-    m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     //m_pivotMotor.setSmartCurrentLimit(0); UNNEEDED ATM
     m_pivotEncoder = m_pivotMotor.getEncoder();
     m_pivotEncoder.setPosition(ENCODER_POSITION);
@@ -77,12 +83,18 @@ public class IntakeSubsystem extends SubsystemBase {
  @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
+    double pidOut = 0;
     if (m_pivotPID.atGoal()) {
       m_pivotMotor.setVoltage(VOLTS);
     } else {
-      m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition()));
+      pidOut = MathUtil.clamp(m_pivotPID.calculate(m_pivotEncoder.getPosition()), -0.85, 0.85);
+      m_pivotMotor.set(pidOut);
     }
+
+    SmartDashboard.putNumber("pivot position", m_pivotEncoder.getPosition());
+    SmartDashboard.putNumber("setpoint", m_pivotPID.getSetpoint().position);
+    SmartDashboard.putNumber("goal", m_pivotPID.getGoal().position);
+    SmartDashboard.putNumber("pid out", pidOut);
   }
 
   //We set the goal/setpoint to the PID

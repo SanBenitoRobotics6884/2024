@@ -51,7 +51,7 @@ public final class Constants {
     public static final boolean FR_DRIVE_INVERTED = false;
     public static final boolean FL_DRIVE_INVERTED = true;
     public static final boolean BR_DRIVE_INVERTED = false;
-    public static final boolean BL_DRIVE_INVERTED = true;
+    public static final boolean BL_DRIVE_INVERTED = false;
 
     public static final boolean FR_STEER_INVERTED = true;
     public static final boolean FL_STEER_INVERTED = true;
@@ -116,7 +116,7 @@ public final class Constants {
   
   public final static class Intake {
     // ~ WIP ~ //
-    public static final double PIVOT_kP = 0;
+    public static final double PIVOT_kP = 0.1;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
@@ -124,23 +124,23 @@ public final class Constants {
     public static final int PIVOT_MOTOR_ID = 21;
     public static final int LIMIT_SWITCH = 0;
 
-    public static final double INTAKE_MOTOR_SPEED = 0;
-    public static final double PIVOT_MOTOR_SPEED = 0;
-    public static final double INTAKE_MOTOR_SPIT_SPEED = 0;
+    public static final double INTAKE_MOTOR_SPEED = 0.8;
+    public static final double PIVOT_MOTOR_SPEED = 0.1;
+    public static final double INTAKE_MOTOR_SPIT_SPEED = -0.8;
 
-    public static final double ENCODER_POSITION = 0;
-
-    public static final double MAX_VELOCITY = 0;
-    public static final double MAX_ACCELERATION = 0;
+    public static final double MAX_VELOCITY = 100;
+    public static final double MAX_ACCELERATION = 45;
 
     // Pivot set point angles, thought I still don't know what the angles would be.
     public static final double k_PIVOT_ANGLE_GROUND = 0;
     public static final double k_PIVOT_ANGLE_SOURCE = 0;
 
     public static final double TOLERANCE = 0;
-    public static final double DEPLOY_SETPOINT = 0;
+    public static final double DEPLOY_SETPOINT = -130.0; 
     public static final double STOW_SETPOINT = 0;
     public static final double VOLTS = 0;
+
+    public static final double ENCODER_POSITION = 0; // DEPLOY_SETPOINT;
   }
   
 }

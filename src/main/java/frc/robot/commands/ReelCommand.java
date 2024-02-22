@@ -47,7 +47,7 @@ public class ReelCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakeSubsystem.noteHeld() || m_cancel.getAsBoolean();
+    return m_cancel.getAsBoolean();
      
   }
 

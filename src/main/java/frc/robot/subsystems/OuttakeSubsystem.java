@@ -31,7 +31,7 @@ public class OuttakeSubsystem extends SubsystemBase {
   DigitalInput m_ampLimitSwitch = new DigitalInput(AMP_LIMIT_SWITCH_CHANNEL);
 
   double m_pivotSetpoint = 0;
-  boolean isZeroing = false; // Should initially be true
+  boolean isZeroing = true; // Should initially be true
 
   /** Creates a new OuttakeSubsystem. */
   public OuttakeSubsystem() {
