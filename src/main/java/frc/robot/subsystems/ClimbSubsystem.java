@@ -58,11 +58,15 @@ public class ClimbSubsystem extends SubsystemBase{
     
 }
   
-  public void extend(){
+  public void extend() {
+    m_leftClimbMotor.setIdleMode(IdleMode.kCoast);
+    m_rightClimbMotor.setIdleMode(IdleMode.kCoast);
     m_isRetracting = false;
   }
 
   public void retract() {   
+    m_leftClimbMotor.setIdleMode(IdleMode.kBrake);
+    m_rightClimbMotor.setIdleMode(IdleMode.kBrake);
     m_isRetracting = true;
   }
  

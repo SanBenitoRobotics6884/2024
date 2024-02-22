@@ -74,7 +74,7 @@ public final class Constants {
     public static final double MAX_UP_VOLTAGE = 0.4; 
     public static final double MAX_DOWN_VOLTAGE = -0.4; 
     
-    public static final double EXTEND_MOTOR_SETPOINT = 0.9; // this is where climber starts
+    public static final double EXTEND_MOTOR_SETPOINT = 0; // this is where climber starts
     public static final double RETRACT_MOTOR_SETPOINT = 0;
     
     public static final int R_CLIMB_MOTOR_ID = 14;
