@@ -35,6 +35,8 @@ public class OuttakeSubsystem extends SubsystemBase {
   public OuttakeSubsystem() {
     m_shooterMotorI.follow(m_shooterMotorII);
     m_shooterMotorI.setInverted(SHOOTER_MOTOR_I_INVERTED);
+
+    m_pivotEncoder.setPosition(0);
   }
 
   @Override
@@ -51,8 +53,12 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
   }
 
-  public boolean isAtAmpPosition() {
+  public boolean ampLimitSwitchHit() {
     return m_ampLimitSwitch.get();
+  }
+
+  public boolean isInAmpPosition() {
+    return m_pivotEncoder.getPosition() < SPEAKER_POSITION / 2.0;
   }
 
   public void toSpeakerPosition() {

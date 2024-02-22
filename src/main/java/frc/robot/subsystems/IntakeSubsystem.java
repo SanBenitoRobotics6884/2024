@@ -22,6 +22,10 @@ import frc.robot.commands.StowIntakeCommand;
 
 import static frc.robot.Constants.Intake.*;
 
+import java.util.function.BooleanSupplier;
+
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -125,8 +129,8 @@ public class IntakeSubsystem extends SubsystemBase {
     m_pivotPID.setGoal(STOW_SETPOINT);
   }
 
-  public Command getReelCommand() {
-    return new ReelCommand(this);
+  public Command getReelCommand(BooleanSupplier cancel) {
+    return new ReelCommand(this, cancel);
   }
 
   public Command getDeployCommand() {

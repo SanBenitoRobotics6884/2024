@@ -6,8 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
+
 public class IntakeToOuttake extends Command {
-  IntakeSubsystem m_intakeSubsystem;
+private IntakeSubsystem m_intakeSubsystem;
   /** Creates a new IntakesOutake. */
   public IntakeToOuttake(IntakeSubsystem subsystem) {
     m_intakeSubsystem = subsystem;
