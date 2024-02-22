@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -33,8 +34,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
   /** Creates a new OuttakeSubsystem. */
   public OuttakeSubsystem() {
-    m_shooterMotorI.follow(m_shooterMotorII);
-    m_shooterMotorI.setInverted(SHOOTER_MOTOR_I_INVERTED);
+    m_shooterMotorI.follow(m_shooterMotorII, true);
   }
 
   @Override
@@ -72,37 +72,33 @@ public class OuttakeSubsystem extends SubsystemBase {
     m_shooterMotorII.set(shootersSpeed);
   }
 
+  public void stopMotors() {
+    m_takeNoteMotor.stopMotor();
+    m_shooterMotorI.stopMotor();
+    m_shooterMotorII.stopMotor();
+  }
+
   // The following code it is not used, but we love it, so we're leaving it here. :fire: :skull:
 
   public Command shootToAmpCommand() {
-    return run(() -> rollOuttake(TAKE_NOTE_AMP_MOTOR_VOLTAGE, SHOOTER_AMP_MOTOR_VOLTAGE));
+    return run(() -> rollOuttake(TAKE_NOTE_AMP_MOTOR_VOLTAGE, SHOOTER_AMP_MOTOR_VOLTAGE)).finallyDo(this::stopMotors);
   }
 
   public Command shootToSpeakerCommand() {
-    return run(() -> rollOuttake(TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE, SHOOTER_SPEAKER_MOTOR_VOLTAGE));
+    return run(() -> rollOuttake(TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE, SHOOTER_SPEAKER_MOTOR_VOLTAGE)).finallyDo(this::stopMotors);
   }
 
   public Command YoinkNoteCommand() {
-    return run(() -> rollOuttake(YOINK_TAKE_NOTE_SPEED, YOINK_SHOOTERS_SPEED));
+    return run(() -> rollOuttake(YOINK_TAKE_NOTE_SPEED, YOINK_SHOOTERS_SPEED)).finallyDo(this::stopMotors);
   }
 
   // The two following commands make the robot outtake to rotate either amp or speaker possition. :fire: :sob:
 
   public Command rotateToAmpPositionCommand() {
-    return new FunctionalCommand(
-        this::toAmpPosition, 
-        () -> {}, 
-        b -> {},
-        this::atSetpoint, 
-        this);
+    return Commands.runOnce(this::toAmpPosition);
   }
 
   public Command rotateToSpeakerCommand() {
-    return new FunctionalCommand(
-        this::toSpeakerPosition,
-        () -> {},
-        a -> {},
-        this::atSetpoint,
-        this);
+    return Commands.runOnce(this::toSpeakerPosition);
   }
 }
