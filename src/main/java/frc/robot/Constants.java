@@ -95,20 +95,20 @@ public final class Constants {
 
     public static final boolean SHOOTER_MOTOR_I_INVERTED = false;
 
-    public static final double PIVOT_kP = 0.6;
+    public static final double PIVOT_kP = 1.0;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -0.36;
+    public static final double SPEAKER_POSITION = -0.25;
     public static final double AMP_POSITION = 0; 
 
-    public static final double ZEROING_VOLTAGE = 1;
+    public static final double ZEROING_VOLTAGE = 0.15;
 
     public static final double SHOOTER_SPEAKER_MOTOR_VOLTAGE = 0.8;
-    public static final double TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE = -0.5;
-    public static final double SHOOTER_AMP_MOTOR_VOLTAGE = 0;
-    public static final double TAKE_NOTE_AMP_MOTOR_VOLTAGE = 0;
-    public static final double YOINK_TAKE_NOTE_SPEED = 0;
+    public static final double TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE = -0.8;
+    public static final double SHOOTER_AMP_MOTOR_VOLTAGE = 0.4;
+    public static final double TAKE_NOTE_AMP_MOTOR_VOLTAGE = -0.4;
+    public static final double YOINK_TAKE_NOTE_SPEED = -0.3;
     public static final double YOINK_SHOOTERS_SPEED = 0;
 
     public static final double TOLERANCE = 0.05;

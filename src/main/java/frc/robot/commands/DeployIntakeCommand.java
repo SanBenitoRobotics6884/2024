@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class DeployIntakeCommand extends Command {
-  IntakeSubsystem m_intakesubsystem;
+  private IntakeSubsystem m_intakesubsystem;
   /** Creates a new DeployCommand. */
 
   public DeployIntakeCommand(IntakeSubsystem subsystem) {
