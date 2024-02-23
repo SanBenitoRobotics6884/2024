@@ -117,6 +117,7 @@ public class RobotContainer {
     // Climb bindings (testing)
     m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCommand());
     m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
+    m_joystick.button(7).whileTrue(m_climbSubsystem.getZeroCommand());
     /**
     // Outtake bindings (testing)
     m_joystick.button(1).whileTrue(m_outtakeSubsystem.shootToSpeakerCommand());

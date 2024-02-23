@@ -83,6 +83,9 @@ public final class Constants {
     public static final double CLIMB_kP = 0.05;
     public static final double CLIMB_kI = 0;
     public static final double CLIMB_kD = 0;    
+
+    public static final double ZEROING_SPEED = 0.1;
+    public static final double VELOCITY_THRESHOLD = 1.0;
   }
 
   public static final class Outtake {

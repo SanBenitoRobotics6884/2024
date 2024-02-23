@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.ZeroClimb;
 
 import static frc.robot.Constants.Climb.*;
 
@@ -30,6 +31,8 @@ public class ClimbSubsystem extends SubsystemBase{
 
   private double m_lastLeftCurrent = 0;
   private double m_lastRightCurrent = 0;
+
+  private boolean m_isZeroing = false;
 
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
@@ -51,15 +54,13 @@ public class ClimbSubsystem extends SubsystemBase{
     double m_rightMotorOutput = m_rightPIDController.calculate(m_rightCurrentHeight);
     double m_leftMotorOutput = m_leftPIDController.calculate(m_leftCurrentHeight);
 
-    
-    m_rightClimbMotor.set(MathUtil.clamp(m_rightMotorOutput, MAX_DOWN_VOLTAGE,MAX_UP_VOLTAGE)); 
-    m_leftClimbMotor.set(MathUtil.clamp(m_leftMotorOutput, -MAX_UP_VOLTAGE, -MAX_DOWN_VOLTAGE)); 
-
-    //m_rightClimbMotor.set(0.1);
-    //m_leftClimbMotor.set(-0.1);
-
-    double newLeftCurrent = m_leftClimbMotor.getOutputCurrent();
-    double newRightCurrent = m_rightClimbMotor.getOutputCurrent();
+    if (m_isZeroing) {
+      m_rightClimbMotor.set(-ZEROING_SPEED);
+      m_leftClimbMotor.set(ZEROING_SPEED);
+    } else {
+      m_rightClimbMotor.set(MathUtil.clamp(m_rightMotorOutput, MAX_DOWN_VOLTAGE,MAX_UP_VOLTAGE)); 
+      m_leftClimbMotor.set(MathUtil.clamp(m_leftMotorOutput, -MAX_UP_VOLTAGE, -MAX_DOWN_VOLTAGE));   
+    }
 
     SmartDashboard.putNumber("left position", m_leftClimbEncoder.getPosition());
     SmartDashboard.putNumber("right position", m_rightClimbEncoder.getPosition());
@@ -67,17 +68,9 @@ public class ClimbSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("right output", m_rightMotorOutput);
     SmartDashboard.putNumber("left setpoint", m_leftPIDController.getSetpoint());
     SmartDashboard.putNumber("right setpoint", m_rightPIDController.getSetpoint());
-    // System.out.println(m_leftClimbMotor.getOutputCurrent());
-    if (RobotState.isEnabled()) {
-      //System.out.println((newLeftCurrent - m_lastLeftCurrent) + " " + (newRightCurrent - m_lastRightCurrent));
-    }
-
     
-    m_lastLeftCurrent = newLeftCurrent;
-    m_lastRightCurrent = newRightCurrent;
+  }
     
-}
-  
   public void extend() {
     m_leftPIDController.setSetpoint(EXTEND_MOTOR_SETPOINT);
     m_rightPIDController.setSetpoint(-EXTEND_MOTOR_SETPOINT);
@@ -87,13 +80,34 @@ public class ClimbSubsystem extends SubsystemBase{
     m_leftPIDController.setSetpoint(RETRACT_MOTOR_SETPOINT);
     m_rightPIDController.setSetpoint(-RETRACT_MOTOR_SETPOINT); 
   }
- 
-public Command getExtendCommand(){
-  return runOnce(this::extend);
-}
-public Command getRetractCommand(){
-return runOnce(this::retract); 
-}
+
+  public void setZeroing(boolean isZeroing) {
+    m_isZeroing = isZeroing;
+  }
+
+  public double getLeftVelocity() {
+    return Math.abs(m_leftClimbEncoder.getVelocity());
+  }
+
+  public double getRightVelocity() {
+    return Math.abs(m_rightClimbEncoder.getVelocity());
+  }
+
+  public void setMeasurementToRetractSetpoint() {
+    m_leftClimbEncoder.setPosition(RETRACT_MOTOR_SETPOINT);
+    m_rightClimbEncoder.setPosition(-RETRACT_MOTOR_SETPOINT);
+  }
+  
+  public Command getExtendCommand(){
+    return runOnce(this::extend);
+  }
+  public Command getRetractCommand(){
+    return runOnce(this::retract); 
+  }
+
+  public Command getZeroCommand(){
+    return new ZeroClimb(this);
+  }
 
 }
   
