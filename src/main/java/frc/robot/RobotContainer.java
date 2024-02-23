@@ -34,7 +34,7 @@ public class RobotContainer {
   
   // private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
   // private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
-  // private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
+  private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
   // private DefaultDrive m_defaultDrive = new DefaultDrive(
@@ -82,11 +82,13 @@ public class RobotContainer {
         withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     // shoots to amp or speaker depending on position
+    */
     m_joystick.trigger().whileTrue(Commands.either(
         m_outtakeSubsystem.shootToAmpCommand(), 
         m_outtakeSubsystem.shootToSpeakerCommand()
         .alongWith(m_intakeSubsystem.getToOuttakeCommand()), 
         m_outtakeSubsystem::isInAmpPosition));
+    /**
 
     // grabs the game piece
     m_joystick.button(11).onTrue(Commands.sequence(
@@ -121,20 +123,20 @@ public class RobotContainer {
     // Climb bindings (testing)
     m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCommand());
     m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
-    
-    // Outtake bindings (testing)
-    m_joystick.button(1).whileTrue(m_outtakeSubsystem.shootToSpeakerCommand());
-    m_joystick.button(2).whileTrue(m_outtakeSubsystem.shootToAmpCommand());
-    m_joystick.button(3).whileTrue(m_outtakeSubsystem.yoinkNoteCommand());
-    
-    m_joystick.button(4).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
-    m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
     */
+    // Outtake bindings (testing)
+    // m_joystick.button(1).whileTrue(m_outtakeSubsystem.shootToSpeakerCommand());
+    // m_joystick.button(2).whileTrue(m_outtakeSubsystem.shootToAmpCommand());
+    // m_joystick.button(3).whileTrue(m_outtakeSubsystem.yoinkNoteCommand());
+    
+    m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
+    m_joystick.button(6).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
+    
     // Intake bindings (testing)
     m_joystick.button(4).whileTrue(m_reelCommand);
-    m_joystick.button(1).onTrue(m_deployIntakeCommand);
-    m_joystick.button(2).whileTrue(m_intakeToOuttakeCommand);
-    m_joystick.button(3).onTrue(m_stowCommand);
+    m_joystick.button(11).onTrue(m_deployIntakeCommand);
+    m_joystick.button(3).whileTrue(m_intakeToOuttakeCommand);
+    m_joystick.button(12).onTrue(m_stowCommand);
     
   }
 

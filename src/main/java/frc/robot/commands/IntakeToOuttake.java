@@ -4,14 +4,17 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeToOuttake extends Command {
 private IntakeSubsystem m_intakeSubsystem;
+private Timer m_timer;
   /** Creates a new IntakesOutake. */
   public IntakeToOuttake(IntakeSubsystem subsystem) {
     m_intakeSubsystem = subsystem;
+    m_timer = new Timer();
     addRequirements(subsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -19,13 +22,15 @@ private IntakeSubsystem m_intakeSubsystem;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_timer.restart();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        m_intakeSubsystem.spit();
-
+    if (m_timer.hasElapsed(2.0)) {
+      m_intakeSubsystem.spit();
+    }
   }
 
   // Called once the command ends or is interrupted.
