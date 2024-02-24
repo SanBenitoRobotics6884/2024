@@ -14,6 +14,7 @@ import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.FieldDrive;
 import frc.robot.commands.IntakeToOuttake;
+import frc.robot.commands.ManualClimb;
 import frc.robot.commands.ReelCommand;
 import frc.robot.commands.StowIntakeCommand;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -117,7 +118,9 @@ public class RobotContainer {
     // Climb bindings (testing)
     m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCommand());
     m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
-    m_joystick.button(7).whileTrue(m_climbSubsystem.getZeroCommand());
+    m_joystick.button(7).whileTrue(new ManualClimb(m_climbSubsystem,
+        () -> m_joystick.getHID().getRawButton(5), () -> m_joystick.getHID().getRawButton(3),
+        () -> m_joystick.getHID().getRawButton(6), () -> m_joystick.getHID().getRawButton(4)));
     /**
     // Outtake bindings (testing)
     m_joystick.button(1).whileTrue(m_outtakeSubsystem.shootToSpeakerCommand());

@@ -71,11 +71,11 @@ public final class Constants {
   }
     
   public static final class Climb {
-    public static final double MAX_UP_VOLTAGE = 0.4; 
-    public static final double MAX_DOWN_VOLTAGE = -0.8; 
+    public static final double MAX_UP_VOLTAGE = 0.15; // 0.4; 
+    public static final double MAX_DOWN_VOLTAGE = -0.15; // -0.8 
     
     public static final double EXTEND_MOTOR_SETPOINT = 0; // this is where climber starts
-    public static final double RETRACT_MOTOR_SETPOINT = 40.0;
+    public static final double RETRACT_MOTOR_SETPOINT = 85.0;
     
     public static final int R_CLIMB_MOTOR_ID = 14;
     public static final int L_CLIMB_MOTOR_ID = 15;
@@ -85,7 +85,7 @@ public final class Constants {
     public static final double CLIMB_kD = 0;    
 
     public static final double ZEROING_SPEED = 0.1;
-    public static final double VELOCITY_THRESHOLD = 1.0;
+    public static final double VELOCITY_THRESHOLD = 10.0;
   }
 
   public static final class Outtake {

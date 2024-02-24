@@ -4,22 +4,23 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.wpilibj.Timer;
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimbSubsystem;
 
-import static frc.robot.Constants.Climb.VELOCITY_THRESHOLD;
-
-public class ZeroClimb extends Command {
+public class ManualClimb extends Command {
   ClimbSubsystem m_climbSubsystem;
-  Timer m_timer = new Timer();
-  LinearFilter m_leftVelocity = LinearFilter.movingAverage(10);
-  LinearFilter m_rightVelocity = LinearFilter.movingAverage(10);
+  BooleanSupplier m_leftUp, m_leftDown, m_rightUp, m_rightDown;
 
-  /** Creates a new ZeroClimb. */
-  public ZeroClimb(ClimbSubsystem subsystem) {
+  /** Creates a new ManualClimb. */
+  public ManualClimb(ClimbSubsystem subsystem, BooleanSupplier leftUp, BooleanSupplier leftDown, 
+                     BooleanSupplier rightUp, BooleanSupplier rightDown) {
     m_climbSubsystem = subsystem;
+    m_leftUp = leftUp;
+    m_leftDown = leftDown;
+    m_rightUp = rightUp;
+    m_rightDown = rightDown;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -27,30 +28,25 @@ public class ZeroClimb extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_timer.restart();
-    m_climbSubsystem.setZeroing(true);
-    m_leftVelocity.reset();
-    m_rightVelocity.reset();
+    m_climbSubsystem.setManualMode(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    m_climbSubsystem.manual(m_leftUp.getAsBoolean(), m_leftDown.getAsBoolean(), m_rightUp.getAsBoolean(), m_rightDown.getAsBoolean());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climbSubsystem.setZeroing(false);
-    m_climbSubsystem.setMeasurementToRetractSetpoint();
+    m_climbSubsystem.setManualMode(false);
+    m_climbSubsystem.setMeasurementToZero();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.hasElapsed(1.0) 
-        && m_leftVelocity.calculate(m_climbSubsystem.getLeftVelocity()) < VELOCITY_THRESHOLD
-        && m_rightVelocity.calculate(m_climbSubsystem.getRightVelocity()) < VELOCITY_THRESHOLD;
+    return false;
   }
 }

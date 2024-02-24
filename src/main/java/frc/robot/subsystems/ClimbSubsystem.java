@@ -15,9 +15,10 @@ import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.ZeroClimb;
 
 import static frc.robot.Constants.Climb.*;
+
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
 public class ClimbSubsystem extends SubsystemBase{
   private CANSparkMax m_rightClimbMotor = new CANSparkMax(R_CLIMB_MOTOR_ID,MotorType.kBrushless);
@@ -29,10 +30,7 @@ public class ClimbSubsystem extends SubsystemBase{
   private RelativeEncoder m_rightClimbEncoder;
   private RelativeEncoder m_leftClimbEncoder;
 
-  private double m_lastLeftCurrent = 0;
-  private double m_lastRightCurrent = 0;
-
-  private boolean m_isZeroing = false;
+  private boolean m_manualMode = false;
 
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
@@ -54,11 +52,8 @@ public class ClimbSubsystem extends SubsystemBase{
     double m_rightMotorOutput = m_rightPIDController.calculate(m_rightCurrentHeight);
     double m_leftMotorOutput = m_leftPIDController.calculate(m_leftCurrentHeight);
 
-    if (m_isZeroing) {
-      m_rightClimbMotor.set(-ZEROING_SPEED);
-      m_leftClimbMotor.set(ZEROING_SPEED);
-    } else {
-      m_rightClimbMotor.set(MathUtil.clamp(m_rightMotorOutput, MAX_DOWN_VOLTAGE,MAX_UP_VOLTAGE)); 
+    if (!m_manualMode) {
+      m_rightClimbMotor.set(MathUtil.clamp(m_rightMotorOutput, MAX_DOWN_VOLTAGE, MAX_UP_VOLTAGE)); 
       m_leftClimbMotor.set(MathUtil.clamp(m_leftMotorOutput, -MAX_UP_VOLTAGE, -MAX_DOWN_VOLTAGE));   
     }
 
@@ -81,8 +76,21 @@ public class ClimbSubsystem extends SubsystemBase{
     m_rightPIDController.setSetpoint(-RETRACT_MOTOR_SETPOINT); 
   }
 
-  public void setZeroing(boolean isZeroing) {
-    m_isZeroing = isZeroing;
+  public void setManualMode(boolean isManualMode) {
+    m_manualMode = isManualMode;
+  }
+
+  public void manual(boolean leftUp, boolean leftDown, boolean rightUp, boolean rightDown) {
+    if (leftUp ^ leftDown) {
+      m_leftClimbMotor.set(leftUp ? 0.1 : -0.1);
+    } else {
+      m_leftClimbMotor.set(0);
+    }
+    if (rightUp ^ rightDown) {
+      m_rightClimbMotor.set(rightUp ? -0.1 : 0.1);
+    } else {
+      m_rightClimbMotor.set(0);
+    }
   }
 
   public double getLeftVelocity() {
@@ -93,9 +101,9 @@ public class ClimbSubsystem extends SubsystemBase{
     return Math.abs(m_rightClimbEncoder.getVelocity());
   }
 
-  public void setMeasurementToRetractSetpoint() {
-    m_leftClimbEncoder.setPosition(RETRACT_MOTOR_SETPOINT);
-    m_rightClimbEncoder.setPosition(-RETRACT_MOTOR_SETPOINT);
+  public void setMeasurementToZero() {
+    m_leftClimbEncoder.setPosition(EXTEND_MOTOR_SETPOINT);
+    m_rightClimbEncoder.setPosition(-EXTEND_MOTOR_SETPOINT);
   }
   
   public Command getExtendCommand(){
@@ -103,10 +111,6 @@ public class ClimbSubsystem extends SubsystemBase{
   }
   public Command getRetractCommand(){
     return runOnce(this::retract); 
-  }
-
-  public Command getZeroCommand(){
-    return new ZeroClimb(this);
   }
 
 }
