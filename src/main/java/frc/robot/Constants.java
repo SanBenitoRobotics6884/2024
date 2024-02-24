@@ -126,10 +126,11 @@ public final class Constants {
     public static final int NOTE_LIMIT_SWITCH = 2;
     public static final int ZERO_LIMIT_SWITCH = 1;
 
-    public static final double INTAKE_MOTOR_SPEED = -0.8;
+    public static final double INTAKE_MOTOR_REEL_SPEED = -0.8;
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double INTAKE_MOTOR_SPIT_SPEED = 0.8;
     public static final double INTAKE_MOTOR_AMP_SPEED = 0.4;
+    public static final double INTAKE_MOTOR_EJECT_SPEED = 0.4;
     public static final double INTAKE_MOTOR_SPEAKER_SPEED = 0.8;
 
     public static final double MAX_VELOCITY = 100;
