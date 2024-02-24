@@ -9,14 +9,17 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.IntakeToOuttake;
+import frc.robot.commands.IntakeToOuttakeWithDelay;
 import frc.robot.commands.ReelCommand;
 import frc.robot.commands.StowIntakeCommand;
 
@@ -40,13 +43,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public ProfiledPIDController m_pivotPID =
           new ProfiledPIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
-  private  DigitalInput m_limitSwitch = new DigitalInput(LIMIT_SWITCH);
+  private DigitalInput m_noteLimitSwitch = new DigitalInput(NOTE_LIMIT_SWITCH);
+  private DigitalInput m_zeroLimitSwitch = new DigitalInput(ZERO_LIMIT_SWITCH);
 
   private RelativeEncoder m_intakeEncoder;
   private RelativeEncoder m_pivotEncoder;
+
+  private boolean m_isZeroing = true;;
  
   /** Creates a new Intake. */
   public IntakeSubsystem() {
+
+
+
+    // m_pivotPID.setGoal(DEPLOY_SETPOINT);
 
     m_pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
@@ -54,12 +64,12 @@ public class IntakeSubsystem extends SubsystemBase {
     m_pivotMotor.setSoftLimit(SoftLimitDirection.kReverse,(float) STOW_SETPOINT);
 
     m_intakeMotor.restoreFactoryDefaults();
-    m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     //m_intakeMotor.setSmartCurrentLimit(0); UNNEEDED ATM
     m_intakeEncoder = m_intakeMotor.getEncoder();
 
     m_pivotMotor.restoreFactoryDefaults();
-    m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     //m_pivotMotor.setSmartCurrentLimit(0); UNNEEDED ATM
     m_pivotEncoder = m_pivotMotor.getEncoder();
     m_pivotEncoder.setPosition(ENCODER_POSITION);
@@ -77,12 +87,24 @@ public class IntakeSubsystem extends SubsystemBase {
  @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
-    if (m_pivotPID.atGoal()) {
-      m_pivotMotor.setVoltage(VOLTS);
-    } else {
-      m_pivotMotor.set(m_pivotPID.calculate(m_pivotEncoder.getPosition()));
+
+    double output = MathUtil.clamp(m_pivotPID.calculate(m_pivotEncoder.getPosition()), -0.85, 0.85);
+    boolean atZero = m_zeroLimitSwitch.get();
+    if (m_isZeroing) {
+      output = 0.1;
+      if (atZero) {
+        m_isZeroing = false;
+        m_pivotEncoder.setPosition(0);
+      }
     }
+    m_pivotMotor.set(output);
+
+    SmartDashboard.putNumber("pivot position", m_pivotEncoder.getPosition());
+    // SmartDashboard.putNumber("pivot setpoint", m_pivotPID.getSetpoint().position);
+    // SmartDashboard.putNumber("pivot goal", m_pivotPID.getGoal().position);
+    // SmartDashboard.putNumber("pivot output", output);
+    SmartDashboard.putBoolean("pivot zero limit switch", atZero);
+    SmartDashboard.putBoolean("note limit switch", m_noteLimitSwitch.get());
   }
 
   //We set the goal/setpoint to the PID
@@ -104,7 +126,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // Returns whether limitswitch is triggered or not
   public boolean noteHeld() {
-    return m_limitSwitch.get();
+    return !m_noteLimitSwitch.get();
   }
 
   //Stops intake motor from spinning 
@@ -116,10 +138,14 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor.set(INTAKE_MOTOR_SPIT_SPEED);
   }
 
+  public void roll(double speed) {
+    m_intakeMotor.set(speed);
+  }
+
   public boolean noteGone() {
-    if (m_limitSwitch.get() == true) {
+    if (m_noteLimitSwitch.get() == true) {
       return false;
-    } else if(m_limitSwitch.get() == false) {
+    } else if(m_noteLimitSwitch.get() == false) {
       return true;
     }
     return false;
@@ -141,8 +167,16 @@ public class IntakeSubsystem extends SubsystemBase {
     return new StowIntakeCommand(this);
   }
 
-  public Command getToOuttakeCommand() {
-    return new IntakeToOuttake(this);
+  public Command getToSpeakerCommand() {
+    return new IntakeToOuttakeWithDelay(this, INTAKE_MOTOR_SPEAKER_SPEED);
+  }
+
+  public Command getToAmpCommand() {
+    return new IntakeToOuttakeWithDelay(this, INTAKE_MOTOR_AMP_SPEED);
+  }
+
+  public Command getEjectCommand() {
+    return new IntakeToOuttake(this, INTAKE_MOTOR_AMP_SPEED);
   }
   
 }
