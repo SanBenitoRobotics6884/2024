@@ -21,43 +21,65 @@ import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 public class RobotContainer {
   public enum BindingsSetting {
     PITS,
+    CLIMB,
     COMPETITION;
   }
-  private BindingsSetting setting = BindingsSetting.COMPETITION;
+  private BindingsSetting setting = BindingsSetting.PITS;
 
   private CommandJoystick m_joystick = new CommandJoystick(0);
-  private CommandXboxController m_controller = new CommandXboxController(1);
+  private CommandXboxController m_controller;
   
-  private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
-  private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
-  private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
-  private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  private SwerveSubsystem m_swerveSubsystem;
+  private ClimbSubsystem m_climbSubsystem;
+  private OuttakeSubsystem m_outtakeSubsystem ;
+  private IntakeSubsystem m_intakeSubsystem;
 
-  private DefaultDrive m_defaultDrive = new DefaultDrive(
-      m_swerveSubsystem,
-      () -> input(getLeftY(), SQUARED_INPUTS),
-      () -> input(getLeftX(), SQUARED_INPUTS),
-      () -> input(getRightX(), SQUARED_INPUTS)); 
+  private DefaultDrive m_defaultDrive;
 
-  private FieldDrive m_fieldDrive = new FieldDrive(
-      m_swerveSubsystem,
-      () -> input(getLeftY(), SQUARED_INPUTS),
-      () -> input(getLeftX(), SQUARED_INPUTS),
-      () -> input(getRightX(), SQUARED_INPUTS));
+  private FieldDrive m_fieldDrive;
 
   public RobotContainer() {
-    m_swerveSubsystem.setDefaultCommand(m_fieldDrive);
+    if (setting != BindingsSetting.CLIMB) {
+      m_controller = new CommandXboxController(1);
+      
+      m_swerveSubsystem = new SwerveSubsystem();
+      m_outtakeSubsystem = new OuttakeSubsystem();
+      m_intakeSubsystem = new IntakeSubsystem();
+
+      m_defaultDrive = new DefaultDrive(
+          m_swerveSubsystem,
+          () -> input(getLeftY(), SQUARED_INPUTS),
+          () -> input(getLeftX(), SQUARED_INPUTS),
+          () -> input(getRightX(), SQUARED_INPUTS)); 
+
+      m_fieldDrive = new FieldDrive(
+          m_swerveSubsystem,
+          () -> input(getLeftY(), SQUARED_INPUTS),
+          () -> input(getLeftX(), SQUARED_INPUTS),
+          () -> input(getRightX(), SQUARED_INPUTS));
+
+      m_swerveSubsystem.setDefaultCommand(m_fieldDrive);
+    }
+    m_climbSubsystem = new ClimbSubsystem();
     
-    configureBindings();
-    if (setting == BindingsSetting.COMPETITION) {
-      configureCompetitionBindings();
-    } else {
-      configurePitsBindings();
+    switch (setting) {
+      case PITS:
+        configureBindings();
+        configurePitsBindings();
+        break;
+      case CLIMB:
+        configureClimbBindings();
+        break;
+      default:
+        configureBindings();
+        configureCompetitionBindings();
+        break;
     }
   }
 
   private void configureBindings() {
     // Swerve bindings
+    // toggles between robot and field oriented
     m_controller.a().toggleOnTrue(m_defaultDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     // m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
@@ -126,13 +148,6 @@ public class RobotContainer {
   }
 
   private void configurePitsBindings() {
-    // manual climb
-    m_joystick.button(7).whileTrue(m_climbSubsystem.getManualCommand(
-        () -> m_joystick.getHID().getRawButton(5),
-        () -> m_joystick.getHID().getRawButton(3),
-        () -> m_joystick.getHID().getRawButton(6),
-        () -> m_joystick.getHID().getRawButton(4)));
-
     // extend and retract
     m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCommand());
     m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
@@ -142,6 +157,20 @@ public class RobotContainer {
     m_joystick.button(12).onTrue(m_intakeSubsystem.getStowCommand());
 
     m_joystick.button(8).whileTrue(m_intakeSubsystem.getSuckCommand());
+
+    m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
+    m_joystick.button(6).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
+  }
+
+  private void configureClimbBindings() {
+    m_joystick.button(7).whileTrue(m_climbSubsystem.getManualCommand(
+        () -> m_joystick.getHID().getRawButton(5),
+        () -> m_joystick.getHID().getRawButton(3),
+        () -> m_joystick.getHID().getRawButton(6),
+        () -> m_joystick.getHID().getRawButton(4)));
+
+    m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCommand());
+    m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
   }
 
   public Command getAutonomousCommand() {
