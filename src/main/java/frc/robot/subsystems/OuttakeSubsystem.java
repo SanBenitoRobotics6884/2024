@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -32,12 +33,19 @@ public class OuttakeSubsystem extends SubsystemBase {
 
   double m_pivotSetpoint = 0;
   boolean isZeroing = true; // Should initially be true
+  double maxLeftCurrent = 0;
+  double maxRightCurrent = 0;
+  double maxPassOffCurrent = 0;
 
   /** Creates a new OuttakeSubsystem. */
   public OuttakeSubsystem() {
     m_shooterMotorI.follow(m_shooterMotorII, true);
     m_shooterMotorI.setIdleMode(IdleMode.kBrake);
     m_shooterMotorII.setIdleMode(IdleMode.kBrake);
+
+    m_shooterMotorI.setSmartCurrentLimit(90);
+    m_shooterMotorII.setSmartCurrentLimit(90);
+    m_takeNoteMotor.setSmartCurrentLimit(90);
   }
 
   @Override
@@ -52,6 +60,25 @@ public class OuttakeSubsystem extends SubsystemBase {
     } else {
       m_pivotMotor.set(m_PID.calculate(m_pivotEncoder.getPosition(), m_pivotSetpoint));
     }
+
+    SmartDashboard.putBoolean("switch", m_ampLimitSwitch.get());
+    // SmartDashboard.putBoolean("zeroing", isZeroing);
+    // SmartDashboard.putNumber("left shooter", maxLeftCurrent);
+    // SmartDashboard.putNumber("right shooter", maxRightCurrent);
+    // SmartDashboard.putNumber("pass off motor", maxPassOffCurrent);
+
+    double leftCurrent = m_shooterMotorI.getOutputCurrent();
+    double rightCurrent = m_shooterMotorII.getOutputCurrent();
+    double passOffCurrent = m_takeNoteMotor.getOutputCurrent();
+    if (maxLeftCurrent < leftCurrent) {
+      maxLeftCurrent = leftCurrent;
+    }
+    if (maxRightCurrent < rightCurrent) {
+      maxRightCurrent = rightCurrent;
+    }
+    if (maxPassOffCurrent < passOffCurrent) {
+      maxPassOffCurrent = passOffCurrent;
+    }
   }
 
   public boolean ampLimitSwitchHit() {
@@ -59,7 +86,7 @@ public class OuttakeSubsystem extends SubsystemBase {
   }
 
   public boolean isInAmpPosition() {
-    return m_pivotEncoder.getPosition() > SPEAKER_POSITION / 2.0;
+    return m_pivotEncoder.getPosition() > (SPEAKER_POSITION + AMP_POSITION) / 2.0;
   }
 
   public void toSpeakerPosition() {

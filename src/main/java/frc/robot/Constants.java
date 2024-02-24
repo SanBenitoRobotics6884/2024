@@ -97,15 +97,15 @@ public final class Constants {
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -0.26; // -0.25 before 8:39 am 2-23
-    public static final double AMP_POSITION = 0; 
+    public static final double SPEAKER_POSITION = -0.28; // -0.25 before 8:39 am 2-23
+    public static final double AMP_POSITION = -0.22; 
 
     public static final double ZEROING_VOLTAGE = 0.15;
 
     public static final double SHOOTER_SPEAKER_MOTOR_VOLTAGE = 0.8;
     public static final double TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE = -0.8;
-    public static final double SHOOTER_AMP_MOTOR_VOLTAGE = 0.4;
-    public static final double TAKE_NOTE_AMP_MOTOR_VOLTAGE = -0.4;
+    public static final double SHOOTER_AMP_MOTOR_VOLTAGE = 0.3;
+    public static final double TAKE_NOTE_AMP_MOTOR_VOLTAGE = -0.3;
     public static final double YOINK_SHOOTERS_SPEED = 0;
     public static final double YOINK_TAKE_NOTE_SPEED = -0.3;
 
@@ -126,6 +126,8 @@ public final class Constants {
     public static final double INTAKE_MOTOR_SPEED = -0.8;
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double INTAKE_MOTOR_SPIT_SPEED = 0.8;
+    public static final double INTAKE_MOTOR_AMP_SPEED = 0.4;
+    public static final double INTAKE_MOTOR_SPEAKER_SPEED = 0.8;
 
     public static final double MAX_VELOCITY = 100;
     public static final double MAX_ACCELERATION = 45;
