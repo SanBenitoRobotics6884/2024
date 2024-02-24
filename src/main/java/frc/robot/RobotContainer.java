@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.FieldDrive;
-import frc.robot.commands.IntakeToOuttake;
+import frc.robot.commands.IntakeToOuttakeWithDelay;
 import frc.robot.commands.ReelCommand;
 import frc.robot.commands.StowIntakeCommand;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -30,35 +30,35 @@ import java.util.function.BooleanSupplier;
 
 public class RobotContainer {
   private CommandJoystick m_joystick = new CommandJoystick(0);
-  // private CommandXboxController m_controller = new CommandXboxController(1);
+  private CommandXboxController m_controller = new CommandXboxController(1);
   
-  // private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+  private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
   // private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
-  // private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
+  private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
-  // private DefaultDrive m_defaultDrive = new DefaultDrive(
-      // m_swerveSubsystem,
-      // () -> input(getLeftY(), SQUARED_INPUTS),
-      // () -> input(getLeftX(), SQUARED_INPUTS),
-      // () -> input(m_controller.getRightX(), SQUARED_INPUTS)); 
+  private DefaultDrive m_defaultDrive = new DefaultDrive(
+      m_swerveSubsystem,
+      () -> input(getLeftY(), SQUARED_INPUTS),
+      () -> input(getLeftX(), SQUARED_INPUTS),
+      () -> input(getRightX(), SQUARED_INPUTS)); 
 
-  // private FieldDrive m_fieldDrive = new FieldDrive(
-      // m_swerveSubsystem,
-      // () -> input(getLeftY(), SQUARED_INPUTS),
-      // () -> input(getLeftX(), SQUARED_INPUTS),
-      // () -> input(m_controller.getRightX(), SQUARED_INPUTS)); 
+  private FieldDrive m_fieldDrive = new FieldDrive(
+      m_swerveSubsystem,
+      () -> input(getLeftY(), SQUARED_INPUTS),
+      () -> input(getLeftX(), SQUARED_INPUTS),
+      () -> input(getRightX(), SQUARED_INPUTS)); 
 
   private ReelCommand m_reelCommand = new ReelCommand(m_intakeSubsystem, () -> m_joystick.getHID().getRawButton(12));
   private DeployIntakeCommand m_deployIntakeCommand = new DeployIntakeCommand(m_intakeSubsystem);
-  private IntakeToOuttake m_intakeToOuttakeCommand = new IntakeToOuttake(m_intakeSubsystem);
+  // private IntakeToOuttake m_intakeToOuttakeCommand = new IntakeToOuttake(m_intakeSubsystem);
   private StowIntakeCommand m_stowCommand = new StowIntakeCommand(m_intakeSubsystem);
 
   // private RotateOuttakeToAmp m_ampPosition = new RotateOuttakeToAmp(m_outtakeSubsystem);
   // private RotateOuttakeToSpeaker m_speakerPosition = new RotateOuttakeToSpeaker(m_outtakeSubsystem);
 
   public RobotContainer() {
-    // m_swerveSubsystem.setDefaultCommand(m_defaultDrive);
+    m_swerveSubsystem.setDefaultCommand(m_fieldDrive);
     
     configureBindings();
   }
@@ -72,29 +72,39 @@ public class RobotContainer {
     m_joystick.button(4).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand()
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
+    */
     // hands note piece from intake to outtake subsystem and rotates to amp
     m_joystick.button(3).onTrue(Commands.sequence(
         m_outtakeSubsystem.rotateToSpeakerCommand(),
-        m_intakeSubsystem.getToOuttakeCommand()
-            .alongWith(m_outtakeSubsystem.yoinkNoteCommand()
-            .withTimeout(2.0)),
+        m_intakeSubsystem.getToAmpCommand()
+            .alongWith(m_outtakeSubsystem.yoinkNoteCommand())
+            .withTimeout(1.2),
         m_outtakeSubsystem.rotateToAmpPositionCommand()).
         withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-
-    // shoots to amp or speaker depending on position
+    
+    // shoots to amp or speaker depending on position 
     m_joystick.trigger().whileTrue(Commands.either(
         m_outtakeSubsystem.shootToAmpCommand(), 
         m_outtakeSubsystem.shootToSpeakerCommand()
-        .alongWith(m_intakeSubsystem.getToOuttakeCommand()), 
+        .alongWith(m_intakeSubsystem.getToSpeakerCommand()), 
         m_outtakeSubsystem::isInAmpPosition));
-
+      
+    m_joystick.top().whileTrue(Commands.parallel(
+        m_outtakeSubsystem.shootToAmpCommand(),
+        m_intakeSubsystem.getToAmpCommand()));
     // grabs the game piece
     m_joystick.button(11).onTrue(Commands.sequence(
         m_intakeSubsystem.getDeployCommand(),
         m_intakeSubsystem.getReelCommand(() -> m_joystick.getHID().getRawButton(12)),
         m_intakeSubsystem.getStowCommand())
+        .alongWith(m_outtakeSubsystem.rotateToSpeakerCommand())
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-    */
+
+    m_joystick.button(12).onTrue(Commands.sequence(
+        m_intakeSubsystem.getDeployCommand(),
+        m_intakeSubsystem.getEjectCommand().withTimeout(2.0),
+        m_intakeSubsystem.getStowCommand()));
+    
     // Climb bindings
     /**
     // retracts climb
@@ -112,29 +122,30 @@ public class RobotContainer {
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     
     
-    
+    */
     // Swerve bindings
-    m_controller.a().toggleOnTrue(m_fieldDrive);
+    m_controller.a().toggleOnTrue(m_defaultDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
-    m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
-    
+    // m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
+    /**
     // Climb bindings (testing)
     m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCommand());
     m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
-    
-    // Outtake bindings (testing)
-    m_joystick.button(1).whileTrue(m_outtakeSubsystem.shootToSpeakerCommand());
-    m_joystick.button(2).whileTrue(m_outtakeSubsystem.shootToAmpCommand());
-    m_joystick.button(3).whileTrue(m_outtakeSubsystem.yoinkNoteCommand());
-    
-    m_joystick.button(4).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
-    m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
     */
+    // Outtake bindings (testing)
+    // m_joystick.button(1).whileTrue(m_outtakeSubsystem.shootToSpeakerCommand());
+    // m_joystick.button(2).whileTrue(m_outtakeSubsystem.shootToAmpCommand());
+    // m_joystick.button(3).whileTrue(m_outtakeSubsystem.yoinkNoteCommand());
+    
+    m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
+    m_joystick.button(6).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
+    
     // Intake bindings (testing)
+    
     m_joystick.button(4).whileTrue(m_reelCommand);
-    m_joystick.button(1).onTrue(m_deployIntakeCommand);
-    m_joystick.button(2).whileTrue(m_intakeToOuttakeCommand);
-    m_joystick.button(3).onTrue(m_stowCommand);
+    // m_joystick.button(11).onTrue(m_deployIntakeCommand);
+    // m_joystick.button(3).whileTrue(m_intakeSubsystem.getToSpeakerCommand());
+    // m_joystick.button(12).onTrue(m_stowCommand);
     
   }
 
@@ -142,7 +153,6 @@ public class RobotContainer {
     return Commands.print("No autonomous command configured");
   }
 
-  /**
   private double input(double input, boolean squared) {
     return squared ? (input > 0 ? 1 : -1) * Math.pow(input, 2) : input;
   }
@@ -162,5 +172,13 @@ public class RobotContainer {
     }
     return leftX;
   }
-  */
+
+  private double getRightX() {
+    double rightX = m_controller.getRightX();
+    if (Math.abs(rightX) < 0.1) {
+      rightX = 0;
+    }
+    return rightX;
+  }
+  
 }
