@@ -24,7 +24,7 @@ public class RobotContainer {
     CLIMB,
     COMPETITION;
   }
-  private BindingsSetting setting = BindingsSetting.PITS;
+  private BindingsSetting setting = BindingsSetting.COMPETITION ;
 
   private CommandJoystick m_joystick = new CommandJoystick(0);
   private CommandXboxController m_controller;
@@ -48,15 +48,15 @@ public class RobotContainer {
 
       m_defaultDrive = new DefaultDrive(
           m_swerveSubsystem,
-          () -> input(getLeftY(), SQUARED_INPUTS),
-          () -> input(getLeftX(), SQUARED_INPUTS),
-          () -> input(getRightX(), SQUARED_INPUTS)); 
+          () -> 3* input(getLeftY(), SQUARED_INPUTS),
+          () -> 3* input(getLeftX(), SQUARED_INPUTS),
+          () -> 3 * input(getRightX(), SQUARED_INPUTS)); 
 
       m_fieldDrive = new FieldDrive(
           m_swerveSubsystem,
-          () -> input(getLeftY(), SQUARED_INPUTS),
-          () -> input(getLeftX(), SQUARED_INPUTS),
-          () -> input(getRightX(), SQUARED_INPUTS));
+          () -> 3 * input(getLeftY(), SQUARED_INPUTS),
+          () -> 3 * input(getLeftX(), SQUARED_INPUTS),
+          () -> 3 * input(getRightX(), SQUARED_INPUTS));
 
       m_swerveSubsystem.setDefaultCommand(m_fieldDrive);
     }
@@ -174,7 +174,9 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return m_intakeSubsystem.getToSpeakerCommand()
+           .alongWith(m_outtakeSubsystem.shootToSpeakerCommand())
+           .withTimeout(3.0);
   }
 
   private double input(double input, boolean squared) {
