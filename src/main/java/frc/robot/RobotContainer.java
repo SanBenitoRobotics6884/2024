@@ -24,7 +24,7 @@ public class RobotContainer {
     CLIMB,
     COMPETITION;
   }
-  private BindingsSetting setting = BindingsSetting.COMPETITION ;
+  private BindingsSetting m_setting = BindingsSetting.COMPETITION;
 
   private CommandJoystick m_joystick = new CommandJoystick(0);
   private CommandXboxController m_controller;
@@ -39,7 +39,7 @@ public class RobotContainer {
   private FieldDrive m_fieldDrive;
 
   public RobotContainer() {
-    if (setting != BindingsSetting.CLIMB) {
+    if (m_setting != BindingsSetting.CLIMB) {
       m_controller = new CommandXboxController(1);
       
       m_swerveSubsystem = new SwerveSubsystem();
@@ -62,7 +62,7 @@ public class RobotContainer {
     }
     m_climbSubsystem = new ClimbSubsystem();
     
-    switch (setting) {
+    switch (m_setting) {
       case PITS:
         configureBindings();
         configurePitsBindings();
@@ -174,9 +174,12 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return m_intakeSubsystem.getToSpeakerCommand()
+    return Commands.sequence(
+            Commands.waitSeconds(3),
+            m_outtakeSubsystem.rotateToSpeakerCommand(),
+            m_intakeSubsystem.getToSpeakerCommand()
            .alongWith(m_outtakeSubsystem.shootToSpeakerCommand())
-           .withTimeout(3.0);
+           .withTimeout(3.0));
   }
 
   private double input(double input, boolean squared) {
