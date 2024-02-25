@@ -16,14 +16,13 @@ import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.OuttakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
-import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
-
 public class RobotContainer {
   public enum BindingsSetting {
     PITS,
     CLIMB,
     COMPETITION;
   }
+
   private BindingsSetting m_setting = BindingsSetting.COMPETITION;
 
   private CommandJoystick m_joystick = new CommandJoystick(0);
@@ -35,7 +34,7 @@ public class RobotContainer {
   private IntakeSubsystem m_intakeSubsystem;
 
   private DefaultDrive m_defaultDrive;
-
+  private FieldDrive m_slowDrive;
   private FieldDrive m_fieldDrive;
 
   public RobotContainer() {
@@ -45,18 +44,26 @@ public class RobotContainer {
       m_swerveSubsystem = new SwerveSubsystem();
       m_outtakeSubsystem = new OuttakeSubsystem();
       m_intakeSubsystem = new IntakeSubsystem();
+      
+      m_slowDrive = new FieldDrive(
+          m_swerveSubsystem,
+          () -> 0.5 * getLeftY(),
+          () -> 0.5 * getLeftX(),
+          () -> 0.5 * getRightX());
 
       m_defaultDrive = new DefaultDrive(
           m_swerveSubsystem,
-          () -> 3* input(getLeftY(), SQUARED_INPUTS),
-          () -> 3* input(getLeftX(), SQUARED_INPUTS),
-          () -> 3 * input(getRightX(), SQUARED_INPUTS)); 
+          () -> 3 * getLeftY(),
+          () -> 3 * getLeftX(),
+          () -> 3 * getRightX()); 
 
       m_fieldDrive = new FieldDrive(
           m_swerveSubsystem,
-          () -> 3 * input(getLeftY(), SQUARED_INPUTS),
-          () -> 3 * input(getLeftX(), SQUARED_INPUTS),
-          () -> 3 * input(getRightX(), SQUARED_INPUTS));
+          () -> 3 * getLeftY(),
+          () -> 3 * getLeftX(),
+          () -> 3 * getRightX());
+
+      
 
       m_swerveSubsystem.setDefaultCommand(m_fieldDrive);
     }
@@ -79,6 +86,10 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Swerve bindings
+
+    // sets to slow drive when left bumper is pressed
+    m_controller.leftBumper().whileTrue(m_slowDrive);
+
     // toggles between robot and field oriented
     m_controller.a().toggleOnTrue(m_defaultDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
@@ -98,7 +109,8 @@ public class RobotContainer {
         m_intakeSubsystem.getToAmpCommand()));
   }
   
-  private void configureCompetitionBindings() {  
+  private void configureCompetitionBindings() { 
+    
     // hands note piece from intake to outtake subsystem and rotates to amp
     m_joystick.button(3).onTrue(Commands.sequence(
         m_outtakeSubsystem.rotateToSpeakerCommand(),
@@ -175,15 +187,11 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return Commands.sequence(
-            Commands.waitSeconds(3),
-            m_outtakeSubsystem.rotateToSpeakerCommand(),
-            m_intakeSubsystem.getToSpeakerCommand()
-           .alongWith(m_outtakeSubsystem.shootToSpeakerCommand())
-           .withTimeout(3.0));
-  }
-
-  private double input(double input, boolean squared) {
-    return squared ? (input > 0 ? 1 : -1) * Math.pow(input, 2) : input;
+        Commands.waitSeconds(3.0),
+        m_outtakeSubsystem.rotateToSpeakerCommand(),
+        m_intakeSubsystem.getToSpeakerCommand()
+        .alongWith(m_outtakeSubsystem.shootToSpeakerCommand())
+        .withTimeout(3.0));
   }
 
   private double getLeftY() {
