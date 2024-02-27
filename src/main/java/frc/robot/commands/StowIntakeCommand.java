@@ -7,8 +7,9 @@ import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class StowIntakeCommand extends Command {
-  /** Creates a new ReverseDeployCommand. */
   private IntakeSubsystem m_intakeSubsystem;
+
+  /** Creates a new StowIntakeCommand. */
   public StowIntakeCommand(IntakeSubsystem subsystem) {
     m_intakeSubsystem = subsystem;
     addRequirements(subsystem);

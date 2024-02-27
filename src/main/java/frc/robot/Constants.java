@@ -58,10 +58,10 @@ public final class Constants {
     public static final boolean BR_STEER_INVERTED = true;
     public static final boolean BL_STEER_INVERTED = true;
 
-    public static final double FR_OFFSET_ROTATIONS = 0.1644; //0.1652;
-    public static final double FL_OFFSET_ROTATIONS = 0.5406; //0.0405;
-    public static final double BR_OFFSET_ROTATIONS = 0.9320; //0.9318;
-    public static final double BL_OFFSET_ROTATIONS = 0.2593; //0.7595;
+    public static final double FR_OFFSET_ROTATIONS = 0.1644;
+    public static final double FL_OFFSET_ROTATIONS = 0.5406;
+    public static final double BR_OFFSET_ROTATIONS = 0.9320;
+    public static final double BL_OFFSET_ROTATIONS = 0.2593;
 
     public static final double APOTHEM = Units.inchesToMeters(10.625);
     public static final Translation2d FR_LOCATION = new Translation2d(APOTHEM, -APOTHEM);
@@ -72,7 +72,7 @@ public final class Constants {
     
   public static final class Climb {
     public static final double MAX_UP_VOLTAGE = 0.15; // 0.4; 
-    public static final double MAX_DOWN_VOLTAGE = -0.15; // -0.8 
+    public static final double MAX_DOWN_VOLTAGE = -0.8; // -0.8 
     
     public static final double EXTEND_MOTOR_SETPOINT = 0; // this is where climber starts
     public static final double RETRACT_MOTOR_SETPOINT = 85.0;
@@ -126,10 +126,11 @@ public final class Constants {
     public static final int NOTE_LIMIT_SWITCH = 2;
     public static final int ZERO_LIMIT_SWITCH = 1;
 
-    public static final double INTAKE_MOTOR_SPEED = -0.8;
+    public static final double INTAKE_MOTOR_REEL_SPEED = -0.8;
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double INTAKE_MOTOR_SPIT_SPEED = 0.8;
     public static final double INTAKE_MOTOR_AMP_SPEED = 0.4;
+    public static final double INTAKE_MOTOR_EJECT_SPEED = 0.4;
     public static final double INTAKE_MOTOR_SPEAKER_SPEED = 0.8;
 
     public static final double MAX_VELOCITY = 100;

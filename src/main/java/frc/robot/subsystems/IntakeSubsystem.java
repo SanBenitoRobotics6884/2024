@@ -13,7 +13,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,8 +25,6 @@ import frc.robot.commands.StowIntakeCommand;
 import static frc.robot.Constants.Intake.*;
 
 import java.util.function.BooleanSupplier;
-
-import javax.swing.text.StyledEditorKit.BoldAction;
 
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -46,18 +43,12 @@ public class IntakeSubsystem extends SubsystemBase {
   private DigitalInput m_noteLimitSwitch = new DigitalInput(NOTE_LIMIT_SWITCH);
   private DigitalInput m_zeroLimitSwitch = new DigitalInput(ZERO_LIMIT_SWITCH);
 
-  private RelativeEncoder m_intakeEncoder;
   private RelativeEncoder m_pivotEncoder;
 
   private boolean m_isZeroing = true;;
  
   /** Creates a new Intake. */
   public IntakeSubsystem() {
-
-
-
-    // m_pivotPID.setGoal(DEPLOY_SETPOINT);
-
     m_pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     m_pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) DEPLOY_SETPOINT);
@@ -65,21 +56,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    //m_intakeMotor.setSmartCurrentLimit(0); UNNEEDED ATM
-    m_intakeEncoder = m_intakeMotor.getEncoder();
+    // m_intakeMotor.setSmartCurrentLimit(0); UNNEEDED ATM
 
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    //m_pivotMotor.setSmartCurrentLimit(0); UNNEEDED ATM
+    // m_pivotMotor.setSmartCurrentLimit(0); UNNEEDED ATM
     m_pivotEncoder = m_pivotMotor.getEncoder();
     m_pivotEncoder.setPosition(ENCODER_POSITION);
     
     m_pivotPID.setTolerance(TOLERANCE);
-        /**
-      Saw this in cranberry code, it sets like current limit in AMPs though, I don't know what it is so LUCAS help.
-    */
-
-    //dunno if this is useful atm but we'll see
 
     m_pivotPID.reset(m_pivotEncoder.getPosition(), m_pivotEncoder.getVelocity());
   }
@@ -121,7 +106,7 @@ public class IntakeSubsystem extends SubsystemBase {
   
   // Set's speed to intake motor to reel
   public void reel() {
-    m_intakeMotor.set(INTAKE_MOTOR_SPEED);
+    m_intakeMotor.set(INTAKE_MOTOR_REEL_SPEED);
   }
 
   // Returns whether limitswitch is triggered or not
@@ -176,7 +161,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command getEjectCommand() {
-    return new IntakeToOuttake(this, INTAKE_MOTOR_AMP_SPEED);
+    return new IntakeToOuttake(this, INTAKE_MOTOR_EJECT_SPEED);
+  }
+
+  public Command getSuckCommand() {
+    return new IntakeToOuttake(this, INTAKE_MOTOR_REEL_SPEED);
   }
   
 }

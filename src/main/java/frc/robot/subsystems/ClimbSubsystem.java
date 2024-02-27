@@ -11,14 +11,14 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.ManualClimb;
 
 import static frc.robot.Constants.Climb.*;
 
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
+import java.util.function.BooleanSupplier;
 
 public class ClimbSubsystem extends SubsystemBase{
   private CANSparkMax m_rightClimbMotor = new CANSparkMax(R_CLIMB_MOTOR_ID,MotorType.kBrushless);
@@ -82,12 +82,12 @@ public class ClimbSubsystem extends SubsystemBase{
 
   public void manual(boolean leftUp, boolean leftDown, boolean rightUp, boolean rightDown) {
     if (leftUp ^ leftDown) {
-      m_leftClimbMotor.set(leftUp ? 0.1 : -0.1);
+      m_leftClimbMotor.set(leftUp ? -0.1 : 0.1);
     } else {
       m_leftClimbMotor.set(0);
     }
     if (rightUp ^ rightDown) {
-      m_rightClimbMotor.set(rightUp ? -0.1 : 0.1);
+      m_rightClimbMotor.set(rightUp ? 0.1 : -0.1);
     } else {
       m_rightClimbMotor.set(0);
     }
@@ -109,8 +109,13 @@ public class ClimbSubsystem extends SubsystemBase{
   public Command getExtendCommand(){
     return runOnce(this::extend);
   }
+
   public Command getRetractCommand(){
     return runOnce(this::retract); 
+  }
+
+  public Command getManualCommand(BooleanSupplier leftUp, BooleanSupplier leftDown, BooleanSupplier rightUp, BooleanSupplier rightDown) {
+    return new ManualClimb(this, leftUp, leftDown, rightUp, rightDown);
   }
 
 }
