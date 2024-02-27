@@ -20,8 +20,6 @@ import static frc.robot.Constants.Intake.*;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-  
-
   private final CANSparkMax m_intakeMotor = new CANSparkMax(INTAKE_MOTOR_ID, MotorType.kBrushless);
   private final CANSparkMax m_pivotMotor = new CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless);
   

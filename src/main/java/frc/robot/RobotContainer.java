@@ -27,14 +27,11 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 
-<<<<<<< HEAD
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 
-public class RobotContainer 
-=======
 public class RobotContainer {
->>>>>>> 27dd4bafe87220b44a46131dca5b58631d27695c
   private CommandJoystick m_joystick = new CommandJoystick(0);
   private CommandXboxController m_controller = new CommandXboxController(1);
   
@@ -64,6 +61,8 @@ public class RobotContainer {
   private RotateOuttakeToSpeaker m_speakerPosition = new RotateOuttakeToSpeaker(m_outtakeSubsystem);
 
   public RobotContainer() {
+    NamedCommands.registerCommand("Intake", m_deployIntakeCommand);
+    NamedCommands.registerCommand("Scoring", m_outtakeSubsystem.shootToSpeakerCommand());
     m_swerveSubsystem.setDefaultCommand(m_defaultDrive);
     
     configureBindings();
