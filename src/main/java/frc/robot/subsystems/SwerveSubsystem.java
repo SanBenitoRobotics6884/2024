@@ -130,6 +130,10 @@ public class SwerveSubsystem extends SubsystemBase {
     m_gyro.setYaw(0);
   }
 
+  public void setYaw(double angle) {
+    m_gyro.setYaw(angle);
+  }
+
   public void seedModuleMeasurements() {
     for (int i = 0; i < 4; i++) {
       m_modules[i].setIntegratedEncoderPositionToAbsoluteEncoderMeasurement();
