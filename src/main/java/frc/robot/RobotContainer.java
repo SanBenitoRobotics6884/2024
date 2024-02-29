@@ -4,124 +4,220 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDrive;
-import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.FieldDrive;
-import frc.robot.commands.IntakeToOuttake;
-import frc.robot.commands.ReelCommand;
-import frc.robot.commands.StowIntakeCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
-import frc.robot.commands.RotateOuttakeToAmp;
-import frc.robot.commands.RotateOuttakeToSpeaker;
 import frc.robot.subsystems.OuttakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
-import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathConstraints;
-
 public class RobotContainer {
-  private CommandJoystick m_joystick = new CommandJoystick(0);
-  private CommandXboxController m_controller = new CommandXboxController(1);
+  public enum BindingsSetting {
+    PITS,
+    CLIMB,
+    COMPETITION;
+  }
+
+  private BindingsSetting m_setting = BindingsSetting.COMPETITION;
+
+  private CommandJoystick m_joystick;
+  private CommandXboxController m_controller;
   
-  private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
-  private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
-  private OuttakeSubsystem m_outtakeSubsystem = new OuttakeSubsystem();
-  private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  private SwerveSubsystem m_swerveSubsystem;
+  private ClimbSubsystem m_climbSubsystem;
+  private OuttakeSubsystem m_outtakeSubsystem;
+  private IntakeSubsystem m_intakeSubsystem;
 
-  private DefaultDrive m_defaultDrive = new DefaultDrive(
-      m_swerveSubsystem,
-      () -> input(getLeftY(), SQUARED_INPUTS),
-      () -> input(getLeftX(), SQUARED_INPUTS),
-      () -> input(m_controller.getRightX(), SQUARED_INPUTS)); 
+  private DefaultDrive m_defaultDrive;
+  private FieldDrive m_slowDrive;
+  private FieldDrive m_fieldDrive;
 
-  private FieldDrive m_fieldDrive = new FieldDrive(
-      m_swerveSubsystem,
-      () -> input(getLeftY(), SQUARED_INPUTS),
-      () -> input(getLeftX(), SQUARED_INPUTS),
-      () -> input(m_controller.getRightX(), SQUARED_INPUTS)); 
-
-  private ReelCommand m_reelCommand = new ReelCommand(m_intakeSubsystem, () -> m_joystick.getHID().getRawButton(12));
-  private DeployIntakeCommand m_deployIntakeCommand = new DeployIntakeCommand(m_intakeSubsystem);
-  private IntakeToOuttake m_intakeToOuttakeCommand = new IntakeToOuttake(m_intakeSubsystem);
-  private StowIntakeCommand m_stowCommand = new StowIntakeCommand(m_intakeSubsystem);
-
-  private RotateOuttakeToAmp m_ampPosition = new RotateOuttakeToAmp(m_outtakeSubsystem);
-  private RotateOuttakeToSpeaker m_speakerPosition = new RotateOuttakeToSpeaker(m_outtakeSubsystem);
+  private SendableChooser<Double> m_gyroYawSetter = new SendableChooser<>();
 
   public RobotContainer() {
-    NamedCommands.registerCommand("Intake", m_deployIntakeCommand);
-    NamedCommands.registerCommand("Scoring", m_outtakeSubsystem.shootToSpeakerCommand());
-    m_swerveSubsystem.setDefaultCommand(m_defaultDrive);
+    m_joystick = new CommandJoystick(0);
+    if (m_setting != BindingsSetting.CLIMB) {
+      m_controller = new CommandXboxController(1);
+      
+      m_swerveSubsystem = new SwerveSubsystem();
+      m_outtakeSubsystem = new OuttakeSubsystem();
+      m_intakeSubsystem = new IntakeSubsystem();
+      
+      m_slowDrive = new FieldDrive(
+          m_swerveSubsystem,
+          () -> 0.5 * getLeftY(),
+          () -> 0.5 * getLeftX(),
+          () -> 0.5 * getRightX());
+
+      m_defaultDrive = new DefaultDrive(
+          m_swerveSubsystem,
+          () -> 3 * getLeftY(),
+          () -> 3 * getLeftX(),
+          () -> 3 * getRightX()); 
+
+      m_fieldDrive = new FieldDrive(
+          m_swerveSubsystem,
+          () -> 3 * getLeftY(),
+          () -> 3 * getLeftX(),
+          () -> 3 * getRightX());
+
+      m_swerveSubsystem.setDefaultCommand(m_fieldDrive);
+    }
+    m_climbSubsystem = new ClimbSubsystem();
+
+    m_gyroYawSetter.addOption("Left", 60.0);
+    m_gyroYawSetter.addOption("Middle", 0.0);
+    m_gyroYawSetter.addOption("Right", -60.0);
+
+    SmartDashboard.putData("speaker side", m_gyroYawSetter);
     
-    configureBindings();
+    switch (m_setting) {
+      case PITS:
+        configureBindings();
+        configurePitsBindings();
+        break;
+      case CLIMB:
+        configureClimbBindings();
+        break;
+      default:
+        configureBindings();
+        configureCompetitionBindings();
+        break;
+    }
   }
-  
+
+  /** These bindings are in both the COMPETITION and PITS binding modes */
   private void configureBindings() {
     // Swerve bindings
-    m_controller.a().toggleOnTrue(m_fieldDrive);
+    // drives slow while left bumper pressed
+    m_controller.leftBumper().whileTrue(m_slowDrive);
+
+    // toggles between robot and field oriented
+    m_controller.a().toggleOnTrue(m_defaultDrive);
+
+    // sets the forward facing angle for field oriented drive
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
-    m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::zeroPose));
-    m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
+    // m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
     
-    /**
+    // intake and outtake bindings
+    // shoots to amp or speaker depending on position 
+    m_joystick.trigger().whileTrue(Commands.either(
+        m_outtakeSubsystem.shootToAmpCommand(), 
+        m_outtakeSubsystem.shootToSpeakerCommand()
+        .alongWith(m_intakeSubsystem.getToSpeakerCommand()), 
+        m_outtakeSubsystem::isInAmpPosition));
+    
+    // Shoots (up into) amp
+    m_joystick.top().whileTrue(Commands.parallel(
+        m_outtakeSubsystem.shootToAmpCommand(),
+        m_intakeSubsystem.getToAmpCommand()));
+  }
+  
+  /** These are bindings in the COMPETITION bindings mode */
+  private void configureCompetitionBindings() { 
+    // hands note piece from intake to outtake subsystem and rotates to amp
+    m_joystick.button(3).onTrue(Commands.sequence(
+        m_outtakeSubsystem.rotateToSpeakerCommand(),
+        m_intakeSubsystem.getToAmpCommand()
+            .alongWith(m_outtakeSubsystem.yoinkNoteCommand())
+            .withTimeout(1.2),
+        m_outtakeSubsystem.rotateToAmpPositionCommand()).
+        withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    
     // Climb bindings
-    m_joystick.button(10).onTrue(m_climbSubsystem.getExtendCommand());
-    m_joystick.button(9).onTrue(m_climbSubsystem.getRetractCommand());
+    // retracts climb
+    m_joystick.button(10).onTrue(Commands.sequence(
+        m_outtakeSubsystem.rotateToAmpPositionCommand()
+        .alongWith(m_intakeSubsystem.getDeployCommand()),
+        m_climbSubsystem.getRetractCommand())
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    // extends climb
+    m_joystick.button(9).onTrue(Commands.sequence(
+        m_outtakeSubsystem.rotateToAmpPositionCommand()
+        .alongWith(m_intakeSubsystem.getDeployCommand()), 
+        m_climbSubsystem.getExtendCommand())
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    // puts intake back in
+    m_joystick.button(7).onTrue(m_intakeSubsystem.getStowCommand()
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    // unnecessary?
+    m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
+    m_joystick.button(6).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
     
-    // Outtake bindings
-    m_joystick.button(1).whileTrue(m_outtakeSubsystem.shootToSpeakerCommand());
-    m_joystick.button(2).whileTrue(m_outtakeSubsystem.shootToAmpCommand());
-    m_joystick.button(3).whileTrue(m_outtakeSubsystem.YoinkNoteCommand());
+    // grabs the game piece
+    m_joystick.button(11).onTrue(Commands.sequence(
+        m_intakeSubsystem.getDeployCommand(),
+        m_intakeSubsystem.getReelCommand(() -> m_joystick.getHID().getRawButton(12)),
+        m_intakeSubsystem.getStowCommand())
+        .alongWith(m_outtakeSubsystem.rotateToSpeakerCommand())
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
-    m_joystick.button(4).onTrue(m_ampPosition);
-    m_joystick.button(5).onTrue(m_speakerPosition);
+    // ejects game piece
+    m_joystick.button(12).onTrue(Commands.sequence(
+        m_intakeSubsystem.getDeployCommand(),
+        m_intakeSubsystem.getEjectCommand().withTimeout(2.0),
+        m_intakeSubsystem.getStowCommand())
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+  }
+
+  /** These are bindings in the PITS bindings mode */
+  private void configurePitsBindings() {
+    // extend and retract
+    m_joystick.button(9).onTrue(m_climbSubsystem.getExtendCommand());
+    m_joystick.button(10).onTrue(m_climbSubsystem.getRetractCommand());
+
+    // deploy and stow
+    m_joystick.button(11).onTrue(m_intakeSubsystem.getDeployCommand());
+    m_joystick.button(12).onTrue(m_intakeSubsystem.getStowCommand());
     
-    // Intake bindings
-    m_joystick.button(0).onTrue(m_reelcommand);
-    m_joystick.button(1).onTrue(m_deployintakecommand);
-    m_joystick.button(2).onTrue(m_intaketoouttakecommand);
-    m_joystick.button(3).onTrue(m_stowcommand);
-    */
-    
-// Since we are using a holonomic drivetrain, the rotation component of this pose
-// represents the goal holonomic rotation
-Pose2d targetPose = new Pose2d(10, 5, Rotation2d.fromDegrees(180));
+    // Pick up and release note
+    m_joystick.button(8).whileTrue(m_intakeSubsystem.getSuckCommand());
+    m_joystick.button(7).whileTrue(m_intakeSubsystem.getEjectCommand());
 
-// Create the constraints to use while pathfinding
-PathConstraints constraints = new PathConstraints(
-        3.0, 4.0,
-        Units.degreesToRadians(540), Units.degreesToRadians(720));
+    // rotate outtake to amp or speaker position
+    m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
+    m_joystick.button(6).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
+  }
 
-// Since AutoBuilder is configured, we can use it to build pathfinding commands
-Command pathfindingCommand = AutoBuilder.pathfindToPose(
-        targetPose,
-        constraints,
-        0.0, // Goal end velocity in meters/sec
-        0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
-        
-        
-);
+  /** These are the only bindings when in the CLIMB calibration bindings mode */
+  private void configureClimbBindings() {
+    // calibrate climb manually
+    m_joystick.button(7).whileTrue(m_climbSubsystem.getManualCommand(
+        () -> m_joystick.getHID().getRawButton(5),
+        () -> m_joystick.getHID().getRawButton(3),
+        () -> m_joystick.getHID().getRawButton(6),
+        () -> m_joystick.getHID().getRawButton(4)));
 
+    // extends and retracts climb
+    m_joystick.button(9).onTrue(m_climbSubsystem.getExtendCommand());
+    m_joystick.button(10).onTrue(m_climbSubsystem.getRetractCommand());
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return getResetGyroCommand().andThen(getMainAutoCommand());
   }
 
-  private double input(double input, boolean squared) {
-    return squared ? (input > 0 ? 1 : -1) * Math.pow(input, 2) : input;
+  private Command getResetGyroCommand() {
+    return Commands.runOnce(() -> m_swerveSubsystem.setYaw(m_gyroYawSetter.getSelected()));
+  }
+
+  private Command getMainAutoCommand() {
+    return Commands.sequence(
+        Commands.waitSeconds(3.0),
+        m_outtakeSubsystem.rotateToSpeakerCommand(),
+        m_intakeSubsystem.getToSpeakerCommand()
+        .alongWith(m_outtakeSubsystem.shootToSpeakerCommand())
+        .withTimeout(3.0));
   }
 
   private double getLeftY() {
@@ -138,6 +234,14 @@ Command pathfindingCommand = AutoBuilder.pathfindToPose(
       return 0;
     }
     return leftX;
+  }
+
+  private double getRightX() {
+    double rightX = m_controller.getRightX();
+    if (Math.abs(rightX) < 0.1) {
+      rightX = 0;
+    }
+    return rightX;
   }
   
 }
