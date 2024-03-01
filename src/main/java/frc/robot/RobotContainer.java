@@ -73,9 +73,8 @@ public class RobotContainer {
     m_climbSubsystem = new ClimbSubsystem();
 
     m_gyroYawSetter.addOption("Left", 60.0);
-    m_gyroYawSetter.addOption("Middle", 0.0);
     m_gyroYawSetter.addOption("Right", -60.0);
-
+    m_gyroYawSetter.setDefaultOption("Middle", 0.0);
     SmartDashboard.putData("speaker side", m_gyroYawSetter);
     
     switch (m_setting) {
