@@ -16,7 +16,6 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.SwerveModule;
 
 import static frc.robot.Constants.Swerve.*;
@@ -79,21 +78,19 @@ public class SwerveSubsystem extends SubsystemBase {
         m_pose);
         
     AutoBuilder.configureHolonomic(
-    this::getPose,
-    this::setPose,
-    this::getChassisSpeeds,
-    this::driveRobotOriented,
-    Constants.Swerve.PATH_FOLLOWER_CONFIG,
-    () -> {
-
-      var alliance = DriverStation.getAlliance();
-      if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-      }
-      return false;
-  },
-  this
-);
+        this::getPose,
+        this::setPose,
+        this::getChassisSpeeds,
+        this::driveRobotOriented,
+        PATH_FOLLOWER_CONFIG,
+        () -> {
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
   }
 
   @Override
@@ -140,6 +137,9 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public ChassisSpeeds getChassisSpeeds() {
+    for (int i = 0; i < 4; i++) {
+      m_moduleStates[i] = m_modules[i].getState();
+    }
     return m_kinematics.toChassisSpeeds(m_moduleStates);
   }
 

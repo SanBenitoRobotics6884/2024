@@ -67,19 +67,19 @@ public final class Constants {
     public static final double BR_OFFSET_ROTATIONS = 0.9320;
     public static final double BL_OFFSET_ROTATIONS = 0.2593;
 
-    public static final double APOTHEM = Units.inchesToMeters(10.625);
+    public static final double APOTHEM = Units.inchesToMeters(10.625); // outdated
     public static final Translation2d FR_LOCATION = new Translation2d(APOTHEM, -APOTHEM);
     public static final Translation2d FL_LOCATION = new Translation2d(APOTHEM, APOTHEM);
     public static final Translation2d BR_LOCATION = new Translation2d(-APOTHEM, -APOTHEM);
     public static final Translation2d BL_LOCATION = new Translation2d(-APOTHEM, APOTHEM);
 
-    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
-    new PIDConstants(5,0,0),
-    new PIDConstants(5, 0, 0),
-    4.5,
-    0.4,
-    new ReplanningConfig()
-    );
+    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = 
+        new HolonomicPathFollowerConfig(
+            new PIDConstants(2,0,0),
+            new PIDConstants(2, 0, 0),
+            3.5,
+            0.4445,
+            new ReplanningConfig());
 
   }
     
