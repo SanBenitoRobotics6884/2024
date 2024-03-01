@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,6 +23,10 @@ import frc.robot.subsystems.OuttakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
+
+  
+
+  // zach you know this :skull:
   public enum BindingsSetting {
     PITS,
     CLIMB,
@@ -40,8 +48,20 @@ public class RobotContainer {
   private FieldDrive m_fieldDrive;
 
   private SendableChooser<Double> m_gyroYawSetter = new SendableChooser<>();
+  private SendableChooser<Command> m_chooserLoser;
 
   public RobotContainer() {
+
+    m_chooserLoser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("what da what", m_chooserLoser);
+
+    NamedCommands.registerCommand("Intake", Commands.sequence(
+        m_intakeSubsystem.getDeployCommand(), 
+        m_intakeSubsystem.getReelCommand(() -> false).withTimeout(3.0), 
+        m_intakeSubsystem.getStowCommand()));
+    NamedCommands.registerCommand("Scoring", m_outtakeSubsystem.shootToSpeakerCommand());
+
+
     m_joystick = new CommandJoystick(0);
     if (m_setting != BindingsSetting.CLIMB) {
       m_controller = new CommandXboxController(1);
@@ -204,7 +224,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return getResetGyroCommand().andThen(getMainAutoCommand());
+    return getResetGyroCommand().andThen(getMainAutoCommand()).alongWith(new PathPlannerAuto("Auto"));
   }
 
   private Command getResetGyroCommand() {
