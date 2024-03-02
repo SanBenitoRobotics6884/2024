@@ -229,11 +229,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     AutoCommand auto = m_autoSelector.getSelected();
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    /**
     if (alliance.isPresent() && alliance.get() == Alliance.Red) {
       auto.flip();
     }
-    */
     return Commands.runOnce(() -> m_swerveSubsystem.setYaw(auto.getAngle())).andThen(auto.getCommand());
   }
 
