@@ -90,8 +90,10 @@ public class RobotContainer {
     m_autoSelector.setDefaultOption("none", new AutoCommand(Commands.none(), 0));
     // We have not tested any of these
     addPPAuto("amp-side shoot and pick-up", "Left Pick Up");
+    addPPAuto("amp-side taxi", "Left Taxi");
     addPPAuto("center shoot and pick-up", "Center Pick Up");
     addPPAuto("source-side shoot and pick-up", "Right Pick Up");
+    addPPAuto("source-side taxi", "Right Taxi");
     addPPAuto("tune", "Tune");
     addSimpleAuto("left shoot", 
         new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem), 60.0);
