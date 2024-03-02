@@ -31,7 +31,7 @@ public class OuttakeSubsystem extends SubsystemBase {
   DigitalInput m_ampLimitSwitch = new DigitalInput(AMP_LIMIT_SWITCH_CHANNEL);
 
   double m_pivotSetpoint = 0;
-  boolean isZeroing = true; // Should initially be true
+  boolean m_isZeroing = true; // Should initially be true
   double maxLeftCurrent = 0;
   double maxRightCurrent = 0;
   double maxPassOffCurrent = 0;
@@ -50,10 +50,10 @@ public class OuttakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (isZeroing) {
+    if (m_isZeroing) {
       m_pivotMotor.set(ZEROING_VOLTAGE);
       if (m_ampLimitSwitch.get()) {
-        isZeroing = false;
+        m_isZeroing = false;
         m_pivotEncoder.setPosition(0);
       }
     } else {
@@ -78,6 +78,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     if (maxPassOffCurrent < passOffCurrent) {
       maxPassOffCurrent = passOffCurrent;
     }
+  }
+
+  public boolean isNotZeroing() {
+    return !m_isZeroing;
   }
 
   public boolean ampLimitSwitchHit() {

@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.SwerveModule;
 
@@ -176,6 +177,9 @@ public class SwerveSubsystem extends SubsystemBase {
       m_modulePositions, 
       m_pose);
   }
- 
+
+  public Command getSetYawCommand(double angleDegrees) {
+    return runOnce(() -> setYaw(angleDegrees));
+  }
 
 }
