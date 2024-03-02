@@ -105,7 +105,7 @@ public final class Constants {
 
     public static final double ZEROING_VOLTAGE = 0.15;
 
-    public static final double SHOOTER_SPEAKER_MOTOR_VOLTAGE = 0.8;
+    public static final double SHOOTER_SPEAKER_MOTOR_VOLTAGE = 0.95;
     public static final double TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE = -0.8;
     public static final double SHOOTER_AMP_MOTOR_VOLTAGE = 0.3;
     public static final double TAKE_NOTE_AMP_MOTOR_VOLTAGE = -0.3;
@@ -141,7 +141,7 @@ public final class Constants {
     public static final double k_PIVOT_ANGLE_SOURCE = 0;
 
     public static final double TOLERANCE = 5.0;
-    public static final double DEPLOY_SETPOINT = -137.0; // Before 4:34pm on 2-28 it was -130.0 
+    public static final double DEPLOY_SETPOINT = -132.0; // Before 4:34pm on 2-28 it was -130.0 
     public static final double STOW_SETPOINT = -3.0;
     public static final double ZEROING_SPEED = 0.1;
 
