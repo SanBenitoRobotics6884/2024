@@ -192,8 +192,7 @@ public class RobotContainer {
     // ejects game piece
     m_joystick.button(12).onTrue(Commands.sequence(
         m_intakeSubsystem.getDeployCommand(),
-        m_intakeSubsystem.getEjectCommand().withTimeout(2.0),
-        m_intakeSubsystem.getStowCommand())
+        m_intakeSubsystem.getEjectCommand().withTimeout(1.5))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
   }
 

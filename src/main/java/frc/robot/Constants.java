@@ -154,8 +154,8 @@ public final class Constants {
     public static final double k_PIVOT_ANGLE_SOURCE = 0;
 
     public static final double TOLERANCE = 5.0;
-    public static final double DEPLOY_SETPOINT = -130.0; 
-    public static final double STOW_SETPOINT = 0;
+    public static final double DEPLOY_SETPOINT = -137.0; // Before 4:34pm on 2-28 it was -130.0 
+    public static final double STOW_SETPOINT = -3.0;
     public static final double ZEROING_SPEED = 0.1;
 
     public static final double ENCODER_POSITION = 0; // DEPLOY_SETPOINT;
