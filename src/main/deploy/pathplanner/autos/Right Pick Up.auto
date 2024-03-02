@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "wait-and-score"
+            "name": "score"
           }
         },
         {

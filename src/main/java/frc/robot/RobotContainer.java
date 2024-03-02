@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -45,7 +47,6 @@ public class RobotContainer {
   private FieldDrive m_slowDrive;
   private FieldDrive m_fieldDrive;
 
-  private SendableChooser<Double> m_gyroYawSetter = new SendableChooser<>();
   private SendableChooser<AutoCommand> m_autoSelector = new SendableChooser<>();
 
   public RobotContainer() {
@@ -79,11 +80,6 @@ public class RobotContainer {
     }
     m_climbSubsystem = new ClimbSubsystem();
 
-    m_gyroYawSetter.addOption("Left", 60.0);
-    m_gyroYawSetter.addOption("Middle", 0.0);
-    m_gyroYawSetter.addOption("Right", -60.0);
-    SmartDashboard.putData("speaker side", m_gyroYawSetter);
-
     NamedCommands.registerCommand("intake", Commands.sequence(
         m_intakeSubsystem.getDeployCommand(), 
         m_intakeSubsystem.getReelCommand(() -> false).withTimeout(3.0), 
@@ -97,12 +93,14 @@ public class RobotContainer {
     addPPAuto("center shoot and pick-up", "Center Pick Up");
     addPPAuto("source-side shoot and pick-up", "Right Pick Up");
     addPPAuto("tune", "Tune");
-    addSimpleAuto("amp-side shoot", 
+    addSimpleAuto("left shoot", 
         new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem), 60.0);
     addSimpleAuto("center shoot", 
         new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem), 0);
-    addSimpleAuto("source-side shoot", 
+    addSimpleAuto("right shoot", 
         new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem), -60.0);
+    
+    SmartDashboard.putData("auto", m_autoSelector);
 
     switch (m_setting) {
       case PITS:
@@ -230,6 +228,12 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     AutoCommand auto = m_autoSelector.getSelected();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    /**
+    if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+      auto.flip();
+    }
+    */
     return Commands.runOnce(() -> m_swerveSubsystem.setYaw(auto.getAngle())).andThen(auto.getCommand());
   }
 
@@ -279,14 +283,19 @@ public class RobotContainer {
     }
 
     double getAngle() {
+      SmartDashboard.putNumber("gyro init angle", m_angleDegrees);
       return m_angleDegrees;
     }
 
+    void flip() {
+      m_angleDegrees = -m_angleDegrees;
+    }
+
+
     static AutoCommand fromPPAuto(String name) {
-      double angleDegrees = 
-          PathPlannerAuto.getStaringPoseFromAutoFile(name).getRotation().getDegrees();
-      boolean shouldFlip = DriverStation.getAlliance().get() == Alliance.Red;
-      return new AutoCommand(new PathPlannerAuto(name), shouldFlip ? -angleDegrees : angleDegrees);
+      return new AutoCommand(
+          new PathPlannerAuto(name), 
+          PathPlannerAuto.getStaringPoseFromAutoFile(name).getRotation().getDegrees());
     }
 
   }
