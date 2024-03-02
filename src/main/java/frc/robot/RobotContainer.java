@@ -47,22 +47,27 @@ public class RobotContainer {
 
   public RobotContainer() {
     m_autoSelector = AutoBuilder.buildAutoChooser();
+    m_autoSelector.setDefaultOption("shoot", Commands.sequence(
+        Commands.waitSeconds(3.0),
+        m_outtakeSubsystem.rotateToSpeakerCommand(),
+        m_intakeSubsystem.getToSpeakerCommand()
+        .alongWith(m_outtakeSubsystem.shootToSpeakerCommand())
+        .withTimeout(3.0)));
     SmartDashboard.putData("Auto", m_autoSelector);
 
     NamedCommands.registerCommand("intake", Commands.sequence(
         m_intakeSubsystem.getDeployCommand(), 
         m_intakeSubsystem.getReelCommand(() -> false).withTimeout(3.0), 
         m_intakeSubsystem.getStowCommand()));
-    NamedCommands.registerCommand("wait-and-score", Commands.sequence(
+    NamedCommands.registerCommand("wait-and-score",
       m_outtakeSubsystem.shootToSpeakerCommand()
       .alongWith(m_intakeSubsystem.getToSpeakerCommand())
       .withTimeout(3.0)
-      .beforeStarting(Commands.waitSeconds(1.0))));
+      .beforeStarting(Commands.waitSeconds(1.0)));
     NamedCommands.registerCommand("score",
       m_outtakeSubsystem.shootToSpeakerCommand()
       .alongWith(m_intakeSubsystem.getToSpeakerCommand())
       .withTimeout(3.0));
-
 
     m_joystick = new CommandJoystick(0);
     if (m_setting != BindingsSetting.CLIMB) {
@@ -234,12 +239,7 @@ public class RobotContainer {
   }
 
   private Command getMainAutoCommand() {
-    return Commands.sequence(
-        Commands.waitSeconds(3.0),
-        m_outtakeSubsystem.rotateToSpeakerCommand(),
-        m_intakeSubsystem.getToSpeakerCommand()
-        .alongWith(m_outtakeSubsystem.shootToSpeakerCommand())
-        .withTimeout(3.0));
+    return m_autoSelector.getSelected();
   }
 
   private double getLeftY() {
