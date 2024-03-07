@@ -1,7 +1,14 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.DifferentialVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.core.CoreTalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkMax;
@@ -12,30 +19,29 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static frc.robot.Constants.Swerve.*;
 
-public class SwerveModule {
-
-  private CANSparkMax m_driveMotor;
+public class SwerveModule { 
+  private TalonFX m_driveMotor;
   private CANSparkMax m_steerMotor;
 
   private CANcoder m_steerAbsoluteEncoder;
   private RelativeEncoder m_steerIntegratedEncoder;
-  private RelativeEncoder m_driveEncoder;
-
-  private SimpleMotorFeedforward m_driveFeedforward;
 
   private Rotation2d m_angleReference;
   private double m_velocityReference; // meters per second
-    
+
+  private VelocityVoltage m_request;
+
   public SwerveModule(int driveID, int steerID, int encoderID, boolean driveInverted, 
                       boolean steerInverted, double magnetOffset) {
-    m_driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
+    m_driveMotor = new TalonFX(driveID); 
     m_steerMotor = new CANSparkMax(steerID, MotorType.kBrushless);
 
     m_driveMotor.setInverted(driveInverted);
@@ -52,11 +58,6 @@ public class SwerveModule {
     m_steerIntegratedEncoder = m_steerMotor.getEncoder();
     m_steerIntegratedEncoder.setPositionConversionFactor(STEER_POSITION_CONVERSION);
     m_steerIntegratedEncoder.setPosition(m_steerAbsoluteEncoder.getAbsolutePosition().getValueAsDouble());
-
-    m_driveEncoder = m_driveMotor.getEncoder();
-    m_driveEncoder.setPosition(0);
-    m_driveEncoder.setPositionConversionFactor(DRIVE_POSITION_CONVERSION);
-    m_driveEncoder.setVelocityConversionFactor(DRIVE_VELOCITY_CONVERSION);
     
     SparkPIDController steerController = m_steerMotor.getPIDController();
     steerController.setPositionPIDWrappingMinInput(0);
@@ -67,25 +68,28 @@ public class SwerveModule {
     steerController.setD(STEER_kD);
     m_steerMotor.setClosedLoopRampRate(STEER_RAMP_RATE);
 
-    SparkPIDController driveController = m_driveMotor.getPIDController();
-    driveController.setP(DRIVE_kP);
-    driveController.setI(DRIVE_kI);
-    driveController.setD(DRIVE_kD);
-    m_driveMotor.setClosedLoopRampRate(DRIVE_RAMP_RATE);
-
-    m_driveFeedforward = new SimpleMotorFeedforward(DRIVE_kS, DRIVE_kV);
-
+   
+     var Slot0Configs = new Slot0Configs(); 
+    Slot0Configs.kP = 0; 
+    Slot0Configs.kI = 0; 
+    Slot0Configs.kD = 0; 
+    Slot0Configs.kS = 0.03; 
+   Slot0Configs.kV = 0.09; 
+   m_driveMotor.getConfigurator().apply(Slot0Configs);
+    final PositionVoltage m_request = new PositionVoltage(0).withSlot(0); 
+    m_driveMotor.setControl(m_request.withPosition(0));
     m_angleReference = new Rotation2d();
+    m_driveMotor.setControl(m_request);
+    
   }
-
+    
   public void setState(SwerveModuleState state) {
     m_angleReference = state.angle;
     m_velocityReference = state.speedMetersPerSecond;
     
     m_steerMotor.getPIDController().setReference(m_angleReference.getRotations(), ControlType.kPosition);
-    m_driveMotor.getPIDController().setReference(
-        m_velocityReference, ControlType.kVelocity, 0, 
-        m_driveFeedforward.calculate(m_velocityReference));
+     m_request = new VelocityVoltage(m_velocityReference); 
+    m_driveMotor.setControl(m_request);
   }
 
   public void setIntegratedEncoderPositionToAbsoluteEncoderMeasurement() {
@@ -100,12 +104,10 @@ public class SwerveModule {
     return m_angleReference;
   }
 
-  public SwerveModulePosition getModulePosition() {
-    return new SwerveModulePosition(m_driveEncoder.getPosition(), getRotation2d());
-  }
+ 
 
   public double getDriveEncoderPosition() {
-    return m_driveEncoder.getPosition();
+    return m_driveMotor.getPosition().getValueAsDouble();
   }
 
   public double getAngleDegrees() {
@@ -117,13 +119,13 @@ public class SwerveModule {
   }
 
   public double getVelocity() {
-    return m_driveEncoder.getVelocity();
+    return m_driveMotor.getVelocity().getValueAsDouble();
   }
 
   public double getDesiredVelocity() {
     return m_velocityReference;
   }
-
+   
   public void putData(String name) {
     SmartDashboard.putNumber(name + " cancoder rot", m_steerAbsoluteEncoder.getAbsolutePosition().getValueAsDouble());
     SmartDashboard.putNumber(name + " neo rot", m_steerIntegratedEncoder.getPosition());
