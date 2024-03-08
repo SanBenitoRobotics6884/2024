@@ -100,9 +100,9 @@ public class SwerveSubsystem extends SubsystemBase {
     m_posePublisher.accept(m_poseAsArray);
 
     m_modules[0].putData("FR");
-    m_modules[1].putData("FL");
-    m_modules[2].putData("BR");
-    m_modules[3].putData("BL");
+    // m_modules[1].putData("FL");
+    // m_modules[2].putData("BR");
+    // m_modules[3].putData("BL");
   }
 
   public void driveRobotOriented(ChassisSpeeds speeds) {

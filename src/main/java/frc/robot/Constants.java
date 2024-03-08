@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static final class Swerve {
-    public static final double STEER_kP = 3.0; // 1.3 before switching pid loops
+    public static final double STEER_kP = 3.0;
     public static final double STEER_kI = 0;
     public static final double STEER_kD = 0;
     public static final double STEER_RAMP_RATE = 0.15; // how many seconds to go from 0 to full throttle
@@ -71,8 +71,8 @@ public final class Constants {
   }
     
   public static final class Climb {
-    public static final double MAX_UP_VOLTAGE = 0.15; // 0.4; 
-    public static final double MAX_DOWN_VOLTAGE = -0.8; // -0.8 
+    public static final double MAX_UP_VOLTAGE = 0.15; 
+    public static final double MAX_DOWN_VOLTAGE = -0.8;
     
     public static final double EXTEND_MOTOR_SETPOINT = 0; // this is where climber starts
     public static final double RETRACT_MOTOR_SETPOINT = 85.0;
@@ -100,7 +100,7 @@ public final class Constants {
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -0.28; // -0.25 before 8:39 am 2-23
+    public static final double SPEAKER_POSITION = -0.28;
     public static final double AMP_POSITION = -0.22; 
 
     public static final double ZEROING_VOLTAGE = 0.15;
@@ -116,7 +116,6 @@ public final class Constants {
   }
   
   public final static class Intake {
-    // ~ WIP ~ //
     public static final double PIVOT_kP = 0.1;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
@@ -141,7 +140,7 @@ public final class Constants {
     public static final double k_PIVOT_ANGLE_SOURCE = 0;
 
     public static final double TOLERANCE = 5.0;
-    public static final double DEPLOY_SETPOINT = -132.0; // Before 4:34pm on 2-28 it was -130.0 
+    public static final double DEPLOY_SETPOINT = -132.5; // Before 4:34pm on 2-28 it was -130.0 
     public static final double STOW_SETPOINT = -3.0;
     public static final double ZEROING_SPEED = 0.1;
 
