@@ -116,7 +116,7 @@ public final class Constants {
   }
   
   public final static class Intake {
-    public static final double PIVOT_kP = 0.1;
+    public static final double PIVOT_kP = 0.15;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
@@ -132,16 +132,16 @@ public final class Constants {
     public static final double INTAKE_MOTOR_EJECT_SPEED = 0.4;
     public static final double INTAKE_MOTOR_SPEAKER_SPEED = 0.8;
 
-    public static final double MAX_VELOCITY = 100;
-    public static final double MAX_ACCELERATION = 45;
+    public static final double MAX_VELOCITY = 66.7;
+    public static final double MAX_ACCELERATION = 30;
 
     // Pivot set point angles, thought I still don't know what the angles would be.
     public static final double k_PIVOT_ANGLE_GROUND = 0;
     public static final double k_PIVOT_ANGLE_SOURCE = 0;
 
     public static final double TOLERANCE = 5.0;
-    public static final double DEPLOY_SETPOINT = -132.5; // Before 4:34pm on 2-28 it was -130.0 
-    public static final double STOW_SETPOINT = -3.0;
+    public static final double DEPLOY_SETPOINT = -91.5; // Before 4:34pm on 2-28 it was -130.0 
+    public static final double STOW_SETPOINT = -2.0;
     public static final double ZEROING_SPEED = 0.1;
 
     public static final double ENCODER_POSITION = 0; // DEPLOY_SETPOINT;
