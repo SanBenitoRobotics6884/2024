@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static final class Swerve {
-    public static final double STEER_kP = 3.0; // 1.3 before switching pid loops
+    public static final double STEER_kP = 3.0;
     public static final double STEER_kI = 0;
     public static final double STEER_kD = 0;
     public static final double STEER_RAMP_RATE = 0.15; // how many seconds to go from 0 to full throttle
@@ -71,8 +71,8 @@ public final class Constants {
   }
     
   public static final class Climb {
-    public static final double MAX_UP_VOLTAGE = 0.15; // 0.4; 
-    public static final double MAX_DOWN_VOLTAGE = -0.8; // -0.8 
+    public static final double MAX_UP_VOLTAGE = 0.15; 
+    public static final double MAX_DOWN_VOLTAGE = -0.8;
     
     public static final double EXTEND_MOTOR_SETPOINT = 0; // this is where climber starts
     public static final double RETRACT_MOTOR_SETPOINT = 85.0;
@@ -100,12 +100,12 @@ public final class Constants {
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -0.28; // -0.25 before 8:39 am 2-23
+    public static final double SPEAKER_POSITION = -0.28;
     public static final double AMP_POSITION = -0.22; 
 
     public static final double ZEROING_VOLTAGE = 0.15;
 
-    public static final double SHOOTER_SPEAKER_MOTOR_VOLTAGE = 0.8;
+    public static final double SHOOTER_SPEAKER_MOTOR_VOLTAGE = 0.95;
     public static final double TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE = -0.8;
     public static final double SHOOTER_AMP_MOTOR_VOLTAGE = 0.3;
     public static final double TAKE_NOTE_AMP_MOTOR_VOLTAGE = -0.3;
@@ -116,8 +116,7 @@ public final class Constants {
   }
   
   public final static class Intake {
-    // ~ WIP ~ //
-    public static final double PIVOT_kP = 0.1;
+    public static final double PIVOT_kP = 0.15;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
@@ -133,16 +132,18 @@ public final class Constants {
     public static final double INTAKE_MOTOR_EJECT_SPEED = 0.4;
     public static final double INTAKE_MOTOR_SPEAKER_SPEED = 0.8;
 
-    public static final double MAX_VELOCITY = 100;
-    public static final double MAX_ACCELERATION = 45;
+    public static final double MAX_VELOCITY = 66.7;
+    public static final double MAX_ACCELERATION = 30;
 
     // Pivot set point angles, thought I still don't know what the angles would be.
     public static final double k_PIVOT_ANGLE_GROUND = 0;
     public static final double k_PIVOT_ANGLE_SOURCE = 0;
 
     public static final double TOLERANCE = 5.0;
-    public static final double DEPLOY_SETPOINT = -137.0; // Before 4:34pm on 2-28 it was -130.0 
-    public static final double STOW_SETPOINT = -3.0;
+    
+    public static final double DEPLOY_SETPOINT = -91.5; // Before 4:34pm on 2-28 it was -130.0 
+    public static final double STOW_SETPOINT = -2.0;
+    
     public static final double ZEROING_SPEED = 0.1;
 
     public static final double ENCODER_POSITION = 0; // DEPLOY_SETPOINT;
