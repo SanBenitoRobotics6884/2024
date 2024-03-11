@@ -10,6 +10,7 @@ public final class Constants {
     public static final double STEER_kI = 0;
     public static final double STEER_kD = 0;
     public static final double STEER_RAMP_RATE = 0.15; // how many seconds to go from 0 to full throttle
+    public static final int STEER_CURRENT_LIMIT = 20;
 
     public static final double DRIVE_kP = 0.2;
     public static final double DRIVE_kI = 0;
@@ -17,7 +18,8 @@ public final class Constants {
     public static final double DRIVE_kS = 0.11;
     public static final double DRIVE_kV = 3.0;
     public static final double DRIVE_RAMP_RATE = 0.15;
-
+    public static final int DRIVE_CURRENT_LIMIT = 40;
+   
     public static final double MAX_OUTPUT = 0.3;
 
     public static final boolean SQUARED_INPUTS = false;
@@ -73,13 +75,14 @@ public final class Constants {
   public static final class Climb {
     public static final double MAX_UP_VOLTAGE = 0.15; 
     public static final double MAX_DOWN_VOLTAGE = -0.8;
-    
+    public static final  int    INTAKE_CURRENT_LIMITS  = 50;
     public static final double EXTEND_MOTOR_SETPOINT = 0; // this is where climber starts
     public static final double RETRACT_MOTOR_SETPOINT = 85.0;
-    
+    public static final int EXTEND_CURRENT_LIMITS = 50; 
+    public static final int RETRACT_CURRENT_LIMIITS = 50; 
     public static final int R_CLIMB_MOTOR_ID = 14;
     public static final int L_CLIMB_MOTOR_ID = 15;
-    
+    public static final int OUTTAKE_CURRENT_LIMITS = 90; 
     public static final double CLIMB_kP = 0.05;
     public static final double CLIMB_kI = 0;
     public static final double CLIMB_kD = 0;    

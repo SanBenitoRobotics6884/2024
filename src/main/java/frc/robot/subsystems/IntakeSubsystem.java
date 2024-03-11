@@ -22,6 +22,7 @@ import frc.robot.commands.IntakeToOuttakeWithDelay;
 import frc.robot.commands.ReelCommand;
 import frc.robot.commands.StowIntakeCommand;
 
+import static frc.robot.Constants.Climb.INTAKE_CURRENT_LIMITS;
 import static frc.robot.Constants.Intake.*;
 
 import java.util.function.BooleanSupplier;
@@ -53,7 +54,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     m_pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) DEPLOY_SETPOINT);
     m_pivotMotor.setSoftLimit(SoftLimitDirection.kReverse,(float) STOW_SETPOINT);
-
+    m_pivotMotor.setSmartCurrentLimit(INTAKE_CURRENT_LIMITS);
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     // m_intakeMotor.setSmartCurrentLimit(0); UNNEEDED ATM
