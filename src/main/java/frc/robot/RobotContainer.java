@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DefaultDrive;
-import frc.robot.commands.FieldDrive;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
-import frc.robot.subsystems.OuttakeSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.outtake.OuttakeSubsystem;
+import frc.robot.subsystems.climb.ClimbSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.swerve.DefaultDrive;
+import frc.robot.subsystems.swerve.FieldDrive;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class RobotContainer {
   public enum BindingsSetting {
