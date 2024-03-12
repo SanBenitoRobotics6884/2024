@@ -20,7 +20,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -91,7 +90,10 @@ public class SwerveModule {
      m_request = new VelocityVoltage(m_velocityReference); 
     m_driveMotor.setControl(m_request);
   }
-
+ public SwerveModulePosition getModulePosition() {
+    return new SwerveModulePosition(m_driveMotor.getPosition().getValueAsDouble(), getRotation2d());
+  }
+ 
   public void setIntegratedEncoderPositionToAbsoluteEncoderMeasurement() {
     m_steerIntegratedEncoder.setPosition(m_steerAbsoluteEncoder.getAbsolutePosition().getValueAsDouble());
   }
