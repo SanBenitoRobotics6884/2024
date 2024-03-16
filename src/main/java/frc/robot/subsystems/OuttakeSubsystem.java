@@ -56,9 +56,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     } else {
       m_pivotMotor.set(m_PID.calculate(m_pivotEncoder.getPosition(), m_pivotSetpoint));
     }
-
+     
     SmartDashboard.putBoolean("amp switch", m_ampLimitSwitch.get());
     SmartDashboard.putBoolean("zeroing", isZeroing);
+    SmartDashboard.putNumber("outtake current", m_passOffMotor.getStatorCurrent().getValueAsDouble());
   }
 
   public boolean ampLimitSwitchHit() {

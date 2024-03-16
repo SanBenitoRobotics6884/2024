@@ -94,22 +94,22 @@ public final class Constants {
 
     public static final int AMP_LIMIT_SWITCH_CHANNEL = 0;
 
-    public static final double PIVOT_kP = 1.0;
+    public static final double PIVOT_kP = 2.0;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -0.28;
+    public static final double SPEAKER_POSITION = -0.305;
     public static final double AMP_POSITION = -0.22; 
 
     public static final double ZEROING_VOLTAGE = 0.15;
 
-    public static final double SPEAKER_PERCENT_OUTPUT = -0.8;
-    public static final double AMP_PERCENT_OUTPUT = -0.3;
-    public static final double YOINK_PERCENT_OUTPUT = -0.3;
+    public static final double SPEAKER_PERCENT_OUTPUT = 0.8;
+    public static final double AMP_PERCENT_OUTPUT = 0.3;
+    public static final double YOINK_PERCENT_OUTPUT = 0.3;
 
     public static final double TOLERANCE = 0.05;
 
-    public static final double SHOOTER_CURRENT_LIMIT = 40.0;
+    public static final double SHOOTER_CURRENT_LIMIT = 60.0;
   }
   
   public final static class Intake {
