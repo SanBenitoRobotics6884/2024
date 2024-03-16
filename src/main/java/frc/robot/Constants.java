@@ -74,15 +74,12 @@ public final class Constants {
   public static final class Climb {
     public static final double MAX_UP_VOLTAGE = 0.15; 
     public static final double MAX_DOWN_VOLTAGE = -0.8;
-    public static final int INTAKE_CURRENT_LIMITS = 50;
-    public static final int  INTAKETOOUTTAKE_CURRENT_LIMITS  = 50;
     public static final double EXTEND_MOTOR_SETPOINT = 0; // this is where climber starts
     public static final double RETRACT_MOTOR_SETPOINT = 85.0;
-    public static final int CLIMB_CURRENT_LIMIIT= 50; 
-    public static final int CLIMB_CURRENT_LIMIITS = 50; 
+    public static final int RIGHTCLIMB_CURRENT_LIMIIT= 50; 
+    public static final int LEFTCLIMB_CURRENT_LIMIITS = 50; 
     public static final int R_CLIMB_MOTOR_ID = 14;
     public static final int L_CLIMB_MOTOR_ID = 15;
-   
     public static final double CLIMB_kP = 0.05;
     public static final double CLIMB_kI = 0;
     public static final double CLIMB_kD = 0;    
@@ -123,7 +120,7 @@ public final class Constants {
     public static final double PIVOT_kP = 0.1;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
-
+    public static final int INTAKE_CURRENT_LIMITS = 50;
     public static final int INTAKE_MOTOR_ID = 20;
     public static final int PIVOT_MOTOR_ID = 21;
     public static final int NOTE_LIMIT_SWITCH = 2;
