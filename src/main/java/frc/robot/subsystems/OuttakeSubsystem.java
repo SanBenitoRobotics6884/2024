@@ -42,11 +42,14 @@ public class OuttakeSubsystem extends SubsystemBase {
     m_shooterMotorI.follow(m_shooterMotorII, true);
     m_shooterMotorI.setIdleMode(IdleMode.kBrake);
     m_shooterMotorII.setIdleMode(IdleMode.kBrake);
-    m_shooterMotorI.setSmartCurrentLimit(OUTTAKE_CURRENT_LIMITS);
-    m_shooterMotorI.setSmartCurrentLimit(OUTTAKE_CURRENT_LIMITS);
-    m_shooterMotorII.setSmartCurrentLimit(OUTTAKE_CURRENT_LIMITS);
+    m_pivotMotor.setSmartCurrentLimit(OUTTAKE_CURRENT_LIMITS);
+    m_shooterMotorI.setSmartCurrentLimit(OUTTAKE_CURRENT_LIMITS); 
+    m_shooterMotorII.setSmartCurrentLimit(OUTTAKE_CURRENT_LIMITS); 
     m_takeNoteMotor.setSmartCurrentLimit(OUTTAKE_CURRENT_LIMITS);
+  
   }
+
+
 
   @Override
   public void periodic() {

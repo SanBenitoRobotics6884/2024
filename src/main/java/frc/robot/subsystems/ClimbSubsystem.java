@@ -42,8 +42,8 @@ public class ClimbSubsystem extends SubsystemBase{
     m_rightPIDController.setSetpoint(-EXTEND_MOTOR_SETPOINT);
     m_rightClimbMotor.setIdleMode(IdleMode.kBrake);
     m_leftClimbMotor.setIdleMode(IdleMode.kBrake);
-    m_rightClimbMotor.setSmartCurrentLimit(EXTEND_CURRENT_LIMITS);
-   m_leftClimbMotor.setSmartCurrentLimit(RETRACT_CURRENT_LIMIITS);
+    m_rightClimbMotor.setSmartCurrentLimit(CLIMB_CURRENT_LIMIIT);
+   m_leftClimbMotor.setSmartCurrentLimit(CLIMB_CURRENT_LIMIITS);
   }
    @Override
   public void periodic() {
