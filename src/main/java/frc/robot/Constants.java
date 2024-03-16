@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -18,7 +19,8 @@ public final class Constants {
     public static final double DRIVE_kV = 3.0;
     public static final double DRIVE_RAMP_RATE = 0.15;
 
-    public static final double MAX_OUTPUT = 0.3;
+    public static final SimpleMotorFeedforward DRIVE_FEEDFORWARD = 
+        new SimpleMotorFeedforward(DRIVE_kS, DRIVE_kV);
 
     public static final boolean SQUARED_INPUTS = false;
 
