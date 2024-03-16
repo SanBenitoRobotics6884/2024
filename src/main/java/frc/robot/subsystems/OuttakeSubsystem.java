@@ -4,9 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -19,9 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.Outtake.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
-  CANSparkMax m_takeNoteMotor = new CANSparkMax(TAKE_NOTE_MOTOR_ID, MotorType.kBrushless);
-  CANSparkMax m_shooterMotorI = new CANSparkMax(SHOOTER_MOTOR_I_ID, MotorType.kBrushless);
-  CANSparkMax m_shooterMotorII = new CANSparkMax(SHOOTER_MOTOR_II_ID, MotorType.kBrushless);
+  TalonFX m_passOffMotor = new TalonFX(PASS_OFF_MOTOR_ID);
   CANSparkMax m_pivotMotor = new CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless);
 
   PIDController m_PID = new PIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD);
@@ -38,13 +37,11 @@ public class OuttakeSubsystem extends SubsystemBase {
 
   /** Creates a new OuttakeSubsystem. */
   public OuttakeSubsystem() {
-    m_shooterMotorI.follow(m_shooterMotorII, true);
-    m_shooterMotorI.setIdleMode(IdleMode.kBrake);
-    m_shooterMotorII.setIdleMode(IdleMode.kBrake);
+    CurrentLimitsConfigs config = new CurrentLimitsConfigs();
+    config.StatorCurrentLimit = SHOOTER_CURRENT_LIMIT;
+    config.StatorCurrentLimitEnable = true;
 
-    m_shooterMotorI.setSmartCurrentLimit(90);
-    m_shooterMotorII.setSmartCurrentLimit(90);
-    m_takeNoteMotor.setSmartCurrentLimit(90);
+    m_passOffMotor.getConfigurator().apply(config);
   }
 
   @Override
@@ -60,24 +57,8 @@ public class OuttakeSubsystem extends SubsystemBase {
       m_pivotMotor.set(m_PID.calculate(m_pivotEncoder.getPosition(), m_pivotSetpoint));
     }
 
-    SmartDashboard.putBoolean("switch", m_ampLimitSwitch.get());
-    // SmartDashboard.putBoolean("zeroing", isZeroing);
-    // SmartDashboard.putNumber("left shooter", maxLeftCurrent);
-    // SmartDashboard.putNumber("right shooter", maxRightCurrent);
-    // SmartDashboard.putNumber("pass off motor", maxPassOffCurrent);
-
-    double leftCurrent = m_shooterMotorI.getOutputCurrent();
-    double rightCurrent = m_shooterMotorII.getOutputCurrent();
-    double passOffCurrent = m_takeNoteMotor.getOutputCurrent();
-    if (maxLeftCurrent < leftCurrent) {
-      maxLeftCurrent = leftCurrent;
-    }
-    if (maxRightCurrent < rightCurrent) {
-      maxRightCurrent = rightCurrent;
-    }
-    if (maxPassOffCurrent < passOffCurrent) {
-      maxPassOffCurrent = passOffCurrent;
-    }
+    SmartDashboard.putBoolean("amp switch", m_ampLimitSwitch.get());
+    SmartDashboard.putBoolean("zeroing", isZeroing);
   }
 
   public boolean ampLimitSwitchHit() {
@@ -100,29 +81,26 @@ public class OuttakeSubsystem extends SubsystemBase {
     return Math.abs(m_pivotEncoder.getPosition() - m_pivotSetpoint) < TOLERANCE;
   }
 
-  public void rollOuttake(double takeNoteSpeed, double shootersSpeed) {
-    m_takeNoteMotor.set(takeNoteSpeed);
-    m_shooterMotorII.set(shootersSpeed);
+  public void rollOuttake(double takeNoteSpeed) {
+    m_passOffMotor.set(takeNoteSpeed);
   }
 
   public void stopMotors() {
-    m_takeNoteMotor.stopMotor();
-    m_shooterMotorI.stopMotor();
-    m_shooterMotorII.stopMotor();
+    m_passOffMotor.stopMotor();
   }
 
   // The following code it is not used, but we love it, so we're leaving it here. :fire: :skull:
 
   public Command shootToAmpCommand() {
-    return run(() -> rollOuttake(TAKE_NOTE_AMP_MOTOR_VOLTAGE, SHOOTER_AMP_MOTOR_VOLTAGE)).finallyDo(this::stopMotors);
+    return run(() -> rollOuttake(AMP_PERCENT_OUTPUT)).finallyDo(this::stopMotors);
   }
 
   public Command shootToSpeakerCommand() {
-    return run(() -> rollOuttake(TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE, SHOOTER_SPEAKER_MOTOR_VOLTAGE)).finallyDo(this::stopMotors);
+    return run(() -> rollOuttake(SPEAKER_PERCENT_OUTPUT)).finallyDo(this::stopMotors);
   }
 
   public Command yoinkNoteCommand() {
-    return run(() -> rollOuttake(YOINK_TAKE_NOTE_SPEED, YOINK_SHOOTERS_SPEED)).finallyDo(this::stopMotors);
+    return run(() -> rollOuttake(YOINK_PERCENT_OUTPUT)).finallyDo(this::stopMotors);
   }
 
   // The two following commands make the robot outtake to rotate either amp or speaker possition. :fire: :sob:
