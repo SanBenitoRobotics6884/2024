@@ -176,9 +176,10 @@ public class RobotContainer {
   /** These are bindings in the PITS bindings mode */
   private void configurePitsBindings() {
     // extend and retract
+    /**
     m_joystick.button(9).onTrue(m_climbSubsystem.getExtendCommand());
     m_joystick.button(10).onTrue(m_climbSubsystem.getRetractCommand());
-
+    */
     // deploy and stow
     m_joystick.button(11).onTrue(m_intakeSubsystem.getDeployCommand());
     m_joystick.button(12).onTrue(m_intakeSubsystem.getStowCommand());
@@ -186,10 +187,11 @@ public class RobotContainer {
     // Pick up and release note
     m_joystick.button(8).whileTrue(m_intakeSubsystem.getSuckCommand());
     m_joystick.button(7).whileTrue(m_intakeSubsystem.getEjectCommand());
-
+    /**
     // rotate outtake to amp or speaker position
     m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
     m_joystick.button(6).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
+    */
   }
 
   /** These are the only bindings when in the CLIMB calibration bindings mode */
