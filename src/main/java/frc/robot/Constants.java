@@ -148,5 +148,11 @@ public final class Constants {
 
     public static final double ENCODER_POSITION = 0; // DEPLOY_SETPOINT;
   }
+
+  public static final class VisionSubsystem{
+    // WILL ADD MORE CONSTANTS SOON
+    public static final double CAMERA_HEIGHT = 0;
+    
+  }
   
 }
