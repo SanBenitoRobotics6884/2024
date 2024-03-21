@@ -4,23 +4,24 @@
 
 package frc.robot.subsystems;
 
+import javax.swing.TransferHandler.TransferSupport;
+
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
   
-  PhotonCamera m_camera = new PhotonCamera("Vision | Mew and Mogging Edition 🤫🧏");
+  PhotonCamera m_camera = new PhotonCamera("Vision | 🤫🧏");
 
   SwerveSubsystem m_swerveSubsystem;
-  double m_pitch;
-  double m_yaw;
-  double m_skew;
   int m_fiducialId;
-  double m_targetHeight;
-  Pose3d m_tagPose3d;
   
 
   /** Creates a new VisionSubsystem. */
@@ -28,10 +29,7 @@ public class VisionSubsystem extends SubsystemBase {
     // i have an idea we'll see if i remember tomorrow
     m_camera = camera;
     m_swerveSubsystem = swerve;
-    m_yaw = 0.0;
     m_fiducialId = 0;
-    m_targetHeight = 0.0;
-    m_tagPose3d = new Pose3d();
   }
 
   @Override
@@ -42,16 +40,14 @@ public class VisionSubsystem extends SubsystemBase {
       PhotonTrackedTarget m_bestTarget = m_results.getBestTarget();
 
       m_fiducialId = m_bestTarget.getFiducialId();
-      m_pitch = m_bestTarget.getPitch();
-      m_yaw = m_bestTarget.getYaw();
-      m_skew = m_bestTarget.getSkew();
-      m_bestTarget.getPoseAmbiguity();
-      m_bestTarget.getBestCameraToTarget();
-
-      //m_bestTarget.getAlternateCameraToTarget();
+   
       // what in the frink is reprojection and how can it error 😭
       // im still debating how i would use taking snapshots of what the camera sees and why, and even when.
     }
   }
   // fr debating things (i'll ask you tomowowow lucus 👍)
+
+  public void fieldRelativePose() {
+    // PhotonUtils.estimateFieldToRobotAprilTag(m_camera.getBestTarget(), );
+  }
 }
