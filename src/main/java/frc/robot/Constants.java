@@ -153,6 +153,8 @@ public final class Constants {
     // WILL ADD MORE CONSTANTS SOON
     public static final double CAMERA_HEIGHT = 0;
     
+    public static final boolean DRIVER_MODE = false;
+    
   }
   
 }
