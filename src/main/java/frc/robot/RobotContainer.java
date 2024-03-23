@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -221,19 +224,31 @@ public class RobotContainer {
   }
 
   private double getLeftY() {
+    double leftX = m_controller.getLeftX();
     double leftY = m_controller.getLeftY();
-    if (Math.hypot(m_controller.getLeftX(), leftY) < 0.1) {
+    if (Math.hypot(leftX, leftY) < 0.1) {
       return 0;
     }
-    return leftY;
+    if (!SQUARED_INPUTS) {
+      return leftY;
+    }
+    double angle = Math.atan2(leftY, leftX);
+    double magnitude = MathUtil.clamp(Math.pow(Math.hypot(leftX, leftY), 2), -1, 1);
+    return magnitude * Math.sin(angle);
   }
 
   private double getLeftX() {
     double leftX = m_controller.getLeftX();
-    if (Math.hypot(leftX, m_controller.getLeftY()) < 0.1) {
+    double leftY = m_controller.getLeftY();
+    if (Math.hypot(leftX, leftY) < 0.1) {
       return 0;
     }
-    return leftX;
+    if (!SQUARED_INPUTS) {
+      return leftX;
+    }
+    double angle = Math.atan2(leftY, leftX);
+    double magnitude = MathUtil.clamp(Math.pow(Math.hypot(leftX, leftY), 2), -1, 1);
+    return magnitude * Math.cos(angle);
   }
 
   private double getRightX() {
