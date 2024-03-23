@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.outtake.OuttakeIOReal;
 import frc.robot.subsystems.outtake.OuttakeSubsystem;
+import frc.robot.subsystems.climb.ClimbIOSparkMax;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.DefaultDrive;
@@ -74,7 +75,7 @@ public class RobotContainer {
 
       m_swerveSubsystem.setDefaultCommand(m_fieldDrive);
     }
-    m_climbSubsystem = new ClimbSubsystem();
+    m_climbSubsystem = new ClimbSubsystem(new ClimbIOSparkMax());
 
     m_gyroYawSetter.addOption("Left", 60.0);
     m_gyroYawSetter.addOption("Right", -60.0);
