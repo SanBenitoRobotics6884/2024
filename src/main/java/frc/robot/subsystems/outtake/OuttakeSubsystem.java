@@ -20,10 +20,7 @@ public class OuttakeSubsystem extends SubsystemBase {
   PIDController m_PID = new PIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD);
 
   double m_pivotSetpoint = 0;
-  boolean isZeroing = true; // Should initially be true
-  double maxLeftCurrent = 0;
-  double maxRightCurrent = 0;
-  double maxPassOffCurrent = 0;
+  boolean m_isZeroing = true; // Should initially be true
 
   /** Creates a new OuttakeSubsystem. */
   public OuttakeSubsystem(OuttakeIO io) {
@@ -35,10 +32,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     m_io.updateInputs(m_inputs);
     Logger.processInputs("outtake", m_inputs);
 
-    if (isZeroing) {
+    if (m_isZeroing) {
       m_io.setPivotDutyCycle(ZEROING_VOLTAGE);
       if (m_inputs.speakerLimitSwitch) {
-        isZeroing = false;
+        m_isZeroing = false;
         m_io.setPivotPosition(0);
       }
     } else {
@@ -49,6 +46,10 @@ public class OuttakeSubsystem extends SubsystemBase {
 
   public boolean isInAmpPosition() {
     return m_inputs.pivotPosition > (SPEAKER_POSITION + AMP_POSITION) / 2.0;
+  }
+
+  public boolean isNotZeroing() {
+    return !m_isZeroing;
   }
 
   public void toSpeakerPosition() {

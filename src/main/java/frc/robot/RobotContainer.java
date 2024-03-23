@@ -7,6 +7,13 @@ package frc.robot;
 import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
 
 import edu.wpi.first.math.MathUtil;
+import java.util.Optional;
+
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.outtake.OuttakeIOReal;
 import frc.robot.subsystems.outtake.OuttakeSubsystem;
+import frc.robot.commands.ShootToSpeaker;
 import frc.robot.subsystems.climb.ClimbIOSparkMax;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -44,7 +52,7 @@ public class RobotContainer {
   private FieldDrive m_slowDrive;
   private FieldDrive m_fieldDrive;
 
-  private SendableChooser<Double> m_gyroYawSetter = new SendableChooser<>();
+  private SendableChooser<AutoCommand> m_autoSelector = new SendableChooser<>();
 
   public RobotContainer() {
     m_joystick = new CommandJoystick(0);
@@ -77,12 +85,30 @@ public class RobotContainer {
     }
     m_climbSubsystem = new ClimbSubsystem(new ClimbIOSparkMax());
 
-    m_gyroYawSetter.addOption("Left", 60.0);
-    m_gyroYawSetter.addOption("Right", -60.0);
-    m_gyroYawSetter.setDefaultOption("Middle", 0.0);
+    NamedCommands.registerCommand("intake", Commands.sequence(
+        m_intakeSubsystem.getDeployCommand(), 
+        m_intakeSubsystem.getReelCommand(() -> false).withTimeout(3.0), 
+        m_intakeSubsystem.getStowCommand()));
+    NamedCommands.registerCommand("score", 
+        new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem));
 
-    SmartDashboard.putData("speaker side", m_gyroYawSetter);
+    m_autoSelector.setDefaultOption("none", new AutoCommand(Commands.none(), 0));
+    // We have not tested any of these
+    addPPAuto("amp-side shoot and pick-up", "Left Pick Up");
+    addPPAuto("amp-side taxi", "Left Taxi");
+    addPPAuto("center shoot and pick-up", "Center Pick Up");
+    addPPAuto("source-side shoot and pick-up", "Right Pick Up");
+    addPPAuto("source-side taxi", "Right Taxi");
+    addPPAuto("tune", "Tune");
+    addSimpleAuto("left shoot", 
+        new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem), 60.0);
+    addSimpleAuto("center shoot", 
+        new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem), 0);
+    addSimpleAuto("right shoot", 
+        new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem), -60.0);
     
+    SmartDashboard.putData("auto", m_autoSelector);
+
     switch (m_setting) {
       case PITS:
         configureBindings();
@@ -208,20 +234,20 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return getResetGyroCommand().andThen(getMainAutoCommand());
+    AutoCommand auto = m_autoSelector.getSelected();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+      auto.flip();
+    }
+    return Commands.runOnce(() -> m_swerveSubsystem.setYaw(auto.getAngle())).andThen(auto.getCommand());
   }
 
-  private Command getResetGyroCommand() {
-    return Commands.runOnce(() -> m_swerveSubsystem.setYaw(m_gyroYawSetter.getSelected()));
+  private void addPPAuto(String name, String autoName) {
+    m_autoSelector.addOption(name, AutoCommand.fromPPAuto(autoName));
   }
 
-  private Command getMainAutoCommand() {
-    return Commands.sequence(
-        Commands.waitSeconds(3.0),
-        m_outtakeSubsystem.rotateToSpeakerCommand(),
-        m_intakeSubsystem.getToSpeakerCommand()
-        .alongWith(m_outtakeSubsystem.shootToSpeakerCommand())
-        .withTimeout(3.0));
+  private void addSimpleAuto(String name, Command command, double angleDegrees) {
+    m_autoSelector.addOption(name, new AutoCommand(command, angleDegrees));
   }
 
   private double getLeftY() {
@@ -258,6 +284,37 @@ public class RobotContainer {
       rightX = 0;
     }
     return rightX;
+  }
+
+  private static class AutoCommand {
+    private Command m_command;
+    private double m_angleDegrees;
+
+    AutoCommand(Command command, double angleDegrees) {
+      m_command = command;
+      m_angleDegrees = angleDegrees;
+    }
+
+    Command getCommand() {
+      return m_command;
+    }
+
+    double getAngle() {
+      SmartDashboard.putNumber("gyro init angle", m_angleDegrees);
+      return m_angleDegrees;
+    }
+
+    void flip() {
+      m_angleDegrees = -m_angleDegrees;
+    }
+
+
+    static AutoCommand fromPPAuto(String name) {
+      return new AutoCommand(
+          new PathPlannerAuto(name), 
+          PathPlannerAuto.getStaringPoseFromAutoFile(name).getRotation().getDegrees());
+    }
+
   }
   
 }

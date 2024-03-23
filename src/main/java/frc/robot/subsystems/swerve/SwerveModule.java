@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.Constants.Swerve.*;
 
 public class SwerveModule {
-
   private CANSparkMax m_driveMotor;
   private CANSparkMax m_steerMotor;
 
@@ -32,6 +31,8 @@ public class SwerveModule {
 
   private Rotation2d m_angleReference;
   private double m_velocityReference; // meters per second
+
+  private SwerveModuleState m_currentState;
     
   public SwerveModule(int driveID, int steerID, int encoderID, boolean driveInverted, 
                       boolean steerInverted, double magnetOffset) {
@@ -102,6 +103,12 @@ public class SwerveModule {
 
   public SwerveModulePosition getModulePosition() {
     return new SwerveModulePosition(m_driveEncoder.getPosition(), getRotation2d());
+  }
+
+  public SwerveModuleState getState() {
+    m_currentState.speedMetersPerSecond = getVelocity();
+    m_currentState.angle = getRotation2d();
+    return m_currentState;
   }
 
   public double getDriveEncoderPosition() {

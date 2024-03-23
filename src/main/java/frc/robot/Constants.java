@@ -1,6 +1,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -65,11 +69,20 @@ public final class Constants {
     public static final double BR_OFFSET_ROTATIONS = 0.9320;
     public static final double BL_OFFSET_ROTATIONS = 0.2593;
 
-    public static final double APOTHEM = Units.inchesToMeters(10.625);
+    public static final double APOTHEM = Units.inchesToMeters(10.625); // outdated
     public static final Translation2d FR_LOCATION = new Translation2d(APOTHEM, -APOTHEM);
     public static final Translation2d FL_LOCATION = new Translation2d(APOTHEM, APOTHEM);
     public static final Translation2d BR_LOCATION = new Translation2d(-APOTHEM, -APOTHEM);
     public static final Translation2d BL_LOCATION = new Translation2d(-APOTHEM, APOTHEM);
+
+    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = 
+        new HolonomicPathFollowerConfig(
+            new PIDConstants(2,0,0),
+            new PIDConstants(2, 0, 0),
+            3.5,
+            0.4445,
+            new ReplanningConfig());
+
   }
     
   public static final class Climb {
@@ -113,7 +126,7 @@ public final class Constants {
 
     public static final double SHOOTER_CURRENT_LIMIT = 60.0;
   }
-  
+
   public final static class Intake {
     public static final double PIVOT_kP = 0.15;
     public static final double PIVOT_kI = 0;
@@ -147,5 +160,4 @@ public final class Constants {
 
     public static final double ENCODER_POSITION = 0; // DEPLOY_SETPOINT;
   }
-  
 }

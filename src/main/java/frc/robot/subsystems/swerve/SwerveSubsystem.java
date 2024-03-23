@@ -11,11 +11,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Swerve.*;
 
 import org.littletonrobotics.junction.Logger;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 
 public class SwerveSubsystem extends SubsystemBase {
   private ModuleIO[] m_modules = new ModuleIO[] {
@@ -61,6 +64,21 @@ public class SwerveSubsystem extends SubsystemBase {
         getAngle(),
         m_modulePositions,
         m_pose);
+
+    AutoBuilder.configureHolonomic(
+        this::getPose,
+        this::setPose,
+        this::getChassisSpeeds,
+        this::driveRobotOriented,
+        PATH_FOLLOWER_CONFIG,
+        () -> {
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
   }
 
   @Override
@@ -101,6 +119,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Pose2d getPose() {
     return m_pose;
+  }
+
+  public void setPose(Pose2d pose) {
+    m_odometry.resetPosition(getAngle(), m_modulePositions, pose);
+  }
+
+  public ChassisSpeeds getChassisSpeeds() {
+    return m_kinematics.toChassisSpeeds(m_moduleStates);
   }
 
   public void zeroYaw() {
