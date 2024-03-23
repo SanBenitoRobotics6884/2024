@@ -151,10 +151,11 @@ public final class Constants {
 
   public static final class VisionSubsystem{
     // WILL ADD MORE CONSTANTS SOON
-    public static final double CAMERA_HEIGHT = 0;
-    
+    public static final double POSE_HEIGHT_THRESHOLD = 0.5;
+    public static final double POSE_ANGLE_THRESHOLD = 10;
+
     public static final boolean DRIVER_MODE = false;
-    
+
   }
   
 }

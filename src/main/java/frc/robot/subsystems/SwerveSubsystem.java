@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
@@ -106,8 +105,6 @@ public class SwerveSubsystem extends SubsystemBase {
     // m_modules[1].putData("FL");
     // m_modules[2].putData("BR");
     // m_modules[3].putData("BL");
-
-    m_odometry.addVisionMeasurement(m_pose, 0)                                                                                                                                                                                                                                   );
   }
 
   public void driveRobotOriented(ChassisSpeeds speeds) {
@@ -153,8 +150,8 @@ public class SwerveSubsystem extends SubsystemBase {
       m_pose);
   }
 
-  public void addVisionMeasurement() {
-    
+  public void addVisionMeasurement(Pose2d pose, double timestamp) {
+    m_odometry.addVisionMeasurement(pose, timestamp);
   }
 
 }

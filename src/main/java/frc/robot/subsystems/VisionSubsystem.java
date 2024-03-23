@@ -4,20 +4,23 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+import java.util.OptionalDouble;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.proto.Photon;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import static frc.robot.Constants.VisionSubsystem.*;
 
 public class VisionSubsystem extends SubsystemBase {
   
@@ -41,8 +44,6 @@ public class VisionSubsystem extends SubsystemBase {
     m_camera.setDriverMode(false);
     m_camera.getLatestResult().getLatencyMillis();
 
-    
-    
   }
 
   @Override
@@ -52,8 +53,19 @@ public class VisionSubsystem extends SubsystemBase {
       var results = m_camera.getLatestResult();
       PhotonTrackedTarget bestTarget = results.getBestTarget();
       m_fiducialId = bestTarget.getFiducialId();
+            
+      var fieldtags = m_fieldLayout.getTagPose(m_fiducialId).get().getRotation().getZ();
+
     }
-    var pose = m_poseEstimator.update();
-    
+    Optional<EstimatedRobotPose> pose = m_poseEstimator.update();
+    if (pose.isPresent() 
+        && Math.abs(pose.get().estimatedPose.getTranslation().getZ()) < POSE_HEIGHT_THRESHOLD 
+        && Math.abs(pose.get().estimatedPose.getRotation().getY()) < POSE_ANGLE_THRESHOLD 
+        && Math.abs(pose.get().estimatedPose.getRotation().getX()) < POSE_ANGLE_THRESHOLD ) {
+      m_swerveSubsystem.addVisionMeasurement(
+          pose.get().estimatedPose.toPose2d(), pose.get().timestampSeconds);
+    }
   }
+
+
 }
