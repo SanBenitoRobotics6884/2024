@@ -91,30 +91,27 @@ public final class Constants {
   }
 
   public static final class Outtake {
-    public static final int TAKE_NOTE_MOTOR_ID = 16;
-    public static final int SHOOTER_MOTOR_I_ID = 17;
-    public static final int SHOOTER_MOTOR_II_ID = 18;
+    public static final int PASS_OFF_MOTOR_ID = 16;
     public static final int PIVOT_MOTOR_ID = 19;
 
     public static final int AMP_LIMIT_SWITCH_CHANNEL = 0;
 
-    public static final double PIVOT_kP = 1.0;
+    public static final double PIVOT_kP = 2.0;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -0.28;
+    public static final double SPEAKER_POSITION = -0.305;
     public static final double AMP_POSITION = -0.22; 
 
     public static final double ZEROING_VOLTAGE = 0.15;
 
-    public static final double SHOOTER_SPEAKER_MOTOR_VOLTAGE = 0.95;
-    public static final double TAKE_NOTE_SPEAKER_MOTOR_VOLTAGE = -0.8;
-    public static final double SHOOTER_AMP_MOTOR_VOLTAGE = 0.3;
-    public static final double TAKE_NOTE_AMP_MOTOR_VOLTAGE = -0.3;
-    public static final double YOINK_SHOOTERS_SPEED = 0;
-    public static final double YOINK_TAKE_NOTE_SPEED = -0.3;
+    public static final double SPEAKER_PERCENT_OUTPUT = 0.8;
+    public static final double AMP_PERCENT_OUTPUT = 0.3;
+    public static final double YOINK_PERCENT_OUTPUT = 0.3;
 
     public static final double TOLERANCE = 0.05;
+
+    public static final double SHOOTER_CURRENT_LIMIT = 60.0;
   }
   
   public final static class Intake {
