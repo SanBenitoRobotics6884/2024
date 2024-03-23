@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.outtake.OuttakeIOReal;
 import frc.robot.subsystems.outtake.OuttakeSubsystem;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -35,22 +36,21 @@ public class RobotContainer {
   private OuttakeSubsystem m_outtakeSubsystem;
   private IntakeSubsystem m_intakeSubsystem;
 
-  // private DefaultDrive m_defaultDrive;
-  // private FieldDrive m_slowDrive;
-  // private FieldDrive m_fieldDrive;
+  private DefaultDrive m_defaultDrive;
+  private FieldDrive m_slowDrive;
+  private FieldDrive m_fieldDrive;
 
-  // private SendableChooser<Double> m_gyroYawSetter = new SendableChooser<>();
+  private SendableChooser<Double> m_gyroYawSetter = new SendableChooser<>();
 
   public RobotContainer() {
     m_joystick = new CommandJoystick(0);
     if (m_setting != BindingsSetting.CLIMB) {
       m_controller = new CommandXboxController(1);
       
-      // m_swerveSubsystem = new SwerveSubsystem();
-      m_outtakeSubsystem = new OuttakeSubsystem();
+      m_swerveSubsystem = new SwerveSubsystem();
+      m_outtakeSubsystem = new OuttakeSubsystem(new OuttakeIOReal());
       m_intakeSubsystem = new IntakeSubsystem();
       
-      /**
       m_slowDrive = new FieldDrive(
           m_swerveSubsystem,
           () -> 0.5 * getLeftY(),
@@ -70,15 +70,14 @@ public class RobotContainer {
           () -> 3 * getRightX());
 
       m_swerveSubsystem.setDefaultCommand(m_fieldDrive);
-      */
     }
-    // m_climbSubsystem = new ClimbSubsystem();
+    m_climbSubsystem = new ClimbSubsystem();
 
-    // m_gyroYawSetter.addOption("Left", 60.0);
-    // m_gyroYawSetter.addOption("Right", -60.0);
-    // m_gyroYawSetter.setDefaultOption("Middle", 0.0);
+    m_gyroYawSetter.addOption("Left", 60.0);
+    m_gyroYawSetter.addOption("Right", -60.0);
+    m_gyroYawSetter.setDefaultOption("Middle", 0.0);
 
-    // SmartDashboard.putData("speaker side", m_gyroYawSetter);
+    SmartDashboard.putData("speaker side", m_gyroYawSetter);
     
     switch (m_setting) {
       case PITS:
@@ -97,7 +96,6 @@ public class RobotContainer {
 
   /** These bindings are in both the COMPETITION and PITS binding modes */
   private void configureBindings() {
-    /**
     // Swerve bindings
     // drives slow while left bumper pressed
     m_controller.leftBumper().whileTrue(m_slowDrive);
@@ -108,7 +106,7 @@ public class RobotContainer {
     // sets the forward facing angle for field oriented drive
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     // m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
-    */
+
     // intake and outtake bindings
     // shoots to amp or speaker depending on position 
     m_joystick.trigger().whileTrue(Commands.either(
@@ -136,7 +134,6 @@ public class RobotContainer {
     
     // Climb bindings
     // retracts climb
-    /**
     m_joystick.button(10).onTrue(Commands.sequence(
         m_outtakeSubsystem.rotateToAmpPositionCommand()
         .alongWith(m_intakeSubsystem.getDeployCommand()),
@@ -149,7 +146,7 @@ public class RobotContainer {
         .alongWith(m_intakeSubsystem.getDeployCommand()), 
         m_climbSubsystem.getExtendCommand())
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-    */
+
     // puts intake back in
     m_joystick.button(7).onTrue(m_intakeSubsystem.getStowCommand()
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
@@ -176,10 +173,9 @@ public class RobotContainer {
   /** These are bindings in the PITS bindings mode */
   private void configurePitsBindings() {
     // extend and retract
-    /**
     m_joystick.button(9).onTrue(m_climbSubsystem.getExtendCommand());
     m_joystick.button(10).onTrue(m_climbSubsystem.getRetractCommand());
-    */
+
     // deploy and stow
     m_joystick.button(11).onTrue(m_intakeSubsystem.getDeployCommand());
     m_joystick.button(12).onTrue(m_intakeSubsystem.getStowCommand());
@@ -187,11 +183,10 @@ public class RobotContainer {
     // Pick up and release note
     m_joystick.button(8).whileTrue(m_intakeSubsystem.getSuckCommand());
     m_joystick.button(7).whileTrue(m_intakeSubsystem.getEjectCommand());
-    /**
+
     // rotate outtake to amp or speaker position
     m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
     m_joystick.button(6).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
-    */
   }
 
   /** These are the only bindings when in the CLIMB calibration bindings mode */
@@ -213,7 +208,7 @@ public class RobotContainer {
   }
 
   private Command getResetGyroCommand() {
-    return Commands.none(); // Commands.runOnce(() -> m_swerveSubsystem.setYaw(m_gyroYawSetter.getSelected()));
+    return Commands.runOnce(() -> m_swerveSubsystem.setYaw(m_gyroYawSetter.getSelected()));
   }
 
   private Command getMainAutoCommand() {

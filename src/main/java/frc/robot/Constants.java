@@ -100,10 +100,10 @@ public final class Constants {
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -0.305;
+    public static final double SPEAKER_POSITION = -0.305; // We need to set these again!
     public static final double AMP_POSITION = -0.22; 
 
-    public static final double ZEROING_VOLTAGE = 0.15;
+    public static final double ZEROING_VOLTAGE = -0.15; // Before it was positive (now, the limit switch is on the speaker side)
 
     public static final double SPEAKER_PERCENT_OUTPUT = 0.8;
     public static final double AMP_PERCENT_OUTPUT = 0.3;

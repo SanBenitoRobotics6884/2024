@@ -4,30 +4,20 @@
 
 package frc.robot.subsystems.outtake;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Outtake.*;
 
+import org.littletonrobotics.junction.Logger;
+
 public class OuttakeSubsystem extends SubsystemBase {
-  TalonFX m_passOffMotor = new TalonFX(PASS_OFF_MOTOR_ID);
-  CANSparkMax m_pivotMotor = new CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless);
+  OuttakeIO m_io;
+  OuttakeIOInputsAutoLogged m_inputs = new OuttakeIOInputsAutoLogged();
 
   PIDController m_PID = new PIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD);
-
-  RelativeEncoder m_pivotEncoder = m_pivotMotor.getEncoder();
-
-  DigitalInput m_ampLimitSwitch = new DigitalInput(AMP_LIMIT_SWITCH_CHANNEL);
 
   double m_pivotSetpoint = 0;
   boolean isZeroing = true; // Should initially be true
@@ -36,38 +26,29 @@ public class OuttakeSubsystem extends SubsystemBase {
   double maxPassOffCurrent = 0;
 
   /** Creates a new OuttakeSubsystem. */
-  public OuttakeSubsystem() {
-    CurrentLimitsConfigs config = new CurrentLimitsConfigs();
-    config.StatorCurrentLimit = SHOOTER_CURRENT_LIMIT;
-    config.StatorCurrentLimitEnable = true;
-
-    m_passOffMotor.getConfigurator().apply(config);
+  public OuttakeSubsystem(OuttakeIO io) {
+    m_io = io;
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    m_io.updateInputs(m_inputs);
+    Logger.processInputs("outtake", m_inputs);
+
     if (isZeroing) {
-      m_pivotMotor.set(ZEROING_VOLTAGE);
-      if (m_ampLimitSwitch.get()) {
+      m_io.setPivotDutyCycle(ZEROING_VOLTAGE);
+      if (m_inputs.speakerLimitSwitch) {
         isZeroing = false;
-        m_pivotEncoder.setPosition(0);
+        m_io.setPivotPosition(0);
       }
     } else {
-      m_pivotMotor.set(m_PID.calculate(m_pivotEncoder.getPosition(), m_pivotSetpoint));
+      m_io.setPivotDutyCycle(m_PID.calculate(m_inputs.pivotPosition, m_pivotSetpoint));
     }
-     
-    SmartDashboard.putBoolean("amp switch", m_ampLimitSwitch.get());
-    SmartDashboard.putBoolean("zeroing", isZeroing);
-    SmartDashboard.putNumber("outtake current", m_passOffMotor.getStatorCurrent().getValueAsDouble());
-  }
 
-  public boolean ampLimitSwitchHit() {
-    return m_ampLimitSwitch.get();
   }
 
   public boolean isInAmpPosition() {
-    return m_pivotEncoder.getPosition() > (SPEAKER_POSITION + AMP_POSITION) / 2.0;
+    return m_inputs.pivotPosition > (SPEAKER_POSITION + AMP_POSITION) / 2.0;
   }
 
   public void toSpeakerPosition() {
@@ -79,15 +60,15 @@ public class OuttakeSubsystem extends SubsystemBase {
   }
 
   public boolean atSetpoint() {
-    return Math.abs(m_pivotEncoder.getPosition() - m_pivotSetpoint) < TOLERANCE;
+    return Math.abs(m_inputs.pivotPosition - m_pivotSetpoint) < TOLERANCE;
   }
 
   public void rollOuttake(double takeNoteSpeed) {
-    m_passOffMotor.set(takeNoteSpeed);
+    m_io.setPassOffDutyCycle(takeNoteSpeed);
   }
 
   public void stopMotors() {
-    m_passOffMotor.stopMotor();
+    m_io.stopPassOffMotor();
   }
 
   // The following code it is not used, but we love it, so we're leaving it here. :fire: :skull:
