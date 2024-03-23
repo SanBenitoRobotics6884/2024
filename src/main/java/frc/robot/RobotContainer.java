@@ -26,6 +26,7 @@ import frc.robot.subsystems.outtake.OuttakeSubsystem;
 import frc.robot.commands.ShootToSpeaker;
 import frc.robot.subsystems.climb.ClimbIOSparkMax;
 import frc.robot.subsystems.climb.ClimbSubsystem;
+import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.DefaultDrive;
 import frc.robot.subsystems.swerve.FieldDrive;
@@ -61,7 +62,7 @@ public class RobotContainer {
       
       m_swerveSubsystem = new SwerveSubsystem();
       m_outtakeSubsystem = new OuttakeSubsystem(new OuttakeIOReal());
-      m_intakeSubsystem = new IntakeSubsystem();
+      m_intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
       
       m_slowDrive = new FieldDrive(
           m_swerveSubsystem,

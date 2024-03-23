@@ -16,7 +16,7 @@ public class OuttakeIOReal implements OuttakeIO {
 
   private RelativeEncoder m_pivotEncoder = m_pivotMotor.getEncoder();
 
-  private DigitalInput m_ampLimitSwitch = new DigitalInput(AMP_LIMIT_SWITCH_CHANNEL);
+  private DigitalInput m_speakerLimitSwitch = new DigitalInput(AMP_LIMIT_SWITCH_CHANNEL);
 
   public OuttakeIOReal() {
     CurrentLimitsConfigs config = new CurrentLimitsConfigs();
@@ -39,7 +39,7 @@ public class OuttakeIOReal implements OuttakeIO {
     inputs.pivotCurrent = m_pivotMotor.getOutputCurrent();
     inputs.pivotTemperature = m_pivotMotor.getMotorTemperature();
 
-    inputs.speakerLimitSwitch = m_ampLimitSwitch.get();
+    inputs.speakerLimitSwitch = m_speakerLimitSwitch.get();
   }
 
   @Override

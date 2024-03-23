@@ -159,6 +159,7 @@ public final class Constants {
 
     public static final double ENCODER_POSITION = 0;
 
-    public static final int INTAKE_CURRENT_LIMITS = 50;
+    public static final int INTAKE_CURRENT_LIMIT = 40;
+    public static final int PIVOT_CURRENT_LIMIT = 40;
   }
 }
