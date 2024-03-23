@@ -5,16 +5,20 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import static frc.robot.Constants.Climb.L_CLIMB_MOTOR_ID;
-import static frc.robot.Constants.Climb.R_CLIMB_MOTOR_ID;
-
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import static frc.robot.Constants.Climb.*;
 
 public class ClimbIOSparkMax implements ClimbIO { 
   private CANSparkMax m_rightClimbMotor = new CANSparkMax(R_CLIMB_MOTOR_ID,MotorType.kBrushless);
   private CANSparkMax m_leftClimbMotor = new CANSparkMax(L_CLIMB_MOTOR_ID,MotorType.kBrushless);
   private RelativeEncoder m_rightClimbEncoder = m_rightClimbMotor.getEncoder();
   private RelativeEncoder m_leftClimbEncoder = m_leftClimbMotor.getEncoder();
+
+  public ClimbIOSparkMax() {
+    m_rightClimbMotor.setSmartCurrentLimit(CLIMB_CURRENT_LIMIT);
+    m_leftClimbMotor.setSmartCurrentLimit(CLIMB_CURRENT_LIMIT);
+  }
 
   @Override
   public void updateInputs(ClimbIOInputs inputs){

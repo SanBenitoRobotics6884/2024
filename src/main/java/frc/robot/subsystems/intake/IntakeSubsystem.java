@@ -46,7 +46,8 @@ public class IntakeSubsystem extends SubsystemBase {
     m_pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     m_pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) DEPLOY_SETPOINT);
     m_pivotMotor.setSoftLimit(SoftLimitDirection.kReverse,(float) STOW_SETPOINT);
-
+    m_pivotMotor.setSmartCurrentLimit(50);
+    m_pivotMotor.setSmartCurrentLimit(50);
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     // m_intakeMotor.setSmartCurrentLimit(0); UNNEEDED ATM

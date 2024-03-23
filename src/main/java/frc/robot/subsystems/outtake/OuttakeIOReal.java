@@ -20,10 +20,12 @@ public class OuttakeIOReal implements OuttakeIO {
 
   public OuttakeIOReal() {
     CurrentLimitsConfigs config = new CurrentLimitsConfigs();
-    config.StatorCurrentLimit = SHOOTER_CURRENT_LIMIT;
+    config.StatorCurrentLimit = PASS_OFF_CURRENT_LIMIT;
     config.StatorCurrentLimitEnable = true;
 
     m_passOffMotor.getConfigurator().apply(config);
+
+    m_pivotMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
   }
 
   @Override

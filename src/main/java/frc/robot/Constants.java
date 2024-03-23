@@ -15,6 +15,7 @@ public final class Constants {
     public static final double STEER_kI = 0;
     public static final double STEER_kD = 0;
     public static final double STEER_RAMP_RATE = 0.15; // how many seconds to go from 0 to full throttle
+    public static final int STEER_CURRENT_LIMIT = 20;
 
     public static final double DRIVE_kP = 0.2;
     public static final double DRIVE_kI = 0;
@@ -25,6 +26,9 @@ public final class Constants {
 
     public static final SimpleMotorFeedforward DRIVE_FEEDFORWARD = 
         new SimpleMotorFeedforward(DRIVE_kS, DRIVE_kV);
+    public static final int DRIVE_CURRENT_LIMIT = 40;
+   
+    public static final double MAX_OUTPUT = 0.3;
 
     public static final boolean SQUARED_INPUTS = false;
 
@@ -88,13 +92,11 @@ public final class Constants {
   public static final class Climb {
     public static final double MAX_UP_VOLTAGE = 0.15; 
     public static final double MAX_DOWN_VOLTAGE = -0.8;
-    
     public static final double EXTEND_MOTOR_SETPOINT = 0; // this is where climber starts
     public static final double RETRACT_MOTOR_SETPOINT = 85.0;
-    
+    public static final int CLIMB_CURRENT_LIMIT = 40; 
     public static final int R_CLIMB_MOTOR_ID = 14;
     public static final int L_CLIMB_MOTOR_ID = 15;
-    
     public static final double CLIMB_kP = 0.05;
     public static final double CLIMB_kI = 0;
     public static final double CLIMB_kD = 0;    
@@ -113,10 +115,10 @@ public final class Constants {
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -0.305; // We need to set these again!
+    public static final double SPEAKER_POSITION = -0.305; // We need to set these again! 3-23
     public static final double AMP_POSITION = -0.22; 
 
-    public static final double ZEROING_VOLTAGE = -0.15; // Before it was positive (now, the limit switch is on the speaker side)
+    public static final double ZEROING_VOLTAGE = -0.15; // Before 3-23 it was positive (now, the limit switch is on the speaker side)
 
     public static final double SPEAKER_PERCENT_OUTPUT = 0.8;
     public static final double AMP_PERCENT_OUTPUT = 0.3;
@@ -124,7 +126,8 @@ public final class Constants {
 
     public static final double TOLERANCE = 0.05;
 
-    public static final double SHOOTER_CURRENT_LIMIT = 60.0;
+    public static final int PASS_OFF_CURRENT_LIMIT = 40; 
+    public static final int PIVOT_CURRENT_LIMIT = 40;
   }
 
   public final static class Intake {
@@ -147,17 +150,15 @@ public final class Constants {
     public static final double MAX_VELOCITY = 66.7;
     public static final double MAX_ACCELERATION = 30;
 
-    // Pivot set point angles, thought I still don't know what the angles would be.
-    public static final double k_PIVOT_ANGLE_GROUND = 0;
-    public static final double k_PIVOT_ANGLE_SOURCE = 0;
-
     public static final double TOLERANCE = 5.0;
     
-    public static final double DEPLOY_SETPOINT = -91.5; // Before 4:34pm on 2-28 it was -130.0 
+    public static final double DEPLOY_SETPOINT = -91.5;
     public static final double STOW_SETPOINT = -2.0;
     
     public static final double ZEROING_SPEED = 0.1;
 
-    public static final double ENCODER_POSITION = 0; // DEPLOY_SETPOINT;
+    public static final double ENCODER_POSITION = 0;
+
+    public static final int INTAKE_CURRENT_LIMITS = 50;
   }
 }

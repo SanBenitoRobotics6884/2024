@@ -33,6 +33,8 @@ public class ModuleIOSparkMax implements ModuleIO {
 
     m_driveMotor.setInverted(driveInverted);
     m_steerMotor.setInverted(steerInverted);
+    m_driveMotor.setSmartCurrentLimit(DRIVE_CURRENT_LIMIT);
+    m_steerMotor.setSmartCurrentLimit(STEER_CURRENT_LIMIT);
 
     m_steerAbsoluteEncoder = new CANcoder(encoderId);
     MagnetSensorConfigs config = new MagnetSensorConfigs();
