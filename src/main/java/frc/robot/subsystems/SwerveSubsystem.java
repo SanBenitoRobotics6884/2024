@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -46,7 +47,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private Pose2d m_pose = new Pose2d();
   private SwerveModulePosition[] m_modulePositions = new SwerveModulePosition[4];
 
-  private SwerveDriveOdometry m_odometry;
+  private SwerveDrivePoseEstimator m_odometry;
 
   // This is for advantage scope
   private DoubleArrayPublisher m_moduleMeasurementsPublisher = 
@@ -64,11 +65,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
+    
+
     for (int i = 0; i < 4; i++) {
       m_modulePositions[i] = m_modules[i].getModulePosition();
     }
 
-    m_odometry = new SwerveDriveOdometry(
+    m_odometry = new SwerveDrivePoseEstimator(
         m_kinematics,
         getAngle(),
         m_modulePositions,
@@ -103,6 +106,8 @@ public class SwerveSubsystem extends SubsystemBase {
     // m_modules[1].putData("FL");
     // m_modules[2].putData("BR");
     // m_modules[3].putData("BL");
+
+    m_odometry.addVisionMeasurement(m_pose, 0)                                                                                                                                                                                                                                   );
   }
 
   public void driveRobotOriented(ChassisSpeeds speeds) {
@@ -146,6 +151,10 @@ public class SwerveSubsystem extends SubsystemBase {
       new Rotation2d(), 
       m_modulePositions, 
       m_pose);
+  }
+
+  public void addVisionMeasurement() {
+    
   }
 
 }
