@@ -21,16 +21,16 @@ public class IntakeIOReal implements IntakeIO {
   private RelativeEncoder m_intakeEncoder;
 
   public IntakeIOReal() {
+    m_intakeMotor.restoreFactoryDefaults();
+    m_pivotMotor.restoreFactoryDefaults();
+
     m_pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     m_pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) DEPLOY_SETPOINT);
     m_pivotMotor.setSoftLimit(SoftLimitDirection.kReverse,(float) STOW_SETPOINT);
     m_pivotMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
     m_intakeMotor.setSmartCurrentLimit(INTAKE_CURRENT_LIMIT);
-    m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-
-    m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
     m_pivotEncoder = m_pivotMotor.getEncoder();

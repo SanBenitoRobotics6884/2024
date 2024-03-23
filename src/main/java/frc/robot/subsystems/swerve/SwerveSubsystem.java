@@ -88,6 +88,7 @@ public class SwerveSubsystem extends SubsystemBase {
     for (int i = 0; i < 4; i++) {
       m_modules[i].updateInputs(m_moduleInputs[i]);
       Logger.processInputs("swerve/module" + i, m_moduleInputs[i]);
+      Logger.recordOutput("swerve/module" + i + "/double-angle", m_moduleInputs[i].relativeAngle.getDegrees());
       m_modulePositions[i].angle = m_moduleInputs[i].relativeAngle;
       m_modulePositions[i].distanceMeters = m_moduleInputs[i].drivePosition;
       m_moduleStates[i].angle = m_moduleInputs[i].relativeAngle;

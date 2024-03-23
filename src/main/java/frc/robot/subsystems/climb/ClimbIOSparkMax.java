@@ -16,6 +16,9 @@ public class ClimbIOSparkMax implements ClimbIO {
   private RelativeEncoder m_leftClimbEncoder = m_leftClimbMotor.getEncoder();
 
   public ClimbIOSparkMax() {
+    m_rightClimbMotor.restoreFactoryDefaults();
+    m_leftClimbMotor.restoreFactoryDefaults();
+
     m_rightClimbMotor.setSmartCurrentLimit(CLIMB_CURRENT_LIMIT);
     m_leftClimbMotor.setSmartCurrentLimit(CLIMB_CURRENT_LIMIT);
   }

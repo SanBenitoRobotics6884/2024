@@ -19,6 +19,8 @@ public class OuttakeIOReal implements OuttakeIO {
   private DigitalInput m_speakerLimitSwitch = new DigitalInput(AMP_LIMIT_SWITCH_CHANNEL);
 
   public OuttakeIOReal() {
+    m_pivotMotor.restoreFactoryDefaults();
+
     CurrentLimitsConfigs config = new CurrentLimitsConfigs();
     config.StatorCurrentLimit = PASS_OFF_CURRENT_LIMIT;
     config.StatorCurrentLimitEnable = true;

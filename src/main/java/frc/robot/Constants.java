@@ -111,12 +111,12 @@ public final class Constants {
 
     public static final int AMP_LIMIT_SWITCH_CHANNEL = 0;
 
-    public static final double PIVOT_kP = 2.0;
+    public static final double PIVOT_kP = 0.1;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -0.305; // We need to set these again! 3-23
-    public static final double AMP_POSITION = -0.22; 
+    public static final double SPEAKER_POSITION = -1.0;
+    public static final double AMP_POSITION = -5.0; 
 
     public static final double ZEROING_VOLTAGE = -0.15; // Before 3-23 it was positive (now, the limit switch is on the speaker side)
 

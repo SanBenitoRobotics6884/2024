@@ -48,7 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
         m_io.setPivotPosition(0);
       }
     }
-    m_io.setIntakeDutyCycle(output);
+    m_io.setPivotDutyCycle(output);
   }
 
   //We set the goal/setpoint to the PID
