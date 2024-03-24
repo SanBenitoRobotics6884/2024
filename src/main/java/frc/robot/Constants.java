@@ -19,7 +19,7 @@ public final class Constants {
 
     public static final double DRIVE_kP = 0.2;
     public static final double DRIVE_kI = 0;
-    public static final double DRIVE_kD = 0;
+    public static final double DRIVE_kD = 0.05;
     public static final double DRIVE_kS = 0.11;
     public static final double DRIVE_kV = 3.0;
     public static final double DRIVE_RAMP_RATE = 0.15;
@@ -30,7 +30,7 @@ public final class Constants {
    
     public static final double MAX_OUTPUT = 0.3;
 
-    public static final boolean SQUARED_INPUTS = false;
+    public static final boolean SQUARED_INPUTS = false; // at SVR, this was false
 
     public static final double WHEEL_RADIUS = 2.0; // inches, need to double check
     public static final double DRIVE_GEAR_RATIO = 8.14;
