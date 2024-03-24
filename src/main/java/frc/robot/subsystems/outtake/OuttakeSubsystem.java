@@ -20,7 +20,7 @@ public class OuttakeSubsystem extends SubsystemBase {
   PIDController m_PID = new PIDController(PIVOT_kP, PIVOT_kI, PIVOT_kD);
 
   double m_pivotSetpoint = 0;
-  boolean m_isZeroing = false; // Should initially be true
+  boolean m_isZeroing = true; // Should initially be true
 
   /** Creates a new OuttakeSubsystem. */
   public OuttakeSubsystem(OuttakeIO io) {
@@ -45,7 +45,7 @@ public class OuttakeSubsystem extends SubsystemBase {
   }
 
   public boolean isInAmpPosition() {
-    return m_inputs.pivotPosition > (SPEAKER_POSITION + AMP_POSITION) / 2.0;
+    return m_inputs.pivotPosition < (SPEAKER_POSITION + AMP_POSITION) / 2.0;
   }
 
   public boolean isNotZeroing() {

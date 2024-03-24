@@ -29,7 +29,9 @@ private double m_speed;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_timer.hasElapsed(1.0)) {
+    System.out.println(m_timer.get());
+    if (m_timer.hasElapsed(2.0)) {
+      System.out.println("moving");
       m_intakeSubsystem.roll(m_speed);
     }
   }

@@ -33,6 +33,7 @@ public class IntakeSubsystem extends SubsystemBase {
     Logger.processInputs("intake", m_inputs);
     m_pivotPID.setTolerance(TOLERANCE);
     m_pivotPID.reset(m_inputs.pivotPosition, m_inputs.pivotVelocity);
+    m_pivotPID.setGoal(STOW_SETPOINT);
   }
 
  @Override
@@ -75,11 +76,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   //Stops intake motor from spinning 
   public void rollerStop() {
-      m_io.stopIntakeMotor();
+    m_io.stopIntakeMotor();
   }
 
   public void spit() {
-    m_io.setPivotDutyCycle(INTAKE_MOTOR_SPIT_SPEED);
+    m_io.setIntakeDutyCycle(INTAKE_MOTOR_SPIT_SPEED);
   }
 
   public void roll(double speed) {
