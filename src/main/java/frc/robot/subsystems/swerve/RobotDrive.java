@@ -9,14 +9,14 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class DefaultDrive extends Command {
+public class RobotDrive extends Command {
   private SwerveSubsystem m_swerveSubsystem;
   private DoubleSupplier m_forward;
   private DoubleSupplier m_strafe;
   private DoubleSupplier m_rotation;
 
   /** Creates a new DefaultDrive. */
-  public DefaultDrive(SwerveSubsystem subsystem, DoubleSupplier forward, 
+  public RobotDrive(SwerveSubsystem subsystem, DoubleSupplier forward, 
                       DoubleSupplier strafe, DoubleSupplier rotation) {
     m_swerveSubsystem = subsystem;
     m_forward = forward;
@@ -29,8 +29,8 @@ public class DefaultDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerveSubsystem.driveRobotOriented(ChassisSpeeds.discretize(
-        m_forward.getAsDouble(), m_strafe.getAsDouble(), m_rotation.getAsDouble(), 0.020));
+    m_swerveSubsystem.driveRobotOriented(new ChassisSpeeds(
+        m_forward.getAsDouble(), m_strafe.getAsDouble(), m_rotation.getAsDouble()));
   }
 
 }

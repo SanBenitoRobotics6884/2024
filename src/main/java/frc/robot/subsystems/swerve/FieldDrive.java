@@ -29,8 +29,8 @@ public class FieldDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerveSubsystem.driveFieldOriented(ChassisSpeeds.discretize(
-        m_forward.getAsDouble(), m_strafe.getAsDouble(), m_rotation.getAsDouble(), 0.020));
+    m_swerveSubsystem.driveFieldOriented(new ChassisSpeeds(
+        m_forward.getAsDouble(), m_strafe.getAsDouble(), m_rotation.getAsDouble()));
   }
 
 }

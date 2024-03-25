@@ -55,7 +55,6 @@ public class IntakeSubsystem extends SubsystemBase {
   //We set the goal/setpoint to the PID
   public void deploy() {
     m_pivotPID.setGoal(DEPLOY_SETPOINT);
-    
   }
 
   //Returns boolean of whather PID is at goal/setpoint.
@@ -89,6 +88,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void stow() {
     m_pivotPID.setGoal(STOW_SETPOINT);
+  }
+
+  public void setSetpoint(double setpoint) {
+    m_pivotPID.setGoal(setpoint);
   }
 
   public Command getReelCommand(BooleanSupplier cancel) {

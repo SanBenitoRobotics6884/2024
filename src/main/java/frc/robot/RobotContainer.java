@@ -5,17 +5,24 @@
 package frc.robot;
 
 import static frc.robot.Constants.Swerve.SQUARED_INPUTS;
+import static frc.robot.Constants.Vision.SHOOTER_CAMERA;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+
 import java.util.Optional;
 
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
@@ -23,19 +30,25 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.outtake.OuttakeIOReal;
 import frc.robot.subsystems.outtake.OuttakeSubsystem;
+import frc.robot.Constants.Field;
+import frc.robot.commands.DistanceShoot;
 import frc.robot.commands.ShootToSpeaker;
+import frc.robot.commands.TuneDistanceShoot;
 import frc.robot.subsystems.climb.ClimbIOSparkMax;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.swerve.DefaultDrive;
+import frc.robot.subsystems.swerve.RobotDrive;
 import frc.robot.subsystems.swerve.FieldDrive;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.subsystems.vision.VisionIOPhoton;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class RobotContainer {
   public enum BindingsSetting {
     PITS,
     CLIMB,
+    TUNE_SHOOTER,
     COMPETITION;
   }
 
@@ -48,43 +61,69 @@ public class RobotContainer {
   private ClimbSubsystem m_climbSubsystem;
   private OuttakeSubsystem m_outtakeSubsystem;
   private IntakeSubsystem m_intakeSubsystem;
+  private VisionSubsystem m_visionSubsystem;
 
-  private DefaultDrive m_defaultDrive;
+  private RobotDrive m_defaultDrive;
   private FieldDrive m_slowDrive;
   private FieldDrive m_fieldDrive;
 
-  private SendableChooser<AutoCommand> m_autoSelector = new SendableChooser<>();
+  private LoggedDashboardChooser<AutoCommand> m_autoSelector = new LoggedDashboardChooser<>("chooser");
 
   public RobotContainer() {
     m_joystick = new CommandJoystick(0);
-    if (m_setting != BindingsSetting.CLIMB) {
-      m_controller = new CommandXboxController(1);
-      
-      m_swerveSubsystem = new SwerveSubsystem();
-      m_outtakeSubsystem = new OuttakeSubsystem(new OuttakeIOReal());
-      m_intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
-      
-      m_slowDrive = new FieldDrive(
-          m_swerveSubsystem,
-          () -> 0.5 * getLeftY(),
-          () -> 0.5 * getLeftX(),
-          () -> 0.5 * getRightX());
-
-      m_defaultDrive = new DefaultDrive(
-          m_swerveSubsystem,
-          () -> 3 * getLeftY(),
-          () -> 3 * getLeftX(),
-          () -> 3 * getRightX()); 
-
-      m_fieldDrive = new FieldDrive(
-          m_swerveSubsystem,
-          () -> 3 * getLeftY(),
-          () -> 3 * getLeftX(),
-          () -> 3 * getRightX());
-
-      m_swerveSubsystem.setDefaultCommand(m_fieldDrive);
-    }
+    
     m_climbSubsystem = new ClimbSubsystem(new ClimbIOSparkMax());
+    if (m_setting == BindingsSetting.CLIMB) {
+      configureClimbBindings();
+      return;
+    }
+    m_controller = new CommandXboxController(1);
+    
+    m_swerveSubsystem = new SwerveSubsystem();
+    m_outtakeSubsystem = new OuttakeSubsystem(new OuttakeIOReal());
+    m_intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
+    m_visionSubsystem = new VisionSubsystem(m_swerveSubsystem, new VisionIOPhoton(SHOOTER_CAMERA));
+    
+    m_slowDrive = new FieldDrive(
+        m_swerveSubsystem,
+        () -> 0.5 * getLeftY(),
+        () -> 0.5 * getLeftX(),
+        () -> 0.5 * getRightX());
+
+    m_defaultDrive = new RobotDrive(
+        m_swerveSubsystem,
+        () -> 3 * getLeftY(),
+        () -> 3 * getLeftX(),
+        () -> 3 * getRightX()); 
+
+    m_fieldDrive = new FieldDrive(
+        m_swerveSubsystem,
+        () -> 3 * getLeftY(),
+        () -> 3 * getLeftX(),
+        () -> 3 * getRightX());
+
+    m_swerveSubsystem.setDefaultCommand(m_fieldDrive);
+
+    switch (m_setting) {
+      case PITS:
+        configureBindings();
+        configurePitsBindings();
+        break;
+      case TUNE_SHOOTER:
+        configureBindings();
+        configureIntakeBindings();
+        configureTuneShootingBindings();
+      default:
+        configureBindings();
+        configureCompetitionBindings();
+        configureIntakeBindings();
+        break;
+    }
+
+    PathPlannerLogging.setLogTargetPoseCallback(pose -> 
+        Logger.recordOutput("pathplanner/target-pose", pose));
+    PathPlannerLogging.setLogActivePathCallback(poses -> 
+        Logger.recordOutput("pathplanner/target-poses", poses.toArray(new Pose2d[0])));
 
     NamedCommands.registerCommand("intake", Commands.sequence(
         m_intakeSubsystem.getDeployCommand(), 
@@ -93,7 +132,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("score", 
         new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem));
 
-    m_autoSelector.setDefaultOption("none", new AutoCommand(Commands.none(), 0));
+    m_autoSelector.addDefaultOption("none", new AutoCommand(Commands.none(), 0));
     // We have not tested any of these
     addPPAuto("amp-side shoot and pick-up", "Left Pick Up");
     addPPAuto("amp-side taxi", "Left Taxi");
@@ -107,22 +146,6 @@ public class RobotContainer {
         new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem), 0);
     addSimpleAuto("right shoot", 
         new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem), -60.0);
-    
-    SmartDashboard.putData("auto", m_autoSelector);
-
-    switch (m_setting) {
-      case PITS:
-        configureBindings();
-        configurePitsBindings();
-        break;
-      case CLIMB:
-        configureClimbBindings();
-        break;
-      default:
-        configureBindings();
-        configureCompetitionBindings();
-        break;
-    }
   }
 
   /** These bindings are in both the COMPETITION and PITS binding modes */
@@ -139,18 +162,11 @@ public class RobotContainer {
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     // m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
 
-    // intake and outtake bindings
-    // shoots to amp or speaker depending on position 
-    m_joystick.trigger().whileTrue(Commands.either(
-        m_outtakeSubsystem.shootToAmpCommand(), 
-        m_outtakeSubsystem.shootToSpeakerCommand()
-        .alongWith(m_intakeSubsystem.getToSpeakerCommand()), 
-        m_outtakeSubsystem::isInAmpPosition));
-    
-    // Shoots (up into) amp
-    m_joystick.top().whileTrue(Commands.parallel(
-        m_outtakeSubsystem.shootToAmpCommand(),
-        m_intakeSubsystem.getToAmpCommand()));
+    m_controller.povDown().whileTrue(pathfindToPose(Field.SPEAKER_SHOOTING_POSE));
+    m_controller.povLeft().whileTrue(pathfindToPose(Field.AMP_SHOOTING_POSE));
+    m_controller.povRight().whileTrue(pathfindToPose(Field.SOURCE_GETTING_POSE));
+
+    m_joystick.povUp().onTrue(Commands.runOnce(m_visionSubsystem::takeSnapshot));
   }
   
   /** These are bindings in the COMPETITION bindings mode */
@@ -179,14 +195,26 @@ public class RobotContainer {
         m_climbSubsystem.getExtendCommand())
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
-    // puts intake back in
-    m_joystick.button(7).onTrue(m_intakeSubsystem.getStowCommand()
-        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-
     // unnecessary?
     m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
     m_joystick.button(6).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
     
+    // shoots to amp or speaker depending on position 
+    m_joystick.trigger().whileTrue(Commands.either(
+        m_outtakeSubsystem.shootToAmpCommand(), 
+        m_outtakeSubsystem.shootToSpeakerCommand()
+        .alongWith(m_intakeSubsystem.getToSpeakerCommand()), 
+        m_outtakeSubsystem::isInAmpPosition));
+
+    m_joystick.top().whileTrue(new DistanceShoot(
+        m_intakeSubsystem, m_outtakeSubsystem, m_swerveSubsystem::getPose));
+  }
+
+  private void configureIntakeBindings() {
+    // puts intake back in
+    m_joystick.button(7).onTrue(m_intakeSubsystem.getStowCommand()
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
     // grabs the game piece
     m_joystick.button(11).onTrue(Commands.sequence(
         m_intakeSubsystem.getDeployCommand(),
@@ -200,6 +228,7 @@ public class RobotContainer {
         m_intakeSubsystem.getDeployCommand(),
         m_intakeSubsystem.getEjectCommand().withTimeout(1.5))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
   }
 
   /** These are bindings in the PITS bindings mode */
@@ -219,6 +248,10 @@ public class RobotContainer {
     // rotate outtake to amp or speaker position
     m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
     m_joystick.button(6).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
+
+    m_joystick.trigger().whileTrue(m_outtakeSubsystem.shootToSpeakerCommand());
+
+    m_joystick.top().whileTrue(m_intakeSubsystem.getEjectCommand());
   }
 
   /** These are the only bindings when in the CLIMB calibration bindings mode */
@@ -235,8 +268,24 @@ public class RobotContainer {
     m_joystick.button(10).onTrue(m_climbSubsystem.getRetractCommand());
   }
 
+  /** These are bindings in the TUNE_SHOOTING mode */
+  private void configureTuneShootingBindings() {
+    m_joystick.button(7).whileTrue(new TuneDistanceShoot(
+        m_intakeSubsystem, m_outtakeSubsystem, m_swerveSubsystem::getPose, 
+        () -> m_joystick.getHID().getRawButtonPressed(5),
+        () -> m_joystick.getHID().getRawButtonPressed(3),
+        () -> m_joystick.getHID().getRawButtonPressed(6),
+        () -> m_joystick.getHID().getRawButtonPressed(4),
+        () -> m_joystick.getHID().getTopPressed(),
+        () -> m_joystick.getHID().getTrigger()));
+  }
+
+  private Command pathfindToPose(Pose2d pose) {
+    return AutoBuilder.pathfindToPose(pose, new PathConstraints(1.0, 1.0, Math.PI, Math.PI));
+  }
+
   public Command getAutonomousCommand() {
-    AutoCommand auto = m_autoSelector.getSelected();
+    AutoCommand auto = m_autoSelector.get();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == Alliance.Red) {
       auto.flip();
@@ -302,7 +351,6 @@ public class RobotContainer {
     }
 
     double getAngle() {
-      SmartDashboard.putNumber("gyro init angle", m_angleDegrees);
       return m_angleDegrees;
     }
 

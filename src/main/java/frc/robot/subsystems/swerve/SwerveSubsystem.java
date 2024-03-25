@@ -101,6 +101,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void driveRobotOriented(ChassisSpeeds speeds) {
+    speeds = ChassisSpeeds.discretize(speeds, 0.020);
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(speeds);
     Logger.recordOutput("swerve/desired-states", states);
 
