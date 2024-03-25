@@ -67,7 +67,7 @@ public class RobotContainer {
   private FieldDrive m_slowDrive;
   private FieldDrive m_fieldDrive;
 
-  private LoggedDashboardChooser<AutoCommand> m_autoSelector = new LoggedDashboardChooser<>("chooser");
+  private LoggedDashboardChooser<AutoCommand> m_autoSelector = new LoggedDashboardChooser<>("autos");
 
   public RobotContainer() {
     m_joystick = new CommandJoystick(0);
@@ -161,6 +161,7 @@ public class RobotContainer {
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     // m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
 
+    /**
     // pathfind bindings
     m_controller.povDown().whileTrue(pathfindToPose(Field.SPEAKER_SHOOTING_POSE));
     m_controller.povLeft().whileTrue(pathfindToPose(Field.AMP_SHOOTING_POSE));
@@ -168,6 +169,7 @@ public class RobotContainer {
 
     // take picture
     m_joystick.povUp().onTrue(Commands.runOnce(m_visionSubsystem::takeSnapshot));
+    */
   }
   
   /** These are bindings in the COMPETITION bindings mode */
@@ -205,8 +207,10 @@ public class RobotContainer {
         m_outtakeSubsystem.shootToSpeakerCommand()
         .alongWith(m_intakeSubsystem.getToSpeakerCommand()));
 
+    /**
     m_joystick.top().whileTrue(new DistanceShoot(
         m_intakeSubsystem, m_outtakeSubsystem, m_swerveSubsystem::getPose));
+    */
   }
 
   private void configureIntakeBindings() {
@@ -301,8 +305,8 @@ public class RobotContainer {
   }
 
   private double getLeftY() {
-    double leftX = m_controller.getLeftX();
-    double leftY = m_controller.getLeftY();
+    double leftX = -m_controller.getLeftX();
+    double leftY = -m_controller.getLeftY();
     if (Math.hypot(leftX, leftY) < 0.1) {
       return 0;
     }
@@ -315,8 +319,8 @@ public class RobotContainer {
   }
 
   private double getLeftX() {
-    double leftX = m_controller.getLeftX();
-    double leftY = m_controller.getLeftY();
+    double leftX = -m_controller.getLeftX();
+    double leftY = -m_controller.getLeftY();
     if (Math.hypot(leftX, leftY) < 0.1) {
       return 0;
     }
@@ -329,7 +333,7 @@ public class RobotContainer {
   }
 
   private double getRightX() {
-    double rightX = m_controller.getRightX();
+    double rightX = -m_controller.getRightX();
     if (Math.abs(rightX) < 0.1) {
       rightX = 0;
     }

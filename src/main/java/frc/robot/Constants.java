@@ -69,10 +69,10 @@ public final class Constants {
 
     public static final int PIGEON_ID = 13;
 
-    public static final boolean FR_DRIVE_INVERTED = false;
-    public static final boolean FL_DRIVE_INVERTED = true;
-    public static final boolean BR_DRIVE_INVERTED = false;
-    public static final boolean BL_DRIVE_INVERTED = false;
+    public static final boolean FR_DRIVE_INVERTED = true;
+    public static final boolean FL_DRIVE_INVERTED = false;
+    public static final boolean BR_DRIVE_INVERTED = true;
+    public static final boolean BL_DRIVE_INVERTED = true;
 
     public static final boolean FR_STEER_INVERTED = true;
     public static final boolean FL_STEER_INVERTED = true;
@@ -92,8 +92,8 @@ public final class Constants {
 
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = 
         new HolonomicPathFollowerConfig(
-            new PIDConstants(2,0,0),
-            new PIDConstants(2, 0, 0),
+            new PIDConstants(5.0,0,0),
+            new PIDConstants(5.0, 0, 0),
             3.5,
             0.4445,
             new ReplanningConfig());
@@ -163,8 +163,8 @@ public final class Constants {
 
     public static final double TOLERANCE = 5.0;
     
-    public static final double DEPLOY_SETPOINT = -91.2;
-    public static final double STOW_SETPOINT = -4.5;
+    public static final double DEPLOY_SETPOINT = -90.2;
+    public static final double STOW_SETPOINT = -5.5;
     
     public static final double ZEROING_SPEED = 0.1;
 
