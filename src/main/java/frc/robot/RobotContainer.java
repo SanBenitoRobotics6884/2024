@@ -152,7 +152,6 @@ public class RobotContainer {
   private void configureBindings() {
     // Swerve bindings
     // drives slow while left bumper pressed
-    
     m_controller.leftBumper().whileTrue(m_slowDrive);
 
     // toggles between robot and field oriented
@@ -162,10 +161,12 @@ public class RobotContainer {
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     // m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
 
+    // pathfind bindings
     m_controller.povDown().whileTrue(pathfindToPose(Field.SPEAKER_SHOOTING_POSE));
     m_controller.povLeft().whileTrue(pathfindToPose(Field.AMP_SHOOTING_POSE));
     m_controller.povRight().whileTrue(pathfindToPose(Field.SOURCE_GETTING_POSE));
 
+    // take picture
     m_joystick.povUp().onTrue(Commands.runOnce(m_visionSubsystem::takeSnapshot));
   }
   
@@ -199,12 +200,10 @@ public class RobotContainer {
     m_joystick.button(5).onTrue(m_outtakeSubsystem.rotateToAmpPositionCommand());
     m_joystick.button(6).onTrue(m_outtakeSubsystem.rotateToSpeakerCommand());
     
-    // shoots to amp or speaker depending on position 
-    m_joystick.trigger().whileTrue(Commands.either(
-        m_outtakeSubsystem.shootToAmpCommand(), 
+    // shoots to speaker
+    m_joystick.trigger().whileTrue(
         m_outtakeSubsystem.shootToSpeakerCommand()
-        .alongWith(m_intakeSubsystem.getToSpeakerCommand()), 
-        m_outtakeSubsystem::isInAmpPosition));
+        .alongWith(m_intakeSubsystem.getToSpeakerCommand()));
 
     m_joystick.top().whileTrue(new DistanceShoot(
         m_intakeSubsystem, m_outtakeSubsystem, m_swerveSubsystem::getPose));
