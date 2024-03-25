@@ -2,13 +2,10 @@ package frc.robot;
 
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.DifferentialVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.hardware.core.CoreTalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkMax;
@@ -17,11 +14,9 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static frc.robot.Constants.Swerve.*;
@@ -36,7 +31,7 @@ public class SwerveModule {
   private Rotation2d m_angleReference;
   private double m_velocityReference; // meters per second
 
-  private VelocityVoltage m_request;
+  private VelocityVoltage m_request = new VelocityVoltage(0);
 
   public SwerveModule(int driveID, int steerID, int encoderID, boolean driveInverted, 
                       boolean steerInverted, double magnetOffset) {
@@ -47,12 +42,12 @@ public class SwerveModule {
     m_steerMotor.setInverted(steerInverted);
 
     m_steerAbsoluteEncoder = new CANcoder(encoderID);
-    MagnetSensorConfigs config = new MagnetSensorConfigs();
-    config.MagnetOffset = magnetOffset;
-    config.SensorDirection = steerInverted ? 
+    MagnetSensorConfigs cancoderConfigs = new MagnetSensorConfigs();
+    cancoderConfigs.MagnetOffset = magnetOffset;
+    cancoderConfigs.SensorDirection = steerInverted ? 
         SensorDirectionValue.CounterClockwise_Positive : SensorDirectionValue.Clockwise_Positive;
-    config.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf                ;
-    m_steerAbsoluteEncoder.getConfigurator().apply(config);
+    cancoderConfigs.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    m_steerAbsoluteEncoder.getConfigurator().apply(cancoderConfigs);
 
     m_steerIntegratedEncoder = m_steerMotor.getEncoder();
     m_steerIntegratedEncoder.setPositionConversionFactor(STEER_POSITION_CONVERSION);
@@ -68,18 +63,13 @@ public class SwerveModule {
     m_steerMotor.setClosedLoopRampRate(STEER_RAMP_RATE);
 
    
-     var Slot0Configs = new Slot0Configs(); 
-    Slot0Configs.kP = 0; 
-    Slot0Configs.kI = 0; 
-    Slot0Configs.kD = 0; 
-    Slot0Configs.kS = 0.03; 
-   Slot0Configs.kV = 0.09; 
-   m_driveMotor.getConfigurator().apply(Slot0Configs);
-    final PositionVoltage m_request = new PositionVoltage(0).withSlot(0); 
-    m_driveMotor.setControl(m_request.withPosition(0));
-    m_angleReference = new Rotation2d();
-    m_driveMotor.setControl(m_request);
-    
+    var driveConfigs = new Slot0Configs(); 
+    driveConfigs.kP = DRIVE_kP;
+    driveConfigs.kI = DRIVE_kI; 
+    driveConfigs.kD = DRIVE_kD; 
+    driveConfigs.kS = DRIVE_kS; 
+    driveConfigs.kV = DRIVE_kV; 
+    m_driveMotor.getConfigurator().apply(driveConfigs);
   }
     
   public void setState(SwerveModuleState state) {
@@ -87,7 +77,7 @@ public class SwerveModule {
     m_velocityReference = state.speedMetersPerSecond;
     
     m_steerMotor.getPIDController().setReference(m_angleReference.getRotations(), ControlType.kPosition);
-     m_request = new VelocityVoltage(m_velocityReference); 
+    m_request.Velocity = m_velocityReference;
     m_driveMotor.setControl(m_request);
   }
  public SwerveModulePosition getModulePosition() {
@@ -105,8 +95,6 @@ public class SwerveModule {
   public Rotation2d getDesiredRotation2d() {
     return m_angleReference;
   }
-
- 
 
   public double getDriveEncoderPosition() {
     return m_driveMotor.getPosition().getValueAsDouble();
