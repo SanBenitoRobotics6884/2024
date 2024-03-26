@@ -122,17 +122,17 @@ public final class Constants {
 
     public static final int AMP_LIMIT_SWITCH_CHANNEL = 3;
 
-    public static final double PIVOT_kP = 0.1;
+    public static final double PIVOT_kP = 0.15;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -1.25;
+    public static final double SPEAKER_POSITION = -1.65;
     public static final double AMP_POSITION = -5.0; 
 
     public static final double ZEROING_VOLTAGE = 0.05; 
 
     public static final double SPEAKER_PERCENT_OUTPUT = 0.8;
-    public static final double AMP_PERCENT_OUTPUT = 0.3;
+    public static final double AMP_PERCENT_OUTPUT = 0.2;
     public static final double YOINK_PERCENT_OUTPUT = 0.3;
 
     public static final double TOLERANCE = 1.00;
@@ -142,7 +142,7 @@ public final class Constants {
   }
 
   public final static class Intake {
-    public static final double PIVOT_kP = 0.15;
+    public static final double PIVOT_kP = 0.2;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
@@ -164,7 +164,7 @@ public final class Constants {
     public static final double TOLERANCE = 5.0;
     
     public static final double DEPLOY_SETPOINT = -90.2;
-    public static final double STOW_SETPOINT = -5.5;
+    public static final double STOW_SETPOINT = -5.0;
     
     public static final double ZEROING_SPEED = 0.1;
 

@@ -25,6 +25,8 @@ public class OuttakeSubsystem extends SubsystemBase {
   /** Creates a new OuttakeSubsystem. */
   public OuttakeSubsystem(OuttakeIO io) {
     m_io = io;
+
+    m_pivotSetpoint = SPEAKER_POSITION;
   }
 
   @Override

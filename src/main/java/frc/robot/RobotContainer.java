@@ -131,6 +131,7 @@ public class RobotContainer {
         m_intakeSubsystem.getStowCommand()));
     NamedCommands.registerCommand("score", 
         new ShootToSpeaker(m_intakeSubsystem, m_outtakeSubsystem));
+    NamedCommands.registerCommand("wait", Commands.waitSeconds(2.0));
 
     m_autoSelector.addDefaultOption("none", new AutoCommand(Commands.none(), 0));
     // We have not tested any of these
@@ -207,6 +208,9 @@ public class RobotContainer {
         m_outtakeSubsystem.shootToSpeakerCommand()
         .alongWith(m_intakeSubsystem.getToSpeakerCommand()));
 
+    m_joystick.top().whileTrue(
+        m_outtakeSubsystem.shootToAmpCommand()
+        .alongWith(m_intakeSubsystem.getToAmpCommand()));
     /**
     m_joystick.top().whileTrue(new DistanceShoot(
         m_intakeSubsystem, m_outtakeSubsystem, m_swerveSubsystem::getPose));
