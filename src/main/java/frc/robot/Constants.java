@@ -182,7 +182,7 @@ public final class Constants {
         AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     
     public static final CameraConstants SHOOTER_CAMERA =
-        new CameraConstants("ov9281", new Transform3d(
+        new CameraConstants("Shooter_Camera", new Transform3d(
             -0.2667, -0.1397, 0.51562, 
             new Rotation3d(0, -Math.PI / 12.0, Math.PI)));
   }

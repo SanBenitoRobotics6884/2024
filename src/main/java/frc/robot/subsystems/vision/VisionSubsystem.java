@@ -33,6 +33,10 @@ public class VisionSubsystem extends SubsystemBase {
       m_swerveSubsystem.addVisionMeasurement(
           m_inputs.estimatedPose.toPose2d(), m_inputs.timestampSeconds);
     }
+
+    if (m_inputs.estimatedPose != null) {
+      Logger.recordOutput("vision/pose", m_inputs.estimatedPose.toPose2d());
+    }
   }
 
   public void takeSnapshot() {

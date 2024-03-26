@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -19,7 +20,7 @@ public class VisionIOPhoton implements VisionIO {
 
   public VisionIOPhoton(CameraConstants cameraConstants) {
     m_camera = new PhotonCamera(cameraConstants.cameraName);
-    m_poseEstimator = new PhotonPoseEstimator(LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraConstants.robotToCamera);
+    m_poseEstimator = new PhotonPoseEstimator(LAYOUT,PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_camera,cameraConstants.robotToCamera);
   }
 
   @Override
@@ -36,6 +37,10 @@ public class VisionIOPhoton implements VisionIO {
     inputs.fiducialIds = new int[targets.size()];
     for (int i = 0; i < targets.size(); i++) {
       inputs.fiducialIds[i] = targets.get(i).getFiducialId();
+    }
+
+    if (targets.size() != 0) {
+      Logger.recordOutput("vision/yaw", targets.get(0).getYaw());
     }
   }
 
