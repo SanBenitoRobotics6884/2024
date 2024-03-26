@@ -162,15 +162,15 @@ public class RobotContainer {
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
     // m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::seedModuleMeasurements));
 
-    /**
+    
     // pathfind bindings
     m_controller.povDown().whileTrue(pathfindToPose(Field.SPEAKER_SHOOTING_POSE));
     m_controller.povLeft().whileTrue(pathfindToPose(Field.AMP_SHOOTING_POSE));
-    m_controller.povRight().whileTrue(pathfindToPose(Field.SOURCE_GETTING_POSE));
+    // m_controller.povRight().whileTrue(pathfindToPose(Field.SOURCE_GETTING_POSE));
 
     // take picture
-    m_joystick.povUp().onTrue(Commands.runOnce(m_visionSubsystem::takeSnapshot));
-    */
+    // m_joystick.povUp().onTrue(Commands.runOnce(m_visionSubsystem::takeSnapshot));
+    
   }
   
   /** These are bindings in the COMPETITION bindings mode */
@@ -288,7 +288,7 @@ public class RobotContainer {
   }
 
   private Command pathfindToPose(Pose2d pose) {
-    return AutoBuilder.pathfindToPose(pose, new PathConstraints(1.0, 1.0, Math.PI, Math.PI));
+    return AutoBuilder.pathfindToPose(pose, new PathConstraints(2.5, 1.0, Math.PI, Math.PI));
   }
 
   public Command getAutonomousCommand() {

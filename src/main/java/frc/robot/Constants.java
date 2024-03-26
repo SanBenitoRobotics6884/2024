@@ -41,7 +41,7 @@ public final class Constants {
    
     public static final double MAX_OUTPUT = 0.3;
 
-    public static final boolean SQUARED_INPUTS = false; // at SVR, this was false
+    public static final boolean SQUARED_INPUTS = true; // at SVR, this was false
 
     public static final double WHEEL_RADIUS = 2.0; // inches, need to double check
     public static final double DRIVE_GEAR_RATIO = 8.14;
@@ -126,7 +126,7 @@ public final class Constants {
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -1.65;
+    public static final double SPEAKER_POSITION = -1.55;
     public static final double AMP_POSITION = -5.0; 
 
     public static final double ZEROING_VOLTAGE = 0.05; 
