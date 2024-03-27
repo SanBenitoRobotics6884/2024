@@ -3,20 +3,25 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-
+ 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FeedbackSubsystem;
 
 public class LEDsToOrangeCommand extends Command {
-  FeedbackSubsystem m_subsystem;
-  Timer m_time;
+ Object m_time;
+  AddressableLED m_ledbuffer = new AddressableLED(0); 
+  AddressableLEDBuffer lenght = new AddressableLEDBuffer(0);
+  
+
 
   /** Creates a new LEDsToOrangeCommand. */
   public LEDsToOrangeCommand(FeedbackSubsystem subsystem) {
-    m_subsystem = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+   m_ledbuffer.setData(lenght);
+   lenght.setRGB(0, 200, 0, 90); 
+   m_ledbuffer.setLength(100);
   }
 
   // Called when the command is initially scheduled.
@@ -29,6 +34,7 @@ public class LEDsToOrangeCommand extends Command {
   @Override
   public void execute() {
     m_subsystem.noteIn();
+    
   }
 
   // Called once the command ends or is interrupted.
