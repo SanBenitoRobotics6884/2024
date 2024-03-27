@@ -286,7 +286,8 @@ public class RobotContainer {
         () -> m_joystick.getHID().getRawButtonPressed(6),
         () -> m_joystick.getHID().getRawButtonPressed(4),
         () -> m_joystick.getHID().getTopPressed(),
-        () -> m_joystick.getHID().getTrigger()));
+        () -> m_joystick.getHID().getTrigger())
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
   }
 
   private Command pathfindToPose(Pose2d pose) {
