@@ -25,6 +25,8 @@ public class OuttakeSubsystem extends SubsystemBase {
   /** Creates a new OuttakeSubsystem. */
   public OuttakeSubsystem(OuttakeIO io) {
     m_io = io;
+
+    m_pivotSetpoint = SPEAKER_POSITION;
   }
 
   @Override
@@ -53,11 +55,15 @@ public class OuttakeSubsystem extends SubsystemBase {
   }
 
   public void toSpeakerPosition() {
-    m_pivotSetpoint = SPEAKER_POSITION;
+    setSetpoint(SPEAKER_POSITION);
   }
 
   public void toAmpPosition() {
-    m_pivotSetpoint = AMP_POSITION;
+    setSetpoint(AMP_POSITION);
+  }
+
+  public void setSetpoint(double setpoint) {
+    m_pivotSetpoint = setpoint;
   }
 
   public boolean atSetpoint() {

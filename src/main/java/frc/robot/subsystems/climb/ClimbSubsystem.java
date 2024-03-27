@@ -40,24 +40,31 @@ public class ClimbSubsystem extends SubsystemBase{
     m_io.updateInputs(m_inputs);
     Logger.processInputs("climb", m_inputs);
 
-    double m_rightMotorOutput = m_rightPIDController.calculate(m_inputs.leftPosition);
-    double m_leftMotorOutput = m_leftPIDController.calculate(m_inputs.rightPosition);
+    double m_rightMotorOutput = m_rightPIDController.calculate(m_inputs.rightPosition);
+    double m_leftMotorOutput = m_leftPIDController.calculate(m_inputs.leftPosition);
 
     if (!m_manualMode) {
       m_io.setRightDutyCycle(MathUtil.clamp(m_rightMotorOutput, MAX_DOWN_VOLTAGE, MAX_UP_VOLTAGE)); 
       m_io.setLeftDutyCycle(MathUtil.clamp(m_leftMotorOutput, -MAX_UP_VOLTAGE, -MAX_DOWN_VOLTAGE));   
     }
 
+    Logger.recordOutput("climb/leftDutyCycle", m_leftMotorOutput);
+    Logger.recordOutput("climb/rightDutyCycle", m_rightMotorOutput);
+    Logger.recordOutput("climb/leftSetpoint", m_leftPIDController.getSetpoint());
+    Logger.recordOutput("climb/rightSetpoint", m_rightPIDController.getSetpoint());
+
   }
     
   public void extend() {
     m_leftPIDController.setSetpoint(EXTEND_MOTOR_SETPOINT);
     m_rightPIDController.setSetpoint(-EXTEND_MOTOR_SETPOINT);
+    Logger.recordOutput("climb/extend", true);
   }
 
   public void retract() {  
     m_leftPIDController.setSetpoint(RETRACT_MOTOR_SETPOINT);
     m_rightPIDController.setSetpoint(-RETRACT_MOTOR_SETPOINT); 
+    Logger.recordOutput("climb/retract", false);
   }
 
   public void setManualMode(boolean isManualMode) {

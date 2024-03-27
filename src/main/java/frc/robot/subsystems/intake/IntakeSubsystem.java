@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -34,6 +35,9 @@ public class IntakeSubsystem extends SubsystemBase {
     m_pivotPID.setTolerance(TOLERANCE);
     m_pivotPID.reset(m_inputs.pivotPosition, m_inputs.pivotVelocity);
     m_pivotPID.setGoal(STOW_SETPOINT);
+
+    var cam = CameraServer.startAutomaticCapture();
+    cam.setExposureManual(20);
   }
 
  @Override
@@ -55,7 +59,6 @@ public class IntakeSubsystem extends SubsystemBase {
   //We set the goal/setpoint to the PID
   public void deploy() {
     m_pivotPID.setGoal(DEPLOY_SETPOINT);
-    
   }
 
   //Returns boolean of whather PID is at goal/setpoint.
@@ -89,6 +92,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void stow() {
     m_pivotPID.setGoal(STOW_SETPOINT);
+  }
+
+  public void setSetpoint(double setpoint) {
+    m_pivotPID.setGoal(setpoint);
   }
 
   public Command getReelCommand(BooleanSupplier cancel) {

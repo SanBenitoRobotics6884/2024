@@ -4,11 +4,11 @@
 
 package frc.robot.subsystems.swerve;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -49,7 +49,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private SwerveModulePosition[] m_modulePositions = new SwerveModulePosition[4];
   private SwerveModuleState[] m_moduleStates = new SwerveModuleState[4];
 
-  private SwerveDriveOdometry m_odometry;
+  private SwerveDrivePoseEstimator m_odometry;
 
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
@@ -59,7 +59,7 @@ public class SwerveSubsystem extends SubsystemBase {
       m_moduleInputs[i] = new ModuleIOInputsAutoLogged();
     }
 
-    m_odometry = new SwerveDriveOdometry(
+    m_odometry = new SwerveDrivePoseEstimator(
         m_kinematics,
         getAngle(),
         m_modulePositions,
@@ -101,6 +101,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void driveRobotOriented(ChassisSpeeds speeds) {
+    speeds = ChassisSpeeds.discretize(speeds, 0.020);
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(speeds);
     Logger.recordOutput("swerve/desired-states", states);
 
@@ -150,6 +151,10 @@ public class SwerveSubsystem extends SubsystemBase {
       new Rotation2d(), 
       m_modulePositions, 
       m_pose);
+  }
+
+  public void addVisionMeasurement(Pose2d pose, double timestamp) {
+    m_odometry.addVisionMeasurement(pose, timestamp);
   }
 
 }

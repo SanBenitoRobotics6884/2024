@@ -1,12 +1,23 @@
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+
+import com.pathplanner.lib.util.GeometryUtil;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public final class Constants {
 
@@ -30,7 +41,7 @@ public final class Constants {
    
     public static final double MAX_OUTPUT = 0.3;
 
-    public static final boolean SQUARED_INPUTS = false; // at SVR, this was false
+    public static final boolean SQUARED_INPUTS = true; // at SVR, this was false
 
     public static final double WHEEL_RADIUS = 2.0; // inches, need to double check
     public static final double DRIVE_GEAR_RATIO = 8.14;
@@ -58,10 +69,10 @@ public final class Constants {
 
     public static final int PIGEON_ID = 13;
 
-    public static final boolean FR_DRIVE_INVERTED = false;
-    public static final boolean FL_DRIVE_INVERTED = true;
-    public static final boolean BR_DRIVE_INVERTED = false;
-    public static final boolean BL_DRIVE_INVERTED = false;
+    public static final boolean FR_DRIVE_INVERTED = true;
+    public static final boolean FL_DRIVE_INVERTED = false;
+    public static final boolean BR_DRIVE_INVERTED = true;
+    public static final boolean BL_DRIVE_INVERTED = true;
 
     public static final boolean FR_STEER_INVERTED = true;
     public static final boolean FL_STEER_INVERTED = true;
@@ -81,8 +92,8 @@ public final class Constants {
 
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = 
         new HolonomicPathFollowerConfig(
-            new PIDConstants(2,0,0),
-            new PIDConstants(2, 0, 0),
+            new PIDConstants(5.0,0,0),
+            new PIDConstants(5.0, 0, 0),
             3.5,
             0.4445,
             new ReplanningConfig());
@@ -111,17 +122,17 @@ public final class Constants {
 
     public static final int AMP_LIMIT_SWITCH_CHANNEL = 3;
 
-    public static final double PIVOT_kP = 0.1;
+    public static final double PIVOT_kP = 0.15;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
-    public static final double SPEAKER_POSITION = -1.25;
+    public static final double SPEAKER_POSITION = -1.55;
     public static final double AMP_POSITION = -5.0; 
 
     public static final double ZEROING_VOLTAGE = 0.05; 
 
     public static final double SPEAKER_PERCENT_OUTPUT = 0.8;
-    public static final double AMP_PERCENT_OUTPUT = 0.3;
+    public static final double AMP_PERCENT_OUTPUT = 0.2;
     public static final double YOINK_PERCENT_OUTPUT = 0.3;
 
     public static final double TOLERANCE = 1.00;
@@ -131,7 +142,7 @@ public final class Constants {
   }
 
   public final static class Intake {
-    public static final double PIVOT_kP = 0.15;
+    public static final double PIVOT_kP = 0.2;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
 
@@ -152,8 +163,8 @@ public final class Constants {
 
     public static final double TOLERANCE = 5.0;
     
-    public static final double DEPLOY_SETPOINT = -91.2;
-    public static final double STOW_SETPOINT = -4.5;
+    public static final double DEPLOY_SETPOINT = -90.2;
+    public static final double STOW_SETPOINT = -5.0;
     
     public static final double ZEROING_SPEED = 0.1;
 
@@ -162,4 +173,86 @@ public final class Constants {
     public static final int INTAKE_CURRENT_LIMIT = 40;
     public static final int PIVOT_CURRENT_LIMIT = 40;
   }
+
+  public static final class Vision {
+    public static final double POSE_HEIGHT_THRESHOLD = 0.5;
+    public static final double POSE_ANGLE_THRESHOLD = 10;
+
+    public static final AprilTagFieldLayout LAYOUT = 
+        AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    
+    public static final CameraConstants SHOOTER_CAMERA =
+        new CameraConstants("Shooter_Camera", new Transform3d(
+            -0.2667, -0.1397, 0.51562, 
+            new Rotation3d(0, -Math.PI / 12.0, Math.PI)));
+  }
+
+  public static final class CameraConstants {
+    public final Transform3d robotToCamera;
+    public final String cameraName;
+    
+    public CameraConstants(String cameraName, Transform3d robotToCamera) {
+      this.cameraName = cameraName;
+      this.robotToCamera = robotToCamera;
+    }
+  }
+
+  public static final class Field {
+    public static final Pose2d SPEAKER_SHOOTING_POSE;
+    public static final Pose2d AMP_SHOOTING_POSE;
+    public static final Pose2d SOURCE_GETTING_POSE;
+    public static final Translation2d SPEAKER;
+
+    static {
+      Pose2d speakerShootingPose = new Pose2d(new Translation2d(1.839, 5.601), Rotation2d.fromDegrees(0));
+      Pose2d ampShootingPose = new Pose2d(new Translation2d(1.719, 7.236), Rotation2d.fromDegrees(90));
+      Pose2d sourceGettingPose = new Pose2d(new Translation2d(14.403, 2.580), Rotation2d.fromDegrees(-60));
+      Pose2d speaker = Vision.LAYOUT.getTagPose(7).get().toPose2d();
+      if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+        speakerShootingPose = GeometryUtil.flipFieldPose(speakerShootingPose);
+        ampShootingPose = GeometryUtil.flipFieldPose(ampShootingPose);
+        sourceGettingPose = GeometryUtil.flipFieldPose(sourceGettingPose);
+        speaker = GeometryUtil.flipFieldPose(speaker);
+      }
+      SPEAKER_SHOOTING_POSE = speakerShootingPose;
+      AMP_SHOOTING_POSE = ampShootingPose;
+      SOURCE_GETTING_POSE = sourceGettingPose;
+      SPEAKER = speaker.getTranslation();
+    }
+
+    public static double getDistanceMetersToSpeaker(Pose2d pose) {
+      return pose.getTranslation().getDistance(SPEAKER);
+    }
+
+    public static double getAngleDegreesToSpeaker(Pose2d pose) {
+      return pose.getTranslation().minus(SPEAKER).getAngle().getDegrees();
+    }
+
+  }
+
+  public static final class ShootingData {
+    public static final InterpolatingDoubleTreeMap DISTANCE_TO_OUTTAKE_SETPOINT = 
+        new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap OUTTAKE_TO_INTAKE_SETPOINT =
+        new InterpolatingDoubleTreeMap();
+
+    static {
+      double[] distanceToOuttakeSetpointData = new double[] {
+          1.0, -1.25};
+      double[] outtakeToIntakeSetpointData = new double[] {
+          -1.25, -4.5};
+
+      for (int i = 0; i < distanceToOuttakeSetpointData.length; i += 2) {
+        DISTANCE_TO_OUTTAKE_SETPOINT.put(
+            distanceToOuttakeSetpointData[i], distanceToOuttakeSetpointData[i + 1]);
+      }
+      for (int i = 0; i < outtakeToIntakeSetpointData.length; i += 2) {
+        OUTTAKE_TO_INTAKE_SETPOINT.put(
+            outtakeToIntakeSetpointData[i], outtakeToIntakeSetpointData[i + 1]);
+      }
+
+    }
+    
+  }
+  
 }

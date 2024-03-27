@@ -41,7 +41,9 @@ public class ModuleIOSparkMax implements ModuleIO {
     config.MagnetOffset = magnetOffset;
     config.SensorDirection = steerInverted ? 
         SensorDirectionValue.CounterClockwise_Positive : SensorDirectionValue.Clockwise_Positive;
-    config.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf                ;
+    config.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    m_steerAbsoluteEncoder.getAbsolutePosition().setUpdateFrequency(10);
+    m_steerAbsoluteEncoder.optimizeBusUtilization();               ;
     m_steerAbsoluteEncoder.getConfigurator().apply(config);
     m_absoluteAngle = m_steerAbsoluteEncoder.getAbsolutePosition();
 
