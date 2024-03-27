@@ -19,6 +19,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.wpilibj.DutyCycle;
 
 import static frc.robot.Constants.Swerve.*;
 
@@ -72,8 +73,6 @@ public class ModuleIOTalonFX implements ModuleIO {
     drivePIDFConfigs.kD = DRIVE_kD; 
     drivePIDFConfigs.kS = DRIVE_kS; 
     drivePIDFConfigs.kV = DRIVE_kV; 
-    var driveConversionConfigs = new FeedbackConfigs();
-    driveConversionConfigs.SensorToMechanismRatio = DRIVE_POSITION_CONVERSION;
     var driveRampConfigs = new ClosedLoopRampsConfigs();
     driveRampConfigs.VoltageClosedLoopRampPeriod = DRIVE_RAMP_RATE;
     var driveCurrentLimitConfigs = new CurrentLimitsConfigs();
@@ -81,7 +80,6 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveCurrentLimitConfigs.StatorCurrentLimitEnable = true;
     var driveConfigurator = m_driveMotor.getConfigurator();
     driveConfigurator.apply(drivePIDFConfigs);
-    driveConfigurator.apply(driveConversionConfigs);
     driveConfigurator.apply(driveRampConfigs);
     driveConfigurator.apply(driveCurrentLimitConfigs);
 
@@ -99,15 +97,15 @@ public class ModuleIOTalonFX implements ModuleIO {
     inputs.steerCurrent = m_steerMotor.getOutputCurrent();
     inputs.steerDutyCycle = m_steerMotor.getAppliedOutput();
 
-    inputs.drivePosition = m_driveMotor.getPosition().getValueAsDouble();
-    inputs.driveVelocity = m_driveMotor.getVelocity().getValueAsDouble();
+    inputs.drivePosition = m_driveMotor.getPosition().getValueAsDouble()*DRIVE_POSITION_CONVERSION;
+    inputs.driveVelocity = m_driveMotor.getVelocity().getValueAsDouble()*DRIVE_POSITION_CONVERSION;
     inputs.driveCurrent = m_driveMotor.getStatorCurrent().getValueAsDouble();
     inputs.driveDutyCycle = m_driveMotor.getDutyCycle().getValueAsDouble();
   }
   
   @Override
   public void setState(SwerveModuleState state) {
-    m_request.Velocity = state.speedMetersPerSecond;
+    m_request.Velocity = state.speedMetersPerSecond/DRIVE_POSITION_CONVERSION;
     m_steerMotor.getPIDController().setReference(state.angle.getRotations(), ControlType.kPosition);
     m_driveMotor.setControl(m_request);
   }
