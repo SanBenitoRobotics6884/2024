@@ -244,10 +244,12 @@ public final class Constants {
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap OUTTAKE_TO_INTAKE_SETPOINT =
         new InterpolatingDoubleTreeMap();
+    public static final double MIN_SHOOTING_DISTANCE = 0.92;
+    public static final double MAX_SHOOTING_DISTANCE = 0.93;
 
     static {
       double[] distanceToOuttakeSetpointData = new double[] {
-          1.0, -1.25};
+          0.92, -1.25};
       double[] outtakeToIntakeSetpointData = new double[] {
           -1.25, -4.5};
 

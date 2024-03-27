@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,7 +43,9 @@ public class DistanceShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double outtakeSetpoint = DISTANCE_TO_OUTTAKE_SETPOINT.get(Field.getDistanceMetersToSpeaker(m_pose.get()));
+    double distance = Field.getDistanceMetersToSpeaker(m_pose.get());
+    distance = MathUtil.clamp(distance, MIN_SHOOTING_DISTANCE, MAX_SHOOTING_DISTANCE);
+    double outtakeSetpoint = DISTANCE_TO_OUTTAKE_SETPOINT.get(distance);
     double intakeSetpoint = OUTTAKE_TO_INTAKE_SETPOINT.get(outtakeSetpoint);
     m_outtakeSubsystem.setSetpoint(outtakeSetpoint);
     m_intakeSubsystem.setSetpoint(intakeSetpoint);
