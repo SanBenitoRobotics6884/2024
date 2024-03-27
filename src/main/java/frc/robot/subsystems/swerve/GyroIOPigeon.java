@@ -1,6 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class GyroIOPigeon implements GyroIO {
@@ -8,6 +7,11 @@ public class GyroIOPigeon implements GyroIO {
 
   public GyroIOPigeon(int id) {
     m_gyro = new Pigeon2(id);
+
+    m_gyro.optimizeBusUtilization();
+    m_gyro.getYaw().setUpdateFrequency(50);
+    m_gyro.getPitch().setUpdateFrequency(50);
+    m_gyro.getRoll().setUpdateFrequency(50);
   }
 
   @Override

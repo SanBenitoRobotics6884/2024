@@ -26,6 +26,10 @@ public class OuttakeIOReal implements OuttakeIO {
     config.StatorCurrentLimitEnable = true;
 
     m_passOffMotor.getConfigurator().apply(config);
+    m_passOffMotor.optimizeBusUtilization();
+    m_passOffMotor.getVelocity().setUpdateFrequency(50);
+    m_passOffMotor.getStatorCurrent().setUpdateFrequency(50);
+    m_passOffMotor.getDeviceTemp().setUpdateFrequency(50);
 
     m_pivotMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
   }

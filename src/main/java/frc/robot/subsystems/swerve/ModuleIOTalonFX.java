@@ -49,6 +49,8 @@ public class ModuleIOTalonFX implements ModuleIO {
     cancoderConfigs.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf                ;
     m_steerAbsoluteEncoder.getConfigurator().apply(cancoderConfigs);
     m_absoluteAngle = m_steerAbsoluteEncoder.getAbsolutePosition();
+    m_absoluteAngle.setUpdateFrequency(4);
+    m_steerAbsoluteEncoder.optimizeBusUtilization();
 
     m_steerIntegratedEncoder = m_steerMotor.getEncoder();
     m_steerIntegratedEncoder.setPositionConversionFactor(STEER_POSITION_CONVERSION);
@@ -91,7 +93,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
-    inputs.absoluteAngle = Rotation2d.fromRotations(m_absoluteAngle.getValueAsDouble());
+    inputs.absoluteAngle = Rotation2d.fromRotations(m_absoluteAngle.refresh().getValueAsDouble());
     inputs.relativeAngle = Rotation2d.fromRotations(m_steerIntegratedEncoder.getPosition());
     inputs.steerCurrent = m_steerMotor.getOutputCurrent();
     inputs.steerDutyCycle = m_steerMotor.getAppliedOutput();
