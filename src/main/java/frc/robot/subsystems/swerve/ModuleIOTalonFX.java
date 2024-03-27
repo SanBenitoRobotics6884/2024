@@ -1,6 +1,9 @@
 package frc.robot.subsystems.swerve;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -60,14 +63,30 @@ public class ModuleIOTalonFX implements ModuleIO {
     steerController.setD(STEER_kD);
     m_steerMotor.setClosedLoopRampRate(STEER_RAMP_RATE);
 
-   
-    var driveConfigs = new Slot0Configs(); 
-    driveConfigs.kP = DRIVE_kP; 
-    driveConfigs.kI = DRIVE_kI; 
-    driveConfigs.kD = DRIVE_kD; 
-    driveConfigs.kS = DRIVE_kS; 
-    driveConfigs.kV = DRIVE_kV; 
-    m_driveMotor.getConfigurator().apply(driveConfigs);
+    var drivePIDFConfigs = new Slot0Configs(); 
+    drivePIDFConfigs.kP = DRIVE_kP; 
+    drivePIDFConfigs.kI = DRIVE_kI; 
+    drivePIDFConfigs.kD = DRIVE_kD; 
+    drivePIDFConfigs.kS = DRIVE_kS; 
+    drivePIDFConfigs.kV = DRIVE_kV; 
+    var driveConversionConfigs = new FeedbackConfigs();
+    driveConversionConfigs.SensorToMechanismRatio = DRIVE_POSITION_CONVERSION;
+    var driveRampConfigs = new ClosedLoopRampsConfigs();
+    driveRampConfigs.VoltageClosedLoopRampPeriod = DRIVE_RAMP_RATE;
+    var driveCurrentLimitConfigs = new CurrentLimitsConfigs();
+    driveCurrentLimitConfigs.StatorCurrentLimit = DRIVE_CURRENT_LIMIT;
+    driveCurrentLimitConfigs.StatorCurrentLimitEnable = true;
+    var driveConfigurator = m_driveMotor.getConfigurator();
+    driveConfigurator.apply(drivePIDFConfigs);
+    driveConfigurator.apply(driveConversionConfigs);
+    driveConfigurator.apply(driveRampConfigs);
+    driveConfigurator.apply(driveCurrentLimitConfigs);
+
+    m_driveMotor.optimizeBusUtilization();
+    m_driveMotor.getPosition().setUpdateFrequency(50);
+    m_driveMotor.getVelocity().setUpdateFrequency(50);
+    m_driveMotor.getStatorCurrent().setUpdateFrequency(50);
+    m_driveMotor.getDutyCycle().setUpdateFrequency(50);
   }
 
   @Override
