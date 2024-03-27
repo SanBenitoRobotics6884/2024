@@ -49,6 +49,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     cancoderConfigs.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf                ;
     m_steerAbsoluteEncoder.getConfigurator().apply(cancoderConfigs);
     m_absoluteAngle = m_steerAbsoluteEncoder.getAbsolutePosition();
+    
     m_absoluteAngle.setUpdateFrequency(4);
     m_steerAbsoluteEncoder.optimizeBusUtilization();
 

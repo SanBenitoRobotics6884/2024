@@ -164,12 +164,13 @@ public class RobotContainer {
 
     
     // pathfind bindings
-    m_controller.povDown().whileTrue(pathfindToPose(Field.SPEAKER_SHOOTING_POSE));
-    m_controller.povLeft().whileTrue(pathfindToPose(Field.AMP_SHOOTING_POSE));
-    // m_controller.povRight().whileTrue(pathfindToPose(Field.SOURCE_GETTING_POSE));
+    m_controller.povDown().whileTrue(pathfindToPose(Field.SPEAKER_CENTER_SHOOTING_POSE));
+    m_controller.povLeft().whileTrue(pathfindToPose(Field.SPEAKER_LEFT_SHOOTING_POSE));
+    m_controller.povRight().whileTrue(pathfindToPose(Field.SPEAKER_RIGHT_SHOOTING_POSE));
+    m_controller.povUp().whileTrue(pathfindToPose(Field.SOURCE_GETTING_POSE));
 
     // take picture
-    // m_joystick.povUp().onTrue(Commands.runOnce(m_visionSubsystem::takeSnapshot));
+    m_joystick.povUp().onTrue(Commands.runOnce(m_visionSubsystem::takeSnapshot));
     
   }
   
@@ -211,6 +212,7 @@ public class RobotContainer {
     m_joystick.top().whileTrue(
         m_outtakeSubsystem.shootToAmpCommand()
         .alongWith(m_intakeSubsystem.getToAmpCommand()));
+        
     /**
     m_joystick.top().whileTrue(new DistanceShoot(
         m_intakeSubsystem, m_outtakeSubsystem, m_swerveSubsystem::getPose));

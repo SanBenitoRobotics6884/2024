@@ -198,23 +198,32 @@ public final class Constants {
   }
 
   public static final class Field {
-    public static final Pose2d SPEAKER_SHOOTING_POSE;
+    public static final Pose2d SPEAKER_CENTER_SHOOTING_POSE;
+    public static final Pose2d SPEAKER_LEFT_SHOOTING_POSE;
+    public static final Pose2d SPEAKER_RIGHT_SHOOTING_POSE;
     public static final Pose2d AMP_SHOOTING_POSE;
     public static final Pose2d SOURCE_GETTING_POSE;
     public static final Translation2d SPEAKER;
 
     static {
-      Pose2d speakerShootingPose = new Pose2d(new Translation2d(1.839, 5.601), Rotation2d.fromDegrees(0));
-      Pose2d ampShootingPose = new Pose2d(new Translation2d(1.719, 7.236), Rotation2d.fromDegrees(90));
+      Pose2d speakerCenterShootingPose = new Pose2d(new Translation2d(1.839, 5.601), Rotation2d.fromDegrees(0));
+      Pose2d speakerLeftShootingPose = new Pose2d(new Translation2d(0.775, 7.058), Rotation2d.fromDegrees(60));
+      Pose2d speakerRightShootingPose = new Pose2d(new Translation2d(0.775, 4.123), Rotation2d.fromDegrees(-60));
+      Pose2d ampShootingPose = new Pose2d(new Translation2d(1.719, 7.236), Rotation2d.fromDegrees(-90));
       Pose2d sourceGettingPose = new Pose2d(new Translation2d(14.403, 2.580), Rotation2d.fromDegrees(-60));
       Pose2d speaker = Vision.LAYOUT.getTagPose(7).get().toPose2d();
       if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-        speakerShootingPose = GeometryUtil.flipFieldPose(speakerShootingPose);
+        speakerCenterShootingPose = GeometryUtil.flipFieldPose(speakerCenterShootingPose);
+        SPEAKER_LEFT_SHOOTING_POSE = GeometryUtil.flipFieldPose(speakerRightShootingPose);
+        SPEAKER_RIGHT_SHOOTING_POSE = GeometryUtil.flipFieldPose(speakerLeftShootingPose);
         ampShootingPose = GeometryUtil.flipFieldPose(ampShootingPose);
         sourceGettingPose = GeometryUtil.flipFieldPose(sourceGettingPose);
         speaker = GeometryUtil.flipFieldPose(speaker);
+      } else {
+        SPEAKER_LEFT_SHOOTING_POSE = speakerLeftShootingPose;
+        SPEAKER_RIGHT_SHOOTING_POSE = speakerRightShootingPose;
       }
-      SPEAKER_SHOOTING_POSE = speakerShootingPose;
+      SPEAKER_CENTER_SHOOTING_POSE = speakerCenterShootingPose;
       AMP_SHOOTING_POSE = ampShootingPose;
       SOURCE_GETTING_POSE = sourceGettingPose;
       SPEAKER = speaker.getTranslation();
