@@ -97,8 +97,8 @@ public class ModuleIOTalonFX implements ModuleIO {
     inputs.steerCurrent = m_steerMotor.getOutputCurrent();
     inputs.steerDutyCycle = m_steerMotor.getAppliedOutput();
 
-    inputs.drivePosition = m_driveMotor.getPosition().getValueAsDouble()*DRIVE_POSITION_CONVERSION;
-    inputs.driveVelocity = m_driveMotor.getVelocity().getValueAsDouble()*DRIVE_POSITION_CONVERSION;
+    inputs.drivePosition = m_driveMotor.getRotorPosition().getValueAsDouble()*DRIVE_POSITION_CONVERSION;
+    inputs.driveVelocity = m_driveMotor.getRotorVelocity().getValueAsDouble()*DRIVE_POSITION_CONVERSION;
     inputs.driveCurrent = m_driveMotor.getStatorCurrent().getValueAsDouble();
     inputs.driveDutyCycle = m_driveMotor.getDutyCycle().getValueAsDouble();
   }
@@ -107,7 +107,7 @@ public class ModuleIOTalonFX implements ModuleIO {
   public void setState(SwerveModuleState state) {
     m_request.Velocity = state.speedMetersPerSecond/DRIVE_POSITION_CONVERSION;
     m_steerMotor.getPIDController().setReference(state.angle.getRotations(), ControlType.kPosition);
-    m_driveMotor.setControl(m_request);
+    m_driveMotor.set(state.speedMetersPerSecond/4.0);
   }
   
   @Override
