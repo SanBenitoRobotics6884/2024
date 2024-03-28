@@ -28,12 +28,12 @@ public final class Constants {
     public static final double STEER_RAMP_RATE = 0.15; // how many seconds to go from 0 to full throttle
     public static final int STEER_CURRENT_LIMIT = 20;
 
-    public static final double DRIVE_kP = 0.0;
+    public static final double DRIVE_kP = 0;
     public static final double DRIVE_kI = 0;
-    public static final double DRIVE_kD = 0.0;
+    public static final double DRIVE_kD = 0;
     public static final double DRIVE_kS = 0.14;
-    public static final double DRIVE_kV = 3.33;
-    public static final double DRIVE_RAMP_RATE = 0.0;
+    public static final double DRIVE_kV = 0;
+    public static final double DRIVE_RAMP_RATE = 0.15;
 
     public static final SimpleMotorFeedforward DRIVE_FEEDFORWARD = 
         new SimpleMotorFeedforward(DRIVE_kS, DRIVE_kV);
@@ -44,7 +44,7 @@ public final class Constants {
     public static final boolean SQUARED_INPUTS = true; // at SVR, this was false
 
     public static final double WHEEL_RADIUS = 2.0; // inches, need to double check
-    public static final double DRIVE_GEAR_RATIO = 176.6;
+    public static final double DRIVE_GEAR_RATIO = 8.14;
     public static final double STEER_GEAR_RATIO = 150.0 / 7.0;
     public static final double DRIVE_POSITION_CONVERSION = 
         2.0 * Math.PI * Units.inchesToMeters(WHEEL_RADIUS) / DRIVE_GEAR_RATIO; // meters per rotation

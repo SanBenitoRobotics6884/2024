@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -19,7 +20,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
-import edu.wpi.first.wpilibj.DutyCycle;
 
 import static frc.robot.Constants.Swerve.*;
 
@@ -79,6 +79,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveCurrentLimitConfigs.StatorCurrentLimit = DRIVE_CURRENT_LIMIT;
     driveCurrentLimitConfigs.StatorCurrentLimitEnable = true;
     var driveConfigurator = m_driveMotor.getConfigurator();
+    driveConfigurator.apply(new TalonFXConfiguration());
     driveConfigurator.apply(drivePIDFConfigs);
     driveConfigurator.apply(driveRampConfigs);
     driveConfigurator.apply(driveCurrentLimitConfigs);
@@ -97,17 +98,17 @@ public class ModuleIOTalonFX implements ModuleIO {
     inputs.steerCurrent = m_steerMotor.getOutputCurrent();
     inputs.steerDutyCycle = m_steerMotor.getAppliedOutput();
 
-    inputs.drivePosition = m_driveMotor.getRotorPosition().getValueAsDouble()*DRIVE_POSITION_CONVERSION;
-    inputs.driveVelocity = m_driveMotor.getRotorVelocity().getValueAsDouble()*DRIVE_POSITION_CONVERSION;
+    inputs.drivePosition = m_driveMotor.getRotorPosition().getValueAsDouble() * DRIVE_POSITION_CONVERSION;
+    inputs.driveVelocity = m_driveMotor.getRotorVelocity().getValueAsDouble() * DRIVE_POSITION_CONVERSION;
     inputs.driveCurrent = m_driveMotor.getStatorCurrent().getValueAsDouble();
     inputs.driveDutyCycle = m_driveMotor.getDutyCycle().getValueAsDouble();
   }
   
   @Override
   public void setState(SwerveModuleState state) {
-    m_request.Velocity = state.speedMetersPerSecond/DRIVE_POSITION_CONVERSION;
+    m_request.Velocity = state.speedMetersPerSecond / DRIVE_POSITION_CONVERSION;
     m_steerMotor.getPIDController().setReference(state.angle.getRotations(), ControlType.kPosition);
-    m_driveMotor.set(state.speedMetersPerSecond/4.0);
+    m_driveMotor.setControl(m_request);
   }
   
   @Override
